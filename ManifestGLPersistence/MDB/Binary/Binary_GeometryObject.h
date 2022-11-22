@@ -19,8 +19,6 @@ namespace Manifset_Persistence
 		}header;
 		PrimaryKey* payload;
 	};
-	//typedef BinaryTable<Binary_GeometryObject> BinaryGeometryOBjectTable;
-	//BinaryGeometryOBjectTable BuildBinaryTable(const GeometryObjectTable& geometryObjectTable);
 	//see Binary_Mesh.h for details
 	size_t Convert_MDB(const MDB_GeometryObject& mesh, Binary_GeometryObject& binaryMesh);
 }

@@ -17,6 +17,7 @@ namespace Manifset_Persistence
 			size_t dynamicTableSize{ 0 };//number of bytes to be created for elements + payloads
 		}header;
 		Binary_TableType* entries;
+		//to change - eventually a look up table with byte offsets will also be ex/imported with the table and the index request will query the table and return the binary record at the offset from entries
 		Binary_TableType const* const operator[](const int32_t& index)
 		{
 			Binary_TableType* result = nullptr;

@@ -51,17 +51,22 @@ int main()
 			DLOG(37, "Reading from file"<< i << i << i);
 			DLOG(33, "Mesh Stride:" << importMesh->header.vboStride << " AttributeCode: " << +importMesh->header.activeArrayAttributes << " Vertex Buffer Size: " << importMesh->header.payloadSize << " bytes Vertex Buffer Elements: " << importMesh->header.payloadSize / sizeof(float));
 
-			auto nElements = importMesh->header.payloadSize / sizeof(float);
+			auto nElements = (importMesh->header.eboOffset) / sizeof(float);
 			auto nSubArrayElements = nElements / importMesh->header.vboStride;
+			auto count{ 0 };
 			for (auto subArray = 0; subArray < nSubArrayElements; ++subArray)
 			{
 				std::cout << "{";
-				for (auto arrayIndex = 0; arrayIndex < importMesh->header.vboStride; ++arrayIndex)
-				{
-					std::cout << importMesh->payload[subArray * importMesh->header.vboStride + arrayIndex] << " ,";
-				}
+				for (auto arrayIndex = 0; arrayIndex < importMesh->header.vboStride; ++arrayIndex)	
+					std::cout << importMesh->payload[subArray * importMesh->header.vboStride + arrayIndex] << " ,";									
 				std::cout << "}" << std::endl;
 			}
+			auto nIndices = (importMesh->header.payloadSize - importMesh->header.eboOffset) / sizeof(uint32_t);
+			char* beginIndices = reinterpret_cast<char*>(importMesh->payload) + importMesh->header.eboOffset;
+			std::cout << "{";
+			for (auto index = 0; index < nIndices; ++index)
+				std::cout << reinterpret_cast<uint32_t*>(beginIndices)[index]<<",";
+			std::cout << "}" << std::endl;
 		}
 	}
 	

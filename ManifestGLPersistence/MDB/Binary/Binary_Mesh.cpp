@@ -2,22 +2,10 @@
 
 using namespace Manifset_Persistence;
 
-/*
-BinaryMeshTable Manifset_Persistence::BuildBinaryTable(const MeshTable& meshTable, const VertexTables& vertexTables, const IndexTable& indexTable)
-{
-	BinaryMeshTable result;		
-	result.entries = new Binary_Mesh[result.header.totalEntries = meshTable.entries.size()];
-	for(auto entry = 0; entry < result.header.totalEntries; ++entry)
-		result.header.dynamicTableSize += Convert_MDB(meshTable.entries[entry], vertexTables, indexTable, result.entries[entry]);
-	return result;
-}	
-*/
-
 size_t Manifset_Persistence::Convert_MDB(const MDB_Mesh& mesh, const VertexTables& vertexTables, const IndexTable& indexTable, Binary_Mesh& binaryMesh)
 {	
-	const auto& vertexTableIndices = mesh.vertexArrayIDs;	
-	size_t nElements{ 0 };
-		
+	const auto& vertexTableIndices = mesh.vertexArrayIDs;			
+	///store vertex information
 	//vertices
 	const MDB_VertexArray* vertices = nullptr;	
 	std::vector<float> tempVertices;
@@ -78,8 +66,11 @@ size_t Manifset_Persistence::Convert_MDB(const MDB_Mesh& mesh, const VertexTable
 		binaryMesh.header.vboStride += 3;
 		binaryMesh.header.activeArrayAttributes |= (1 << 4);
 	}
-	binaryMesh.payload = new float[binaryMesh.header.payloadSize];//reserves enough memory for each float
-	binaryMesh.header.payloadSize *= sizeof(float);//store total number of bytes of data
+	///store index information
+	const MDB_IndexArray& indices = indexTable.entries[mesh.indexArrayID];
+	auto nIndices = indices.elements;
+	binaryMesh.header.payloadSize += nIndices;
+	binaryMesh.payload = new float[binaryMesh.header.payloadSize];//reserves enough memory for each float	
 	//interleave buffer data
 	for (auto bufferIndex = 0; bufferIndex < vertices->elements/3; ++bufferIndex)
 	{
@@ -107,7 +98,14 @@ size_t Manifset_Persistence::Convert_MDB(const MDB_Mesh& mesh, const VertexTable
 		}
 		if (bitangents)		
 			memcpy(&binaryMesh.payload[baseOffset + attributeOffset], &tempBitangents[bufferIndex * 3], sizeof(float) * 3);
-	}
+	}	
+	//store index information
+	auto indexOffset = (binaryMesh.header.payloadSize - nIndices);
+	memcpy(&binaryMesh.payload[indexOffset], indices.indexData, sizeof(uint32_t) * nIndices);
+	binaryMesh.header.eboOffset = indexOffset * sizeof(float);
+	//convert to total bytes
+	binaryMesh.header.payloadSize *= sizeof(float);
+	
 	
 	return EntrySize(binaryMesh);
 }
