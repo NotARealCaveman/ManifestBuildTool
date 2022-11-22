@@ -13,261 +13,267 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source Files\Parser">
-      <UniqueIdentifier>{97969ca4-78ea-42d7-9893-1a1172b6fb4f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Parser">
-      <UniqueIdentifier>{fe573ece-1056-40f3-a766-566793a3fba2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Persistence">
-      <UniqueIdentifier>{c435f220-1900-4d0f-8e94-7551ec1dde2d}</UniqueIdentifier>
+      <UniqueIdentifier>{f711ef6e-15c5-4d62-9e26-9294363d6319}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Persistence">
-      <UniqueIdentifier>{c92aab5b-ea3d-497b-9319-cbe625f3faf4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Persistence\MDB">
-      <UniqueIdentifier>{961b1a4a-022c-4eb2-b8e2-ca518ad40702}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Persistence\MDB\Binary">
-      <UniqueIdentifier>{c8eea978-80c3-4839-8e41-c1e5c65edcf3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Persistence\MDB">
-      <UniqueIdentifier>{1dcc3610-2910-4c7c-8cb7-84dd507fe0f8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Persistence\MDB\Binary">
-      <UniqueIdentifier>{7d3875f7-1520-4395-b969-26a7153b21fc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Parser\OpenGEX">
-      <UniqueIdentifier>{a2b3fb70-1f10-47d8-8f63-01c09b9b9278}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Parser\OpenDDL">
-      <UniqueIdentifier>{838357a1-ce20-4828-a5bc-fdb01f443dad}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Parser\OpenDDL">
-      <UniqueIdentifier>{2aac2c98-a622-4bd5-8027-838b20042f84}</UniqueIdentifier>
+    <Filter Include="Source Files\Parser">
+      <UniqueIdentifier>{5814774f-c559-4a0a-bd6d-7c690241a67d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Parser\OpenGEX">
-      <UniqueIdentifier>{00fcd1ce-6e48-42fe-a74c-59ce8afa9a94}</UniqueIdentifier>
+      <UniqueIdentifier>{78418995-340c-465a-88b1-6fa92b7e9eae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Parser\OpenDDL">
+      <UniqueIdentifier>{582a7444-b44e-4bc4-90a0-b2de64a38272}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Persistence\MDB">
+      <UniqueIdentifier>{a5649458-1e17-4c0d-b316-241fa2594783}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Persistence\MDB\Binary">
+      <UniqueIdentifier>{75a51fea-bc84-4b2b-9bad-15e9133c11a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Parser">
+      <UniqueIdentifier>{392ee99c-566a-47cc-b115-f7d6ea41b6f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Parser\OpenGEX">
+      <UniqueIdentifier>{f59814c3-b40a-4c05-b014-a2da2a28f49c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Parser\OpenDDL">
+      <UniqueIdentifier>{a80887ff-bf63-4ea1-a14a-52b8a760f9b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Persistence">
+      <UniqueIdentifier>{e2d1cba5-3191-4030-86e6-410dacbe507c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Persistence\MDB">
+      <UniqueIdentifier>{849da0b8-56c0-41d1-a01d-630d24ef43c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Persistence\MDB\Binary">
+      <UniqueIdentifier>{1f74ed3c-86ae-4329-bac5-e4806cf5b596}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\ManifestGLFramework\ManifestGLPersistence\BuildTool.cpp">
-      <Filter>Source Files\Persistence</Filter>
+    <ClCompile Include="ManifestGLParser\OpenDDL\DDL_Buffers.cpp">
+      <Filter>Source Files\Parser\OpenDDL</Filter>
     </ClCompile>
-    <ClCompile Include="..\ManifestGLFramework\ManifestGLPersistence\Manifest_Database.cpp">
-      <Filter>Source Files\Persistence</Filter>
+    <ClCompile Include="ManifestGLParser\OpenDDL\DDL_Primitives.cpp">
+      <Filter>Source Files\Parser\OpenDDL</Filter>
     </ClCompile>
-    <ClCompile Include="..\ManifestGLFramework\ManifestGLPersistence\MDB\Manifest_Color.cpp">
-      <Filter>Source Files\Persistence\MDB</Filter>
+    <ClCompile Include="ManifestGLParser\OpenDDL\DDL_Reference.cpp">
+      <Filter>Source Files\Parser\OpenDDL</Filter>
     </ClCompile>
-    <ClCompile Include="..\ManifestGLFramework\ManifestGLPersistence\MDB\Manifest_GeometryNode.cpp">
-      <Filter>Source Files\Persistence\MDB</Filter>
+    <ClCompile Include="ManifestGLParser\OpenDDL\DDL_Structure.cpp">
+      <Filter>Source Files\Parser\OpenDDL</Filter>
     </ClCompile>
-    <ClCompile Include="..\ManifestGLFramework\ManifestGLPersistence\MDB\Manifest_GeometryObject.cpp">
-      <Filter>Source Files\Persistence\MDB</Filter>
+    <ClCompile Include="ManifestGLParser\OpenGEX\GEX_Color.cpp">
+      <Filter>Source Files\Parser\OpenGEX</Filter>
     </ClCompile>
-    <ClCompile Include="..\ManifestGLFramework\ManifestGLPersistence\MDB\Manifest_IndexArray.cpp">
-      <Filter>Source Files\Persistence\MDB</Filter>
+    <ClCompile Include="ManifestGLParser\OpenGEX\GEX_GeometryObject.cpp">
+      <Filter>Source Files\Parser\OpenGEX</Filter>
     </ClCompile>
-    <ClCompile Include="..\ManifestGLFramework\ManifestGLPersistence\MDB\Manifest_Material.cpp">
-      <Filter>Source Files\Persistence\MDB</Filter>
+    <ClCompile Include="ManifestGLParser\OpenGEX\GEX_Material.cpp">
+      <Filter>Source Files\Parser\OpenGEX</Filter>
     </ClCompile>
-    <ClCompile Include="..\ManifestGLFramework\ManifestGLPersistence\MDB\Manifest_Mesh.cpp">
-      <Filter>Source Files\Persistence\MDB</Filter>
+    <ClCompile Include="ManifestGLParser\OpenGEX\GEX_Mesh.cpp">
+      <Filter>Source Files\Parser\OpenGEX</Filter>
     </ClCompile>
-    <ClCompile Include="..\ManifestGLFramework\ManifestGLPersistence\MDB\Manifest_VertexArray.cpp">
-      <Filter>Source Files\Persistence\MDB</Filter>
+    <ClCompile Include="ManifestGLParser\OpenGEX\GEX_Metric.cpp">
+      <Filter>Source Files\Parser\OpenGEX</Filter>
     </ClCompile>
-    <ClCompile Include="..\ManifestGLFramework\ManifestGLPersistence\MDB\Binary\Binary_Mesh.cpp">
+    <ClCompile Include="ManifestGLParser\OpenGEX\GEX_Morph.cpp">
+      <Filter>Source Files\Parser\OpenGEX</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestGLParser\OpenGEX\GEX_Name.cpp">
+      <Filter>Source Files\Parser\OpenGEX</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestGLParser\OpenGEX\GEX_Node.cpp">
+      <Filter>Source Files\Parser\OpenGEX</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestGLParser\OpenGEX\GEX_ObjectRef.cpp">
+      <Filter>Source Files\Parser\OpenGEX</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestGLParser\OpenGEX\GEX_Param.cpp">
+      <Filter>Source Files\Parser\OpenGEX</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestGLParser\OpenGEX\GEX_skin.cpp">
+      <Filter>Source Files\Parser\OpenGEX</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestGLParser\OpenGEX\GEX_Texture.cpp">
+      <Filter>Source Files\Parser\OpenGEX</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestGLParser\OpenGEX\GEX_Transform.cpp">
+      <Filter>Source Files\Parser\OpenGEX</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestGLParser\FileFilter.cpp">
+      <Filter>Source Files\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestGLParser\GEX_Material.cpp">
+      <Filter>Source Files\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestGLParser\OpenDDL_Parser.cpp">
+      <Filter>Source Files\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestGLParser\OpenGEX_Parser.cpp">
+      <Filter>Source Files\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestGLParser\RegisteredGeneraters.cpp">
+      <Filter>Source Files\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestGLPersistence\MDB\Binary\Binary_Mesh.cpp">
       <Filter>Source Files\Persistence\MDB\Binary</Filter>
     </ClCompile>
-    <ClCompile Include="..\ManifestGLFramework\ManifestGLParser\OpenDDL\DDL_Buffers.cpp">
-      <Filter>Source Files\Parser\OpenDDL</Filter>
+    <ClCompile Include="ManifestGLPersistence\MDB\Manifest_Color.cpp">
+      <Filter>Source Files\Persistence\MDB</Filter>
     </ClCompile>
-    <ClCompile Include="..\ManifestGLFramework\ManifestGLParser\OpenDDL\DDL_Primitives.cpp">
-      <Filter>Source Files\Parser\OpenDDL</Filter>
+    <ClCompile Include="ManifestGLPersistence\MDB\Manifest_GeometryNode.cpp">
+      <Filter>Source Files\Persistence\MDB</Filter>
     </ClCompile>
-    <ClCompile Include="..\ManifestGLFramework\ManifestGLParser\OpenDDL\DDL_Reference.cpp">
-      <Filter>Source Files\Parser\OpenDDL</Filter>
+    <ClCompile Include="ManifestGLPersistence\MDB\Manifest_GeometryObject.cpp">
+      <Filter>Source Files\Persistence\MDB</Filter>
     </ClCompile>
-    <ClCompile Include="..\ManifestGLFramework\ManifestGLParser\OpenDDL\DDL_Structure.cpp">
-      <Filter>Source Files\Parser\OpenDDL</Filter>
+    <ClCompile Include="ManifestGLPersistence\MDB\Manifest_IndexArray.cpp">
+      <Filter>Source Files\Persistence\MDB</Filter>
     </ClCompile>
-    <ClCompile Include="..\ManifestGLFramework\ManifestGLParser\OpenGEX\GEX_Color.cpp">
-      <Filter>Source Files\Parser\OpenGEX</Filter>
+    <ClCompile Include="ManifestGLPersistence\MDB\Manifest_Material.cpp">
+      <Filter>Source Files\Persistence\MDB</Filter>
     </ClCompile>
-    <ClCompile Include="..\ManifestGLFramework\ManifestGLParser\OpenGEX\GEX_GeometryObject.cpp">
-      <Filter>Source Files\Parser\OpenGEX</Filter>
+    <ClCompile Include="ManifestGLPersistence\MDB\Manifest_Mesh.cpp">
+      <Filter>Source Files\Persistence\MDB</Filter>
     </ClCompile>
-    <ClCompile Include="..\ManifestGLFramework\ManifestGLParser\OpenGEX\GEX_Material.cpp">
-      <Filter>Source Files\Parser\OpenGEX</Filter>
+    <ClCompile Include="ManifestGLPersistence\MDB\Manifest_VertexArray.cpp">
+      <Filter>Source Files\Persistence\MDB</Filter>
     </ClCompile>
-    <ClCompile Include="..\ManifestGLFramework\ManifestGLParser\OpenGEX\GEX_Mesh.cpp">
-      <Filter>Source Files\Parser\OpenGEX</Filter>
+    <ClCompile Include="ManifestGLPersistence\BuildTool.cpp">
+      <Filter>Source Files\Persistence</Filter>
     </ClCompile>
-    <ClCompile Include="..\ManifestGLFramework\ManifestGLParser\OpenGEX\GEX_Metric.cpp">
-      <Filter>Source Files\Parser\OpenGEX</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ManifestGLFramework\ManifestGLParser\OpenGEX\GEX_Morph.cpp">
-      <Filter>Source Files\Parser\OpenGEX</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ManifestGLFramework\ManifestGLParser\OpenGEX\GEX_Name.cpp">
-      <Filter>Source Files\Parser\OpenGEX</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ManifestGLFramework\ManifestGLParser\OpenGEX\GEX_Node.cpp">
-      <Filter>Source Files\Parser\OpenGEX</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ManifestGLFramework\ManifestGLParser\OpenGEX\GEX_ObjectRef.cpp">
-      <Filter>Source Files\Parser\OpenGEX</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ManifestGLFramework\ManifestGLParser\OpenGEX\GEX_Param.cpp">
-      <Filter>Source Files\Parser\OpenGEX</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ManifestGLFramework\ManifestGLParser\OpenGEX\GEX_skin.cpp">
-      <Filter>Source Files\Parser\OpenGEX</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ManifestGLFramework\ManifestGLParser\OpenGEX\GEX_Texture.cpp">
-      <Filter>Source Files\Parser\OpenGEX</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ManifestGLFramework\ManifestGLParser\OpenGEX\GEX_Transform.cpp">
-      <Filter>Source Files\Parser\OpenGEX</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ManifestGLFramework\ManifestGLParser\FileFilter.cpp">
-      <Filter>Source Files\Parser</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ManifestGLFramework\ManifestGLParser\OpenDDL_Parser.cpp">
-      <Filter>Source Files\Parser</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ManifestGLFramework\ManifestGLParser\OpenGEX_Parser.cpp">
-      <Filter>Source Files\Parser</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ManifestGLFramework\ManifestGLParser\RegisteredGeneraters.cpp">
-      <Filter>Source Files\Parser</Filter>
+    <ClCompile Include="ManifestGLPersistence\Manifest_Database.cpp">
+      <Filter>Source Files\Persistence</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\ManifestGLFramework\ManifestGLPersistence\BuildTool.h">
-      <Filter>Header Files\Persistence</Filter>
+    <ClInclude Include="ManifestGLParser\OpenDDL\DDL_Buffers.h">
+      <Filter>Header Files\Parser\OpenDDL</Filter>
     </ClInclude>
-    <ClInclude Include="..\ManifestGLFramework\ManifestGLPersistence\Database_Flags.h">
-      <Filter>Header Files\Persistence</Filter>
+    <ClInclude Include="ManifestGLParser\OpenDDL\DDL_File.h">
+      <Filter>Header Files\Parser\OpenDDL</Filter>
     </ClInclude>
-    <ClInclude Include="..\ManifestGLFramework\ManifestGLPersistence\DatabaseTypes.h">
-      <Filter>Header Files\Persistence</Filter>
+    <ClInclude Include="ManifestGLParser\OpenDDL\DDL_Primitives.h">
+      <Filter>Header Files\Parser\OpenDDL</Filter>
     </ClInclude>
-    <ClInclude Include="..\ManifestGLFramework\ManifestGLPersistence\Manifest_Database.h">
-      <Filter>Header Files\Persistence</Filter>
+    <ClInclude Include="ManifestGLParser\OpenDDL\DDL_Reference.h">
+      <Filter>Header Files\Parser\OpenDDL</Filter>
     </ClInclude>
-    <ClInclude Include="..\ManifestGLFramework\ManifestGLPersistence\Manifest_Table.h">
-      <Filter>Header Files\Persistence</Filter>
+    <ClInclude Include="ManifestGLParser\OpenDDL\DDL_Structure.h">
+      <Filter>Header Files\Parser\OpenDDL</Filter>
     </ClInclude>
-    <ClInclude Include="..\ManifestGLFramework\ManifestGLPersistence\ResourceFlags.h">
-      <Filter>Header Files\Persistence</Filter>
+    <ClInclude Include="ManifestGLParser\OpenGEX\GEX_Bone.h">
+      <Filter>Header Files\Parser\OpenGEX</Filter>
     </ClInclude>
-    <ClInclude Include="..\ManifestGLFramework\ManifestGLPersistence\MDB\Manifest_Color.h">
-      <Filter>Header Files\Persistence\MDB</Filter>
+    <ClInclude Include="ManifestGLParser\OpenGEX\GEX_Buffers.h">
+      <Filter>Header Files\Parser\OpenGEX</Filter>
     </ClInclude>
-    <ClInclude Include="..\ManifestGLFramework\ManifestGLPersistence\MDB\Manifest_GeometryNode.h">
-      <Filter>Header Files\Persistence\MDB</Filter>
+    <ClInclude Include="ManifestGLParser\OpenGEX\GEX_Color.h">
+      <Filter>Header Files\Parser\OpenGEX</Filter>
     </ClInclude>
-    <ClInclude Include="..\ManifestGLFramework\ManifestGLPersistence\MDB\Manifest_GeometryObject.h">
-      <Filter>Header Files\Persistence\MDB</Filter>
+    <ClInclude Include="ManifestGLParser\OpenGEX\GEX_GeometryObject.h">
+      <Filter>Header Files\Parser\OpenGEX</Filter>
     </ClInclude>
-    <ClInclude Include="..\ManifestGLFramework\ManifestGLPersistence\MDB\Manifest_IndexArray.h">
-      <Filter>Header Files\Persistence\MDB</Filter>
+    <ClInclude Include="ManifestGLParser\OpenGEX\GEX_Material.h">
+      <Filter>Header Files\Parser\OpenGEX</Filter>
     </ClInclude>
-    <ClInclude Include="..\ManifestGLFramework\ManifestGLPersistence\MDB\Manifest_Material.h">
-      <Filter>Header Files\Persistence\MDB</Filter>
+    <ClInclude Include="ManifestGLParser\OpenGEX\GEX_Mesh.h">
+      <Filter>Header Files\Parser\OpenGEX</Filter>
     </ClInclude>
-    <ClInclude Include="..\ManifestGLFramework\ManifestGLPersistence\MDB\Manifest_Mesh.h">
-      <Filter>Header Files\Persistence\MDB</Filter>
+    <ClInclude Include="ManifestGLParser\OpenGEX\GEX_Metric.h">
+      <Filter>Header Files\Parser\OpenGEX</Filter>
     </ClInclude>
-    <ClInclude Include="..\ManifestGLFramework\ManifestGLPersistence\MDB\Manifest_VertexArray.h">
-      <Filter>Header Files\Persistence\MDB</Filter>
+    <ClInclude Include="ManifestGLParser\OpenGEX\GEX_Morph.h">
+      <Filter>Header Files\Parser\OpenGEX</Filter>
     </ClInclude>
-    <ClInclude Include="..\ManifestGLFramework\ManifestGLPersistence\MDB\Binary\Binary_Mesh.h">
+    <ClInclude Include="ManifestGLParser\OpenGEX\GEX_Name.h">
+      <Filter>Header Files\Parser\OpenGEX</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestGLParser\OpenGEX\GEX_Node.h">
+      <Filter>Header Files\Parser\OpenGEX</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestGLParser\OpenGEX\GEX_ObjectRef.h">
+      <Filter>Header Files\Parser\OpenGEX</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestGLParser\OpenGEX\GEX_Param.h">
+      <Filter>Header Files\Parser\OpenGEX</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestGLParser\OpenGEX\GEX_Skeleton.h">
+      <Filter>Header Files\Parser\OpenGEX</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestGLParser\OpenGEX\GEX_Skin.h">
+      <Filter>Header Files\Parser\OpenGEX</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestGLParser\OpenGEX\GEX_Texture.h">
+      <Filter>Header Files\Parser\OpenGEX</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestGLParser\OpenGEX\GEX_Transform.h">
+      <Filter>Header Files\Parser\OpenGEX</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestGLParser\DDL_ExtendedTypes.h">
+      <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestGLParser\FileFilter.h">
+      <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestGLParser\OpenDDL_Parser.h">
+      <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestGLParser\OpenGEX_Parser.h">
+      <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestGLParser\RegisteredBuilders.h">
+      <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestGLParser\RegisteredGenerators.h">
+      <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestGLPersistence\MDB\Binary\Binary_Mesh.h">
       <Filter>Header Files\Persistence\MDB\Binary</Filter>
     </ClInclude>
-    <ClInclude Include="..\ManifestGLFramework\ManifestGLParser\OpenGEX\GEX_Bone.h">
-      <Filter>Header Files\Parser\OpenGEX</Filter>
+    <ClInclude Include="ManifestGLPersistence\MDB\Manifest_Color.h">
+      <Filter>Header Files\Persistence\MDB</Filter>
     </ClInclude>
-    <ClInclude Include="..\ManifestGLFramework\ManifestGLParser\OpenGEX\GEX_Color.h">
-      <Filter>Header Files\Parser\OpenGEX</Filter>
+    <ClInclude Include="ManifestGLPersistence\MDB\Manifest_GeometryNode.h">
+      <Filter>Header Files\Persistence\MDB</Filter>
     </ClInclude>
-    <ClInclude Include="..\ManifestGLFramework\ManifestGLParser\OpenGEX\GEX_GeometryObject.h">
-      <Filter>Header Files\Parser\OpenGEX</Filter>
+    <ClInclude Include="ManifestGLPersistence\MDB\Manifest_GeometryObject.h">
+      <Filter>Header Files\Persistence\MDB</Filter>
     </ClInclude>
-    <ClInclude Include="..\ManifestGLFramework\ManifestGLParser\OpenGEX\GEX_Material.h">
-      <Filter>Header Files\Parser\OpenGEX</Filter>
+    <ClInclude Include="ManifestGLPersistence\MDB\Manifest_IndexArray.h">
+      <Filter>Header Files\Persistence\MDB</Filter>
     </ClInclude>
-    <ClInclude Include="..\ManifestGLFramework\ManifestGLParser\OpenGEX\GEX_Mesh.h">
-      <Filter>Header Files\Parser\OpenGEX</Filter>
+    <ClInclude Include="ManifestGLPersistence\MDB\Manifest_Material.h">
+      <Filter>Header Files\Persistence\MDB</Filter>
     </ClInclude>
-    <ClInclude Include="..\ManifestGLFramework\ManifestGLParser\OpenGEX\GEX_Metric.h">
-      <Filter>Header Files\Parser\OpenGEX</Filter>
+    <ClInclude Include="ManifestGLPersistence\MDB\Manifest_Mesh.h">
+      <Filter>Header Files\Persistence\MDB</Filter>
     </ClInclude>
-    <ClInclude Include="..\ManifestGLFramework\ManifestGLParser\OpenGEX\GEX_Morph.h">
-      <Filter>Header Files\Parser\OpenGEX</Filter>
+    <ClInclude Include="ManifestGLPersistence\MDB\Manifest_VertexArray.h">
+      <Filter>Header Files\Persistence\MDB</Filter>
     </ClInclude>
-    <ClInclude Include="..\ManifestGLFramework\ManifestGLParser\OpenGEX\GEX_Name.h">
-      <Filter>Header Files\Parser\OpenGEX</Filter>
+    <ClInclude Include="ManifestGLPersistence\BuildTool.h">
+      <Filter>Header Files\Persistence</Filter>
     </ClInclude>
-    <ClInclude Include="..\ManifestGLFramework\ManifestGLParser\OpenGEX\GEX_Node.h">
-      <Filter>Header Files\Parser\OpenGEX</Filter>
+    <ClInclude Include="ManifestGLPersistence\Database_Flags.h">
+      <Filter>Header Files\Persistence</Filter>
     </ClInclude>
-    <ClInclude Include="..\ManifestGLFramework\ManifestGLParser\OpenGEX\GEX_ObjectRef.h">
-      <Filter>Header Files\Parser\OpenGEX</Filter>
+    <ClInclude Include="ManifestGLPersistence\DatabaseTypes.h">
+      <Filter>Header Files\Persistence</Filter>
     </ClInclude>
-    <ClInclude Include="..\ManifestGLFramework\ManifestGLParser\OpenGEX\GEX_Param.h">
-      <Filter>Header Files\Parser\OpenGEX</Filter>
+    <ClInclude Include="ManifestGLPersistence\Manifest_Database.h">
+      <Filter>Header Files\Persistence</Filter>
     </ClInclude>
-    <ClInclude Include="..\ManifestGLFramework\ManifestGLParser\OpenGEX\GEX_Skeleton.h">
-      <Filter>Header Files\Parser\OpenGEX</Filter>
+    <ClInclude Include="ManifestGLPersistence\Manifest_Table.h">
+      <Filter>Header Files\Persistence</Filter>
     </ClInclude>
-    <ClInclude Include="..\ManifestGLFramework\ManifestGLParser\OpenGEX\GEX_Skin.h">
-      <Filter>Header Files\Parser\OpenGEX</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ManifestGLFramework\ManifestGLParser\OpenGEX\GEX_Texture.h">
-      <Filter>Header Files\Parser\OpenGEX</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ManifestGLFramework\ManifestGLParser\OpenGEX\GEX_Transform.h">
-      <Filter>Header Files\Parser\OpenGEX</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ManifestGLFramework\ManifestGLParser\OpenDDL\DDL_Buffers.h">
-      <Filter>Header Files\Parser\OpenDDL</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ManifestGLFramework\ManifestGLParser\OpenDDL\DDL_File.h">
-      <Filter>Header Files\Parser\OpenDDL</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ManifestGLFramework\ManifestGLParser\OpenDDL\DDL_Primitives.h">
-      <Filter>Header Files\Parser\OpenDDL</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ManifestGLFramework\ManifestGLParser\OpenDDL\DDL_Reference.h">
-      <Filter>Header Files\Parser\OpenDDL</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ManifestGLFramework\ManifestGLParser\OpenDDL\DDL_Structure.h">
-      <Filter>Header Files\Parser\OpenDDL</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ManifestGLFramework\ManifestGLParser\DDL_ExtendedTypes.h">
-      <Filter>Header Files\Parser</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ManifestGLFramework\ManifestGLParser\FileFilter.h">
-      <Filter>Header Files\Parser</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ManifestGLFramework\ManifestGLParser\OpenDDL_Parser.h">
-      <Filter>Header Files\Parser</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ManifestGLFramework\ManifestGLParser\OpenGEX_Parser.h">
-      <Filter>Header Files\Parser</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ManifestGLFramework\ManifestGLParser\RegisteredBuilders.h">
-      <Filter>Header Files\Parser</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ManifestGLFramework\ManifestGLParser\RegisteredGenerators.h">
-      <Filter>Header Files\Parser</Filter>
+    <ClInclude Include="ManifestGLPersistence\ResourceFlags.h">
+      <Filter>Header Files\Persistence</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

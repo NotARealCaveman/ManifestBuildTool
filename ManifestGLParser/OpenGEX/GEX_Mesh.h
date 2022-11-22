@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include <algorithm>
 
 #include <ManifestGLParser/OpenDDL/DDL_Primitives.h>
 

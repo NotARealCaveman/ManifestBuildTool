@@ -5,7 +5,7 @@
 
 namespace Manifest_Parser
 {		
-	constexpr uint32_t VECTOR_RESERVATION_SIZE = 64;
+	constexpr uint32_t  VECTOR_RESERVATION_SIZE = 64;
 
 	typedef std::string DDL_Identifier;
 	typedef std::string DDL_Name;
