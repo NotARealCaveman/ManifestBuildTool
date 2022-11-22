@@ -1,5 +1,4 @@
 #pragma once
-#include <fstream>
 
 #include <ManifestGLPersistence/MDB/Manifest_Mesh.h>
 
@@ -15,11 +14,7 @@ namespace Manifset_Persistence
 		}header;		
 		float* payload;
 	};
-	typedef BinaryTable<Binary_Mesh> BinaryMeshTable;	
-	BinaryMeshTable BuildBinaryTable(const MeshTable& meshTable, const VertexTables& vertexTables, const IndexTable& indexTable);
 	//converts a manifest database format mesh into a binary mesh to be stored in the database file
 	//returns the total size of the table entry for the binary table
-	size_t Convert_MDB(const MDB_Mesh& mesh, const VertexTables& vertexTables, const IndexTable& indexTable, Binary_Mesh& binaryMesh);	
-	void Export_Binary(const Binary_Mesh& mesh, std::ofstream& currentExport);
-	Binary_Mesh Import_Binary(std::ifstream& currentParse);
+	size_t Convert_MDB(const MDB_Mesh& mesh, const VertexTables& vertexTables, const IndexTable& indexTable, Binary_Mesh& binaryMesh);		
 }

@@ -13,7 +13,7 @@ namespace Manifset_Persistence
 	{
 		PrimaryKey geometryID = KEY_NOT_PRESENT;
 		ForeignKey meshID = KEY_NOT_PRESENT;
-		//const uint32_t morphID;		
+		ForeignKey morphID = KEY_NOT_PRESENT;
 	};
 	typedef DatabaseTable<MDB_GeometryObject> GeometryObjectTable;
 	ForeignKey TableEntry(const DDL_Structure& structure, GeometryObjectTable& geometryObjectTable, MeshTable& meshTable, VertexTables& vertexTables, IndexTable& indexTable);

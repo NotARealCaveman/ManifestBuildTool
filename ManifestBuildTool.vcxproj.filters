@@ -150,6 +150,9 @@
     <ClCompile Include="ManifestGLPersistence\Manifest_Database.cpp">
       <Filter>Source Files\Persistence</Filter>
     </ClCompile>
+    <ClCompile Include="ManifestGLPersistence\MDB\Binary\Binary_GeometryObject.cpp">
+      <Filter>Source Files\Persistence\MDB\Binary</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ManifestGLParser\OpenDDL\DDL_Buffers.h">
@@ -274,6 +277,15 @@
     </ClInclude>
     <ClInclude Include="ManifestGLPersistence\ResourceFlags.h">
       <Filter>Header Files\Persistence</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestGLPersistence\MDB\Binary\Binary_GeometryObject.h">
+      <Filter>Header Files\Persistence\MDB\Binary</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestGLPersistence\MDB\Binary\Binary_Table.h">
+      <Filter>Header Files\Persistence\MDB\Binary</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestGLPersistence\MDB\Binary\Binary_Types.h">
+      <Filter>Header Files\Persistence\MDB\Binary</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

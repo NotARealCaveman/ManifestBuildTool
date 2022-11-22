@@ -2,6 +2,7 @@
 
 using namespace Manifset_Persistence;
 
+/*
 BinaryMeshTable Manifset_Persistence::BuildBinaryTable(const MeshTable& meshTable, const VertexTables& vertexTables, const IndexTable& indexTable)
 {
 	BinaryMeshTable result;		
@@ -10,6 +11,7 @@ BinaryMeshTable Manifset_Persistence::BuildBinaryTable(const MeshTable& meshTabl
 		result.header.dynamicTableSize += Convert_MDB(meshTable.entries[entry], vertexTables, indexTable, result.entries[entry]);
 	return result;
 }	
+*/
 
 size_t Manifset_Persistence::Convert_MDB(const MDB_Mesh& mesh, const VertexTables& vertexTables, const IndexTable& indexTable, Binary_Mesh& binaryMesh)
 {	
@@ -107,20 +109,5 @@ size_t Manifset_Persistence::Convert_MDB(const MDB_Mesh& mesh, const VertexTable
 			memcpy(&binaryMesh.payload[baseOffset + attributeOffset], &tempBitangents[bufferIndex * 3], sizeof(float) * 3);
 	}
 	
-	return sizeof(Binary_Mesh) + binaryMesh.header.payloadSize;
-}
-
-void Manifset_Persistence::Export_Binary(const Binary_Mesh& mesh, std::ofstream& currentExport)
-{
-	currentExport.write(reinterpret_cast<const char*>(&mesh.header), sizeof(mesh.header));
-	currentExport.write(reinterpret_cast<const char*>(mesh.payload), mesh.header.payloadSize);
-}
-
-Binary_Mesh Manifset_Persistence::Import_Binary(std::ifstream& currentImport)
-{
-	Binary_Mesh mesh;
-	currentImport.read(reinterpret_cast<char*>(&mesh.header), sizeof(mesh.header));
-	mesh.payload = reinterpret_cast<float*>(malloc(mesh.header.payloadSize));
-	currentImport.read(reinterpret_cast<char*>(mesh.payload), mesh.header.payloadSize);
-	return mesh;
+	return EntrySize(binaryMesh);
 }
