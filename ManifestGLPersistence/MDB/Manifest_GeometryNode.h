@@ -12,7 +12,7 @@ namespace Manifset_Persistence
 	struct MDB_ObjectRef
 	{
 		PrimaryKey objectRefID = KEY_NOT_PRESENT;
-		ForeignKey* geometryObjectIDs = BUFFER_NOT_PRESENT;
+		ForeignKey* geometryIDs = BUFFER_NOT_PRESENT;
 		size_t numReferences = 0;
 	};
 	typedef DatabaseTable<MDB_ObjectRef> ObjectRefTable;

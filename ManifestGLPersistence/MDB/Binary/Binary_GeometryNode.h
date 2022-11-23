@@ -8,12 +8,12 @@ namespace Manifset_Persistence
 	{
 		struct Entry_Header
 		{
-			size_t	payloadSize;
-			ForeignKey objectRefID;
-			ForeignKey materialRefID;
+			size_t	payloadSize{0};
+			ForeignKey geometryID;
+			ForeignKey materialID;
 			
 		}header;
-		void* payload;//transform if present
+		void* payload;//represents a transform if present
 	};	
-	size_t Convert_MDB(const MDB_GeometryNode& geometryNode, Binary_GeometryNode& binaryGeometryNode);
+	size_t Convert_MDB(const MDB_GeometryNode& geometryNode,const ObjectRefTable& objectRefTable, const MaterialRefTable& materialRefTable, Binary_GeometryNode& binaryGeometryNode);
 }

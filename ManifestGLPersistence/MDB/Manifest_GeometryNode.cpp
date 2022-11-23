@@ -9,14 +9,14 @@ ForeignKey Manifset_Persistence::TableEntry(const DDL_Structure& structure, cons
 	objectRefTable.mappedEntryKeys.insert({ structure.name,entry.objectRefID });
 	const GEX_ObjectRef& ref{ HeapData<GEX_ObjectRef>(structure) };
 	entry.numReferences = ref.referenceNames.size();
-	entry.geometryObjectIDs = new ForeignKey[entry.numReferences];	
+	entry.geometryIDs = new ForeignKey[entry.numReferences];	
 	for (auto objectIndex = 0; objectIndex < entry.numReferences; ++objectIndex)
 	{
 		auto objectRef = geometryObjectTable.mappedEntryKeys.find(ref.referenceNames[objectIndex]);
 		if (objectRef != geometryObjectTable.mappedEntryKeys.end())
-			entry.geometryObjectIDs[objectIndex] = objectRef->second;
+			entry.geometryIDs[objectIndex] = objectRef->second;
 		else
-			entry.geometryObjectIDs[objectIndex] = KEY_NOT_PRESENT;
+			entry.geometryIDs[objectIndex] = KEY_NOT_PRESENT;
 	}
 
 	return entry.objectRefID;

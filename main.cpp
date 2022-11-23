@@ -26,7 +26,7 @@ int main()
 	//export conversion
 	const BinaryMeshTable exportTable{ BuildBinaryTable<Binary_Mesh,MeshTable,VertexTables,IndexTable>(database.meshTable,database.vertexTables,database.indexTable) };
 	const BinaryGeometryObjectTable exportTable2{ BuildBinaryTable<Binary_GeometryObject,GeometryObjectTable>(database.geometryObjectTable) };
-	const BinaryGeometryNodeTable exportTable3{ BuildBinaryTable<Binary_GeometryNode,GeometryNodeTable>(database.geometryNodeTable)};
+	const BinaryGeometryNodeTable exportTable3{ BuildBinaryTable<Binary_GeometryNode,GeometryNodeTable,ObjectRefTable,MaterialRefTable>(database.geometryNodeTable,database.objectRefTable,database.materialRefTable)};
 	//export
 	std::ofstream bExport{ "C:\\Users\\Droll\\Desktop\\Game\\testoimng\\TEST.mdb", std::ios::out | std::ios::binary };
 	if (bExport.is_open())
@@ -50,10 +50,10 @@ int main()
 	}
 	//DISABLE
 	{
-		for (auto i = 0; i < importTable.header.totalEntries; ++i)
+		for (auto i = 0; i < importTable3.header.totalEntries; ++i)
 		{
 			auto importObject = importTable3[i];
-			auto importGeometry = importTable2[importObject->header.objectRefID];
+			auto importGeometry = importTable2[importObject->header.geometryID];
 			auto importMesh = importTable[importGeometry->header.meshID];
 			DLOG(37, "Reading from file:" << i );
 			DLOG(33, "Mesh Stride:" << importMesh->header.vboStride << " AttributeCode: " << +importMesh->header.activeArrayAttributes << " Vertex Buffer Size: " << importMesh->header.payloadSize << " bytes Vertex Buffer Elements: " << importMesh->header.payloadSize / sizeof(float));

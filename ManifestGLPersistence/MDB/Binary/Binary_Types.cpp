@@ -13,13 +13,16 @@ size_t Manifset_Persistence::Convert_MDB(const MDB_GeometryObject& geometryObjec
 }
 
 //GeometryNode
-size_t Manifset_Persistence::Convert_MDB(const MDB_GeometryNode& geometryNode, Binary_GeometryNode& binaryGeometryNode)
+size_t Manifset_Persistence::Convert_MDB(const MDB_GeometryNode& geometryNode, const ObjectRefTable& objectRefTable, const MaterialRefTable& materialRefTable, Binary_GeometryNode& binaryGeometryNode)
 {		
-	binaryGeometryNode.header.objectRefID = geometryNode.objectRefID;
-	binaryGeometryNode.header.materialRefID = geometryNode.materialRefID;	
-	binaryGeometryNode.header.payloadSize = geometryNode.transform == BUFFER_NOT_PRESENT ? 0 : TransformSize;
-	binaryGeometryNode.payload = new float[TransformSize];
-	memcpy(binaryGeometryNode.payload, geometryNode.transform, sizeof(float) * TransformSize);
+	binaryGeometryNode.header.geometryID = *objectRefTable.entries[geometryNode.objectRefID].geometryIDs;
+	binaryGeometryNode.header.materialID = *materialRefTable.entries[geometryNode.materialRefID].materialIDs;	
+	if (geometryNode.transform != BUFFER_NOT_PRESENT)
+	{
+		binaryGeometryNode.header.payloadSize =  TransformSize;
+		binaryGeometryNode.payload = new float[TransformSize];
+		memcpy(binaryGeometryNode.payload, geometryNode.transform, sizeof(float) * TransformSize);
+	}
 	return EntrySize(binaryGeometryNode);
 };
 
