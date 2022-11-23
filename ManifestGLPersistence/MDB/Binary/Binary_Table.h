@@ -3,9 +3,10 @@
 
 #include "Binary_Mesh.h"
 #include "Binary_GeometryObject.h"
+#include "Binary_GeometryNode.h"
 
 namespace Manifset_Persistence
-{
+{	
 	//total table size is sz(Header)+sz(Entries),
 	//where Entries = n*sz(entry)+i:[0,n]Σsz(entry:Payload[i])		
 	template<typename Binary_TableType>

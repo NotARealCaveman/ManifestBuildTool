@@ -13,7 +13,7 @@ namespace Manifest_Parser
 		transform3x3,				//9, upper 3x3
 		transform2x3, transform2x2	//6 2x2 + w translation,4 2x2 + no w translation
 	};
-
+	static constexpr size_t TransformSize = 16;
 	struct GEX_Transform : public RegisteredBuilder
 	{
 		struct PropertyList {

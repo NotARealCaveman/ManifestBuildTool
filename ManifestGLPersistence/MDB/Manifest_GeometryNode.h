@@ -2,7 +2,6 @@
 
 #include <ManifestGLPersistence/Manifest_Table.h>
 
-#include "Manifest_GeometryObject.h"
 #include "Manifest_Material.h"
 #include "Manifest_GeometryObject.h"
 
@@ -31,7 +30,7 @@ namespace Manifset_Persistence
 	
 	
 	//every transform will end up being 16 characters - this acts as a conversion type between gex transforms to mdb transforms
-	struct MDB_Transform { float field[16]{}; };
+	struct MDB_Transform { float field[TransformSize]; };
 
 	struct MDB_GeometryNode
 	{

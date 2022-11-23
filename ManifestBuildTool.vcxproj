@@ -162,8 +162,7 @@
     <ClCompile Include="ManifestGLParser\RegisteredGeneraters.cpp" />
     <ClCompile Include="ManifestGLPersistence\BuildTool.cpp" />
     <ClCompile Include="ManifestGLPersistence\Manifest_Database.cpp" />
-    <ClCompile Include="ManifestGLPersistence\MDB\Binary\Binary_GeometryObject.cpp" />
-    <ClCompile Include="ManifestGLPersistence\MDB\Binary\Binary_Mesh.cpp" />
+    <ClCompile Include="ManifestGLPersistence\MDB\Binary\Binary_Types.cpp" />
     <ClCompile Include="ManifestGLPersistence\MDB\Manifest_Color.cpp" />
     <ClCompile Include="ManifestGLPersistence\MDB\Manifest_GeometryNode.cpp" />
     <ClCompile Include="ManifestGLPersistence\MDB\Manifest_GeometryObject.cpp" />
@@ -205,6 +204,7 @@
     <ClInclude Include="ManifestGLPersistence\Database_Flags.h" />
     <ClInclude Include="ManifestGLPersistence\Manifest_Database.h" />
     <ClInclude Include="ManifestGLPersistence\Manifest_Table.h" />
+    <ClInclude Include="ManifestGLPersistence\MDB\Binary\Binary_GeometryNode.h" />
     <ClInclude Include="ManifestGLPersistence\MDB\Binary\Binary_GeometryObject.h" />
     <ClInclude Include="ManifestGLPersistence\MDB\Binary\Binary_Mesh.h" />
     <ClInclude Include="ManifestGLPersistence\MDB\Binary\Binary_Table.h" />

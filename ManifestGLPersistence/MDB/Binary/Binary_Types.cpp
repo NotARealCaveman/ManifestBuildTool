@@ -1,22 +1,44 @@
-#include "Binary_Mesh.h"
+#include "Binary_Types.h"
 
-using namespace Manifset_Persistence;
+//Convert_MDB takes its resepective MDB_* datastructure and converts it into the binary format that will be stored as database records. these records and their respective tables are then exported to a .mdb(Manifest Database Binary) file which may be imported by the runtimem database program
 
+
+//GeometryObject
+size_t Manifset_Persistence::Convert_MDB(const MDB_GeometryObject& geometryObject, Binary_GeometryObject& binaryGeometryObject)
+{
+	binaryGeometryObject.header.payloadSize = 0;
+	binaryGeometryObject.header.meshID = geometryObject.meshID;
+	binaryGeometryObject.header.morphID = geometryObject.morphID;
+	return EntrySize(binaryGeometryObject);
+}
+
+//GeometryNode
+size_t Manifset_Persistence::Convert_MDB(const MDB_GeometryNode& geometryNode, Binary_GeometryNode& binaryGeometryNode)
+{		
+	binaryGeometryNode.header.objectRefID = geometryNode.objectRefID;
+	binaryGeometryNode.header.materialRefID = geometryNode.materialRefID;	
+	binaryGeometryNode.header.payloadSize = geometryNode.transform == BUFFER_NOT_PRESENT ? 0 : TransformSize;
+	binaryGeometryNode.payload = new float[TransformSize];
+	memcpy(binaryGeometryNode.payload, geometryNode.transform, sizeof(float) * TransformSize);
+	return EntrySize(binaryGeometryNode);
+};
+
+//Mesh
 size_t Manifset_Persistence::Convert_MDB(const MDB_Mesh& mesh, const VertexTables& vertexTables, const IndexTable& indexTable, Binary_Mesh& binaryMesh)
-{	
-	const auto& vertexTableIndices = mesh.vertexArrayIDs;			
+{
+	const auto& vertexTableIndices = mesh.vertexArrayIDs;
 	///store vertex information
 	//vertices
-	const MDB_VertexArray* vertices = nullptr;	
+	const MDB_VertexArray* vertices = nullptr;
 	std::vector<float> tempVertices;
 	if (vertexTableIndices.vertexID != KEY_NOT_PRESENT)
 	{
 		vertices = &vertexTables.vertexTable.entries[vertexTableIndices.vertexID];
 		tempVertices.resize(vertices->elements);
-		memcpy(tempVertices.data(), vertices->vertexData, sizeof(float) * vertices->elements);		
+		memcpy(tempVertices.data(), vertices->vertexData, sizeof(float) * vertices->elements);
 		binaryMesh.header.payloadSize += vertices->elements;
 		binaryMesh.header.vboStride += 3;
-		binaryMesh.header.activeArrayAttributes |= (1<<0);
+		binaryMesh.header.activeArrayAttributes |= (1 << 0);
 	}
 	//uvs
 	const MDB_VertexArray* uvs = nullptr;
@@ -72,7 +94,7 @@ size_t Manifset_Persistence::Convert_MDB(const MDB_Mesh& mesh, const VertexTable
 	binaryMesh.header.payloadSize += nIndices;
 	binaryMesh.payload = new float[binaryMesh.header.payloadSize];//reserves enough memory for each float	
 	//interleave buffer data
-	for (auto bufferIndex = 0; bufferIndex < vertices->elements/3; ++bufferIndex)
+	for (auto bufferIndex = 0; bufferIndex < vertices->elements / 3; ++bufferIndex)
 	{
 		auto baseOffset{ bufferIndex * binaryMesh.header.vboStride };
 		auto attributeOffset{ 0 };
@@ -96,16 +118,16 @@ size_t Manifset_Persistence::Convert_MDB(const MDB_Mesh& mesh, const VertexTable
 			memcpy(&binaryMesh.payload[baseOffset + attributeOffset], &tempTangents[bufferIndex * 3], sizeof(float) * 3);
 			attributeOffset += 3;
 		}
-		if (bitangents)		
+		if (bitangents)
 			memcpy(&binaryMesh.payload[baseOffset + attributeOffset], &tempBitangents[bufferIndex * 3], sizeof(float) * 3);
-	}	
+	}
 	//store index information
 	auto indexOffset = (binaryMesh.header.payloadSize - nIndices);
 	memcpy(&binaryMesh.payload[indexOffset], indices.indexData, sizeof(uint32_t) * nIndices);
 	binaryMesh.header.eboOffset = indexOffset * sizeof(float);
 	//convert to total bytes
 	binaryMesh.header.payloadSize *= sizeof(float);
-	
-	
+
+
 	return EntrySize(binaryMesh);
 }
