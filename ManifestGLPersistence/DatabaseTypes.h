@@ -2,7 +2,7 @@
 #include "Database_Flags.h"
 
 
-namespace Manifset_Persistence
+namespace Manifest_Persistence
 {
 	typedef uint64_t PrimaryKey;//main identifier of structure table
 	typedef uint64_t ForeignKey;//main idenfitier of relational structure table

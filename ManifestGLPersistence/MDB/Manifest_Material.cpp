@@ -1,8 +1,8 @@
 #include "Manifest_Material.h"
 
-using namespace Manifset_Persistence;
+using namespace Manifest_Persistence;
 
-ForeignKey Manifset_Persistence::TableEntry(const DDL_Structure& structure, MaterialTable& materialTable, ColorTable& colorTable)
+ForeignKey Manifest_Persistence::TableEntry(const DDL_Structure& structure, MaterialTable& materialTable, ColorTable& colorTable)
 {	
 	MDB_Material& entry = materialTable.entries.emplace_back();
 	entry.materialID = materialTable.nextTableIndex++; 

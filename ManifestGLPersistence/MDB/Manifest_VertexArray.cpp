@@ -1,8 +1,8 @@
 #include "Manifest_VertexArray.h"
 
-using namespace Manifset_Persistence;
+using namespace Manifest_Persistence;
 
-ForeignKey Manifset_Persistence::TableEntry(const DDL_Structure& structure, VertexArrayTable& vertexArrayTable)
+ForeignKey Manifest_Persistence::TableEntry(const DDL_Structure& structure, VertexArrayTable& vertexArrayTable)
 {	
 	MDB_VertexArray& entry = vertexArrayTable.entries.emplace_back();
 	entry.vertexArrayID = vertexArrayTable.nextTableIndex++;

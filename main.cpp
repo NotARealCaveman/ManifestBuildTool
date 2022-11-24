@@ -6,7 +6,7 @@
 #include <ManifestGLPersistence/MDB/Binary/Binary_Types.h>
 
 using namespace Manifest_Parser;
-using namespace Manifset_Persistence;
+using namespace Manifest_Persistence;
 
 int main()
 {	
@@ -20,9 +20,9 @@ int main()
 
 	ParseDDLFile("", fileObject);
 
-	//build database
-	ManifestDatabase database;
-	BuildDatabase(fileObject, database);
+	//build offline database
+	ManifestOfflineDatabase database;
+	BuildOfflineDatabase(fileObject, database);
 	//export conversion
 	const BinaryMeshTable exportTable{ BuildBinaryTable<Binary_Mesh,MeshTable,VertexTables,IndexTable>(database.meshTable,database.vertexTables,database.indexTable) };
 	const BinaryGeometryObjectTable exportTable2{ BuildBinaryTable<Binary_GeometryObject,GeometryObjectTable>(database.geometryObjectTable) };

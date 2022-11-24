@@ -5,7 +5,7 @@
 #include "Manifest_VertexArray.h"
 #include "Manifest_IndexArray.h"
 
-namespace Manifset_Persistence
+namespace Manifest_Persistence
 {
 	
 	struct MDB_Mesh

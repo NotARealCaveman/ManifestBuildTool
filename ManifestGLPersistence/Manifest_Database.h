@@ -1,10 +1,10 @@
 #pragma once
-#include <ManifestGLPersistence/MDB/Manifest_GeometryNode.h>
 
-namespace Manifset_Persistence
+#include <ManifestGLPersistence/MDB/Binary/Binary_Types.h>
+
+namespace Manifest_Persistence
 {
-
-	struct ManifestDatabase
+	struct ManifestOfflineDatabase
 	{
 		GeometryObjectTable geometryObjectTable;
 		MeshTable meshTable;
@@ -17,4 +17,13 @@ namespace Manifset_Persistence
 		MaterialSwitchTable materialSwitchTable;
 		ColorTable colorTable;
 	};	
+
+	void ExportOfflineDatabase(const ManifestOfflineDatabase& database);
+
+	struct ManifestRuntimeDatabase
+	{
+		BinaryGeometryNodeTable binaryGeometryNodeTable;
+		BinaryGeometryObjectTable binaryGeometryObjectTable;
+		BinaryMeshTable binaryMeshTable;
+	};
 }

@@ -1,8 +1,8 @@
 #include "Manifest_IndexArray.h"
 
-using namespace Manifset_Persistence;
+using namespace Manifest_Persistence;
 
-ForeignKey Manifset_Persistence::TableEntry(const DDL_Structure& structure, IndexTable& indexTable)
+ForeignKey Manifest_Persistence::TableEntry(const DDL_Structure& structure, IndexTable& indexTable)
 {	
 	MDB_IndexArray& entry = indexTable.entries.emplace_back();
 	entry.indexArrayID = indexTable.nextTableIndex++; 

@@ -1,8 +1,8 @@
 #include "Manifest_GeometryObject.h"
 
-using namespace Manifset_Persistence;
+using namespace Manifest_Persistence;
 
-ForeignKey Manifset_Persistence::TableEntry(const DDL_Structure& structure, GeometryObjectTable& geometryObjectTable, MeshTable& meshTable, VertexTables& vertexTables, IndexTable& indexTable)
+ForeignKey Manifest_Persistence::TableEntry(const DDL_Structure& structure, GeometryObjectTable& geometryObjectTable, MeshTable& meshTable, VertexTables& vertexTables, IndexTable& indexTable)
 {		
 	MDB_GeometryObject& entry = geometryObjectTable.entries.emplace_back();
 	entry.geometryID = geometryObjectTable.nextTableIndex++;

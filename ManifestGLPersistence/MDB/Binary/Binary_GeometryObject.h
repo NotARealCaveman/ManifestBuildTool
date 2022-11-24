@@ -2,7 +2,7 @@
 
 #include <ManifestGLPersistence/MDB/Manifest_GeometryObject.h>
 
-namespace Manifset_Persistence
+namespace Manifest_Persistence
 {
 	struct Binary_GeometryObject
 	{

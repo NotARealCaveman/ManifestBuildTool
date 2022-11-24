@@ -1,8 +1,8 @@
 #include "Manifest_Mesh.h"
 
-using namespace Manifset_Persistence;
+using namespace Manifest_Persistence;
 
-ForeignKey Manifset_Persistence::TableEntry(const DDL_Structure& structure, MeshTable& meshTable, VertexTables& vertexTables, IndexTable& indexTable)
+ForeignKey Manifest_Persistence::TableEntry(const DDL_Structure& structure, MeshTable& meshTable, VertexTables& vertexTables, IndexTable& indexTable)
 {	
 	MDB_Mesh& entry = meshTable.entries.emplace_back();
 	entry.meshID = meshTable.nextTableIndex++; 

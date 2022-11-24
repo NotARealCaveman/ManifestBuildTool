@@ -1,8 +1,8 @@
 #include "Manifest_Color.h"
 
-using namespace Manifset_Persistence;
+using namespace Manifest_Persistence;
 
-ForeignKey Manifset_Persistence::TableEntry(const DDL_Structure& structure, ColorTable& colorTable)
+ForeignKey Manifest_Persistence::TableEntry(const DDL_Structure& structure, ColorTable& colorTable)
 {	
 	MDB_Color& entry = colorTable.entries.emplace_back();
 	entry.colorID = colorTable.nextTableIndex++;

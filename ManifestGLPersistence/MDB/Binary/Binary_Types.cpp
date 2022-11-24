@@ -1,10 +1,10 @@
 #include "Binary_Types.h"
 
 //Convert_MDB takes its resepective MDB_* datastructure and converts it into the binary format that will be stored as database records. these records and their respective tables are then exported to a .mdb(Manifest Database Binary) file which may be imported by the runtimem database program
-
+using namespace Manifest_Persistence;
 
 //GeometryObject
-size_t Manifset_Persistence::Convert_MDB(const MDB_GeometryObject& geometryObject, Binary_GeometryObject& binaryGeometryObject)
+size_t Manifest_Persistence::Convert_MDB(const MDB_GeometryObject& geometryObject, Binary_GeometryObject& binaryGeometryObject)
 {
 	binaryGeometryObject.header.payloadSize = 0;
 	binaryGeometryObject.header.meshID = geometryObject.meshID;
@@ -13,7 +13,7 @@ size_t Manifset_Persistence::Convert_MDB(const MDB_GeometryObject& geometryObjec
 }
 
 //GeometryNode
-size_t Manifset_Persistence::Convert_MDB(const MDB_GeometryNode& geometryNode, const ObjectRefTable& objectRefTable, const MaterialRefTable& materialRefTable, Binary_GeometryNode& binaryGeometryNode)
+size_t Manifest_Persistence::Convert_MDB(const MDB_GeometryNode& geometryNode, const ObjectRefTable& objectRefTable, const MaterialRefTable& materialRefTable, Binary_GeometryNode& binaryGeometryNode)
 {		
 	binaryGeometryNode.header.geometryID = *objectRefTable.entries[geometryNode.objectRefID].geometryIDs;
 	binaryGeometryNode.header.materialID = *materialRefTable.entries[geometryNode.materialRefID].materialIDs;	
@@ -27,7 +27,7 @@ size_t Manifset_Persistence::Convert_MDB(const MDB_GeometryNode& geometryNode, c
 };
 
 //Mesh
-size_t Manifset_Persistence::Convert_MDB(const MDB_Mesh& mesh, const VertexTables& vertexTables, const IndexTable& indexTable, Binary_Mesh& binaryMesh)
+size_t Manifest_Persistence::Convert_MDB(const MDB_Mesh& mesh, const VertexTables& vertexTables, const IndexTable& indexTable, Binary_Mesh& binaryMesh)
 {
 	const auto& vertexTableIndices = mesh.vertexArrayIDs;
 	///store vertex information

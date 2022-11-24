@@ -5,7 +5,7 @@
 
 #include <ManifestGLPersistence/DatabaseTypes.h>
 
-namespace Manifset_Persistence
+namespace Manifest_Persistence
 {	
 	template<typename MDB_TableType>
 	struct DatabaseTable

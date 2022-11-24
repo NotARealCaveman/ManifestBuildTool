@@ -5,7 +5,7 @@
 #include "Binary_GeometryObject.h"
 #include "Binary_GeometryNode.h"
 
-namespace Manifset_Persistence
+namespace Manifest_Persistence
 {	
 	//total table size is sz(Header)+sz(Entries),
 	//where Entries = n*sz(entry)+i:[0,n]Σsz(entry:Payload[i])		

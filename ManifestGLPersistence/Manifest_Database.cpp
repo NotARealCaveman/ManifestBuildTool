@@ -1,6 +1,9 @@
 #include "Manifest_Database.h"
 
-using namespace Manifset_Persistence;
+using namespace Manifest_Persistence;
 
 
+void Manifest_Persistence::ExportOfflineDatabase(const ManifestOfflineDatabase& database)
+{
 
+}

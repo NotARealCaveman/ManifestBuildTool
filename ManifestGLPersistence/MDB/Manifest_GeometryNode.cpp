@@ -1,8 +1,8 @@
 #include "Manifest_GeometryNode.h"
 
-using namespace Manifset_Persistence;
+using namespace Manifest_Persistence;
 
-ForeignKey Manifset_Persistence::TableEntry(const DDL_Structure& structure, const GeometryObjectTable& geometryObjectTable, ObjectRefTable& objectRefTable)
+ForeignKey Manifest_Persistence::TableEntry(const DDL_Structure& structure, const GeometryObjectTable& geometryObjectTable, ObjectRefTable& objectRefTable)
 {
 	MDB_ObjectRef& entry = objectRefTable.entries.emplace_back();
 	entry.objectRefID = objectRefTable.nextTableIndex++;
@@ -22,7 +22,7 @@ ForeignKey Manifset_Persistence::TableEntry(const DDL_Structure& structure, cons
 	return entry.objectRefID;
 }
 
-ForeignKey Manifset_Persistence::TableEntry(const DDL_Structure& structure, const MaterialTable& materialTable, MaterialRefTable& materialRefTable)
+ForeignKey Manifest_Persistence::TableEntry(const DDL_Structure& structure, const MaterialTable& materialTable, MaterialRefTable& materialRefTable)
 {	
 	MDB_MaterialRef& entry = materialRefTable.entries.emplace_back();
 	entry.materialRefID = materialRefTable.nextTableIndex++;
@@ -41,7 +41,7 @@ ForeignKey Manifset_Persistence::TableEntry(const DDL_Structure& structure, cons
 
 	return entry.materialRefID;
 }
-ForeignKey Manifset_Persistence::TableEntry(const DDL_Structure& structure, const GeometryObjectTable& geometryObjectTable, const MaterialTable& materialTable, GeometryNodeTable& geometryNodeTable, ObjectRefTable& objectRefTable, MaterialRefTable& materialRefTable)
+ForeignKey Manifest_Persistence::TableEntry(const DDL_Structure& structure, const GeometryObjectTable& geometryObjectTable, const MaterialTable& materialTable, GeometryNodeTable& geometryNodeTable, ObjectRefTable& objectRefTable, MaterialRefTable& materialRefTable)
 {
 	MDB_GeometryNode& entry = geometryNodeTable.entries.emplace_back();
 	entry.nodeID = geometryNodeTable.nextTableIndex++;

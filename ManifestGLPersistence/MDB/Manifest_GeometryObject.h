@@ -7,7 +7,7 @@
 
 using namespace Manifest_Parser;
 
-namespace Manifset_Persistence
+namespace Manifest_Persistence
 {
 	struct MDB_GeometryObject
 	{

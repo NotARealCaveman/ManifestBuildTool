@@ -1,8 +1,8 @@
 #include "BuildTool.h"
 
-using namespace Manifset_Persistence;
+using namespace Manifest_Persistence;
 
-void Manifset_Persistence::BuildDatabase(const DDL_File& file, ManifestDatabase& database)
+void Manifest_Persistence::BuildOfflineDatabase(const DDL_File& file, ManifestOfflineDatabase& database)
 {		
 	std::vector<DDL_Structure> geometryObjects;
 	std::vector<DDL_Structure> materials;

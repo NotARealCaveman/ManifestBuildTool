@@ -6,7 +6,7 @@
 
 using namespace Manifest_Parser;
 
-namespace Manifset_Persistence
+namespace Manifest_Persistence
 {	
-	void BuildDatabase(const DDL_File& file, ManifestDatabase& database);
+	void BuildOfflineDatabase(const DDL_File& file, ManifestOfflineDatabase& database);
 }
