@@ -16,6 +16,7 @@ void Manifest_Persistence::ExportRuntimeDatabase(const ManifestDatabaseBuild& da
 	//export binary tables to file
 	//TODO: settle on table ordering as ideally the entire table will be loaded into memory and a file header will be parsed to build the various table entrie payloads
 	ExportBinaryTable(exportDatabase.binaryMeshTable, exportFile);
+	ExportBinaryTable(exportDatabase.binaryTextureTable, exportFile);
 	ExportBinaryTable(exportDatabase.binaryGeometryObjectTable, exportFile);
 	ExportBinaryTable(exportDatabase.binaryGeometryNodeTable, exportFile);
 }
