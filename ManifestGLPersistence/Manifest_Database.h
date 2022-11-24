@@ -15,7 +15,7 @@ namespace Manifest_Persistence
 		MaterialRefTable materialRefTable;
 		MaterialTable materialTable;
 		MaterialSwitchTable materialSwitchTable;
-		ColorTable colorTable;
+		TextureTable textureTable;
 	};	
 
 	void ExportRuntimeDatabase(const ManifestDatabaseBuild& databaseBuild, std::ofstream& exportFile);
@@ -27,9 +27,9 @@ namespace Manifest_Persistence
 		ManifestRuntimeDatabase(ManifestRuntimeDatabase&& other);		
 				
 		BinaryMeshTable binaryMeshTable;		
+		BinaryTextureTable binaryTextureTable;
 		BinaryGeometryObjectTable binaryGeometryObjectTable;
-		BinaryGeometryNodeTable binaryGeometryNodeTable;
-		~ManifestRuntimeDatabase() { DLOG(31, "database destruct:" << this); }
+		BinaryGeometryNodeTable binaryGeometryNodeTable;		
 	};
 
 	ManifestRuntimeDatabase ImportRuntimeDatabase(std::ifstream& importFile);

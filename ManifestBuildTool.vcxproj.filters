@@ -120,7 +120,7 @@
     <ClCompile Include="ManifestGLParser\RegisteredGeneraters.cpp">
       <Filter>Source Files\Parser</Filter>
     </ClCompile>
-    <ClCompile Include="ManifestGLPersistence\MDB\Manifest_Color.cpp">
+    <ClCompile Include="ManifestGLPersistence\MDB\Manifest_Texture.cpp">
       <Filter>Source Files\Persistence\MDB</Filter>
     </ClCompile>
     <ClCompile Include="ManifestGLPersistence\MDB\Manifest_GeometryNode.cpp">
@@ -236,7 +236,7 @@
     <ClInclude Include="ManifestGLPersistence\MDB\Binary\Binary_Mesh.h">
       <Filter>Header Files\Persistence\MDB\Binary</Filter>
     </ClInclude>
-    <ClInclude Include="ManifestGLPersistence\MDB\Manifest_Color.h">
+    <ClInclude Include="ManifestGLPersistence\MDB\Manifest_Texture.h">
       <Filter>Header Files\Persistence\MDB</Filter>
     </ClInclude>
     <ClInclude Include="ManifestGLPersistence\MDB\Manifest_GeometryNode.h">
@@ -285,6 +285,9 @@
       <Filter>Header Files\Persistence\MDB\Binary</Filter>
     </ClInclude>
     <ClInclude Include="ManifestGLPersistence\MDB\Binary\Binary_GeometryNode.h">
+      <Filter>Header Files\Persistence\MDB\Binary</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestGLPersistence\MDB\Binary\Binary_Texture.h">
       <Filter>Header Files\Persistence\MDB\Binary</Filter>
     </ClInclude>
   </ItemGroup>

@@ -33,7 +33,7 @@ void Manifest_Persistence::BuildOfflineDatabase(const DDL_File& file, ManifestDa
 	for (const auto& geometryObject : geometryObjects)
 		TableEntry(geometryObject, database.geometryObjectTable, database.meshTable, database.vertexTables, database.indexTable);
 	for (const auto& material : materials)
-		TableEntry(material, database.materialTable, database.colorTable);
+		TableEntry(material, database.materialTable, database.textureTable);
 	for (const auto& geometryNode : geometryNodes)
 		TableEntry(geometryNode, database.geometryObjectTable, database.materialTable, database.geometryNodeTable, database.objectRefTable, database.materialRefTable);
 }

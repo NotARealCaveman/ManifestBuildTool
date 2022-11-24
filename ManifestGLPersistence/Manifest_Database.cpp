@@ -10,6 +10,7 @@ void Manifest_Persistence::ExportRuntimeDatabase(const ManifestDatabaseBuild& da
 	//convert mdbs into binary records
 	ManifestRuntimeDatabase exportDatabase;
 	exportDatabase.binaryMeshTable =  BinaryTableConversion<Binary_Mesh, MeshTable, VertexTables, IndexTable>(databaseBuild.meshTable, databaseBuild.vertexTables, databaseBuild.indexTable) ;
+	exportDatabase.binaryTextureTable = BinaryTableConversion<Binary_Texture, TextureTable>(databaseBuild.textureTable);
 	exportDatabase.binaryGeometryObjectTable = BinaryTableConversion<Binary_GeometryObject, GeometryObjectTable>(databaseBuild.geometryObjectTable);
 	exportDatabase.binaryGeometryNodeTable = BinaryTableConversion<Binary_GeometryNode, GeometryNodeTable, ObjectRefTable, MaterialRefTable>(databaseBuild.geometryNodeTable, databaseBuild.objectRefTable, databaseBuild.materialRefTable);
 	//export binary tables to file
@@ -25,6 +26,7 @@ ManifestRuntimeDatabase Manifest_Persistence::ImportRuntimeDatabase(std::ifstrea
 	ManifestRuntimeDatabase result;
 
 	result.binaryMeshTable = ImportBinaryTable<Binary_Mesh>(importFile);	
+	result.binaryTextureTable = ImportBinaryTable<Binary_Texture>(importFile);
 	result.binaryGeometryObjectTable = ImportBinaryTable<Binary_GeometryObject>(importFile);
 	result.binaryGeometryNodeTable = ImportBinaryTable<Binary_GeometryNode>(importFile);
 

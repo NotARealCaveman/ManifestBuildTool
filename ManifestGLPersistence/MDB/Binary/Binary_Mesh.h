@@ -15,7 +15,6 @@ namespace Manifest_Persistence
 		}header;		
 		float* payload;
 	};
-	//converts a manifest database format mesh into a binary mesh to be stored in the database file
-	//returns the total size of the table entry for the binary table
+	//see Buffer_Types.cpp for details
 	size_t Convert_MDB(const MDB_Mesh& mesh, const VertexTables& vertexTables, const IndexTable& indexTable, Binary_Mesh& binaryMesh);		
 }

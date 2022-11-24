@@ -3,7 +3,7 @@
 #include <ManifestGLParser/OpenGEX/GEX_Material.h>
 #include <ManifestGLPersistence/Manifest_Table.h>
 
-#include "Manifest_Color.h"
+#include "Manifest_Texture.h"
 
 namespace Manifest_Persistence
 {
@@ -13,7 +13,7 @@ namespace Manifest_Persistence
 		ForeignKey materialCode = KEY_NOT_PRESENT;
 	};
 	typedef DatabaseTable<MDB_Material> MaterialTable;
-	ForeignKey TableEntry(const DDL_Structure& structure, MaterialTable& materialTable, ColorTable& colorTable);
+	ForeignKey TableEntry(const DDL_Structure& structure, MaterialTable& materialTable, TextureTable& colorTable);
 
 	struct MDB_MaterialSwitch
 	{

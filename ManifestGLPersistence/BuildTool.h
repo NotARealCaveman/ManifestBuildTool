@@ -1,5 +1,4 @@
 #pragma once
-
 #include <ManifestGLUtility/DebugLogger.h>
 
 #include "Manifest_Database.h"

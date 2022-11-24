@@ -2,6 +2,7 @@
 #include <fstream>
 
 #include "Binary_Mesh.h"
+#include "Binary_Texture.h"
 #include "Binary_GeometryObject.h"
 #include "Binary_GeometryNode.h"
 

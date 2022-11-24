@@ -8,10 +8,16 @@
 using namespace Manifest_Parser;
 using namespace Manifest_Persistence;
 
+//TODO MDB_COLOR/TEXTURE
+//TODO BINARY COLOR/TEXTURE/MATERIAL
+//TODO RUNTIME DATABASE FILE HEADER
+//TODO MEMORY ALLOCATOR
+//TODO TABLE INDEXING AND POINTER OFFSETS
+
 int main()
 {	
 	WINDOWS_COLOR_CONSOLE
-	DISABLE
+	//DISABLE
 	{	
 	//ddl start up
 	Initialize_GEXTypes();

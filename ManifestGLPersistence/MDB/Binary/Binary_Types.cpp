@@ -26,6 +26,17 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_GeometryNode& geometryNode, c
 	return EntrySize(binaryGeometryNode);
 };
 
+//Texture
+size_t Manifest_Persistence::Convert_MDB(const MDB_Texture& texture, Binary_Texture& binaryTexture)
+{
+	binaryTexture.header.nChannels = texture.nChannels;
+	binaryTexture.header.payloadSize = sizeof(float) * texture.channelElements;
+	binaryTexture.payload = new float[texture.channelElements];
+	memcpy(binaryTexture.payload, texture.channelData, binaryTexture.header.payloadSize);
+
+	return EntrySize(binaryTexture);
+}
+
 //Mesh
 size_t Manifest_Persistence::Convert_MDB(const MDB_Mesh& mesh, const VertexTables& vertexTables, const IndexTable& indexTable, Binary_Mesh& binaryMesh)
 {

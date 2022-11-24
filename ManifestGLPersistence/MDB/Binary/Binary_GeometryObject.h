@@ -14,6 +14,6 @@ namespace Manifest_Persistence
 		}header;
 		void* payload;
 	};
-	//see Binary_Mesh.h for details
+	//see Buffer_Types.cpp for details
 	size_t Convert_MDB(const MDB_GeometryObject& mesh, Binary_GeometryObject& binaryMesh);
 }

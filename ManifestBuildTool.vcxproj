@@ -163,7 +163,7 @@
     <ClCompile Include="ManifestGLPersistence\BuildTool.cpp" />
     <ClCompile Include="ManifestGLPersistence\Manifest_Database.cpp" />
     <ClCompile Include="ManifestGLPersistence\MDB\Binary\Binary_Types.cpp" />
-    <ClCompile Include="ManifestGLPersistence\MDB\Manifest_Color.cpp" />
+    <ClCompile Include="ManifestGLPersistence\MDB\Manifest_Texture.cpp" />
     <ClCompile Include="ManifestGLPersistence\MDB\Manifest_GeometryNode.cpp" />
     <ClCompile Include="ManifestGLPersistence\MDB\Manifest_GeometryObject.cpp" />
     <ClCompile Include="ManifestGLPersistence\MDB\Manifest_IndexArray.cpp" />
@@ -208,8 +208,9 @@
     <ClInclude Include="ManifestGLPersistence\MDB\Binary\Binary_GeometryObject.h" />
     <ClInclude Include="ManifestGLPersistence\MDB\Binary\Binary_Mesh.h" />
     <ClInclude Include="ManifestGLPersistence\MDB\Binary\Binary_Table.h" />
+    <ClInclude Include="ManifestGLPersistence\MDB\Binary\Binary_Texture.h" />
     <ClInclude Include="ManifestGLPersistence\MDB\Binary\Binary_Types.h" />
-    <ClInclude Include="ManifestGLPersistence\MDB\Manifest_Color.h" />
+    <ClInclude Include="ManifestGLPersistence\MDB\Manifest_Texture.h" />
     <ClInclude Include="ManifestGLPersistence\MDB\Manifest_GeometryNode.h" />
     <ClInclude Include="ManifestGLPersistence\MDB\Manifest_GeometryObject.h" />
     <ClInclude Include="ManifestGLPersistence\MDB\Manifest_IndexArray.h" />
