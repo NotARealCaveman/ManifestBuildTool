@@ -2,7 +2,7 @@
 
 using namespace Manifest_Persistence;
 
-void Manifest_Persistence::BuildOfflineDatabase(const DDL_File& file, ManifestOfflineDatabase& database)
+void Manifest_Persistence::BuildOfflineDatabase(const DDL_File& file, ManifestDatabaseBuild& database)
 {		
 	std::vector<DDL_Structure> geometryObjects;
 	std::vector<DDL_Structure> materials;

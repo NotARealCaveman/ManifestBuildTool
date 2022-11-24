@@ -4,7 +4,7 @@
 
 namespace Manifest_Persistence
 {
-	struct ManifestOfflineDatabase
+	struct ManifestDatabaseBuild
 	{
 		GeometryObjectTable geometryObjectTable;
 		MeshTable meshTable;
@@ -18,12 +18,19 @@ namespace Manifest_Persistence
 		ColorTable colorTable;
 	};	
 
-	void ExportOfflineDatabase(const ManifestOfflineDatabase& database);
+	void ExportRuntimeDatabase(const ManifestDatabaseBuild& databaseBuild, std::ofstream& exportFile);
 
 	struct ManifestRuntimeDatabase
 	{
-		BinaryGeometryNodeTable binaryGeometryNodeTable;
+		ManifestRuntimeDatabase() = default;
+		ManifestRuntimeDatabase(const ManifestRuntimeDatabase&) = delete;
+		ManifestRuntimeDatabase(ManifestRuntimeDatabase&& other);		
+				
+		BinaryMeshTable binaryMeshTable;		
 		BinaryGeometryObjectTable binaryGeometryObjectTable;
-		BinaryMeshTable binaryMeshTable;
+		BinaryGeometryNodeTable binaryGeometryNodeTable;
+		~ManifestRuntimeDatabase() { DLOG(31, "database destruct:" << this); }
 	};
+
+	ManifestRuntimeDatabase ImportRuntimeDatabase(std::ifstream& importFile);
 }
