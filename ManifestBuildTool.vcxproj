@@ -175,6 +175,7 @@
   <ItemGroup>
     <ClInclude Include="EXPERIMENTAL\Manifest_Allocator.h" />
     <ClInclude Include="EXPERIMENTAL\Manifest_Memory.h" />
+    <ClInclude Include="EXPERIMENTAL\Typenames.h" />
     <ClInclude Include="ManifestGLParser\DDL_ExtendedTypes.h" />
     <ClInclude Include="ManifestGLParser\FileFilter.h" />
     <ClInclude Include="ManifestGLParser\OpenDDL\DDL_Buffers.h" />

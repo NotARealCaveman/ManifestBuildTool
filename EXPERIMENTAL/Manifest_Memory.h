@@ -1,8 +1,10 @@
 #pragma once
-#include <stdint.h>
 
+#include "Typenames.h"
+
+using namespace Manifest_Experimental;
 
 namespace Manifest_Memory
 {
-	typedef uint8_t Byte;
+	typedef MFu8 Byte;
 }

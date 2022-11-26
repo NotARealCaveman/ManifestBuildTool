@@ -308,5 +308,8 @@
     <ClInclude Include="EXPERIMENTAL\Manifest_Memory.h">
       <Filter>Header Files\EXPERIMENTAL</Filter>
     </ClInclude>
+    <ClInclude Include="EXPERIMENTAL\Typenames.h">
+      <Filter>Header Files\EXPERIMENTAL</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

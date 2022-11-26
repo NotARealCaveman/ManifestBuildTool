@@ -1,10 +1,12 @@
 #pragma once
-#include <stdint.h>
 
+#include <EXPERIMENTAL/Typenames.h>
+
+using namespace Manifest_Experimental;
 
 namespace Manifest_Persistence
 {
-	constexpr uint64_t KEY_NOT_PRESENT = UINT64_MAX;
-	constexpr uint8_t CHANNELS_NOT_PRESENT = UINT8_MAX;	
+	constexpr MFu64 KEY_NOT_PRESENT = UINT64_MAX;
+	constexpr MFu8 CHANNELS_NOT_PRESENT = UINT8_MAX;	
 	#define BUFFER_NOT_PRESENT nullptr
 }

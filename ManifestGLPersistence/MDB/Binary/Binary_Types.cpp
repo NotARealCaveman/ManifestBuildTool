@@ -34,7 +34,7 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_Material& material, const Tex
 	size_t texturePayload{ 0 };
 	for (const auto& texture : textureTable.entries)
 		if (texture.materialID == materialID)
-			texturePayload += materialTextures.emplace_back(texture).channelElements;
+			texturePayload += GetCompositeWard(materialTextures.emplace_back(texture).textureInfo,TEXTURE_BOW_BITOFFSET);
 
 	return EntrySize(binaryMaterial);
 }
@@ -42,10 +42,10 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_Material& material, const Tex
 //Texture
 size_t Manifest_Persistence::Convert_MDB(const MDB_Texture& texture, Binary_Texture& binaryTexture)
 {
-	binaryTexture.header.nChannels = texture.nChannels;
-	binaryTexture.header.payloadSize = sizeof(float) * texture.channelElements;
-	binaryTexture.payload = new float[texture.channelElements];
-	memcpy(binaryTexture.payload, texture.channelData, binaryTexture.header.payloadSize);
+	binaryTexture.header.nChannels = GetCompositeBow(texture.textureInfo,TEXTURE_BOW_BITOFFSET);
+	binaryTexture.header.payloadSize = GetCompositeWard(texture.textureInfo, TEXTURE_BOW_BITOFFSET);
+	binaryTexture.payload = new float[binaryTexture.header.payloadSize];	
+	memcpy(binaryTexture.payload, texture.channelData, (binaryTexture.header.payloadSize*=sizeof(float)));
 
 	return EntrySize(binaryTexture);
 }

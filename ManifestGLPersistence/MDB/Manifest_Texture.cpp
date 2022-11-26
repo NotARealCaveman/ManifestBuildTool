@@ -2,6 +2,7 @@
 
 using namespace Manifest_Persistence;
 
+//TABLE INCLUDES COMPOSITE KEY: BITS 0-60 KEY WARD(nElements) BITS 61-63 KEY BOW(nChannels)
 void Manifest_Persistence::TableEntry(const DDL_Structure& structure, const ForeignKey& materialID, TextureTable& textureTable)
 {	
 	MDB_Texture& entry = textureTable.entries.emplace_back();
@@ -12,9 +13,11 @@ void Manifest_Persistence::TableEntry(const DDL_Structure& structure, const Fore
 		case GEX_BufferTypes::GEX_Color:
 		{
 			const auto& color{ HeapData<GEX_Color>(structure) };
-			entry.channelElements = entry.nChannels = color.colorType == GEX_ColorType::RGBA ? 4 : 3;
-			entry.channelData = new float[entry.nChannels];
-			memcpy(entry.channelData, color.channel.data.typeHeap, entry.nChannels * sizeof(float));
+			const auto& nElems = color.colorType == GEX_ColorType::RGBA ? 4 : 3;
+			SetCompositeBow(nElems, TEXTURE_BOW_BITOFFSET,entry.textureInfo);//sets number of channels in tetxure info
+			SetCompositeWard(nElems, TEXTURE_BOW_BITOFFSET, entry.textureInfo);//sets number of elements in texture info
+			entry.channelData = new float[nElems];
+			memcpy(entry.channelData, color.channel.data.typeHeap, nElems * sizeof(float));
 			break;
 		}
 		case GEX_BufferTypes::GEX_Texture:

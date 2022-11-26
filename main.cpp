@@ -18,12 +18,12 @@ using namespace Manifest_Memory;
 //TODO: EX/IMPORT ORDER*
 //TODO: MEMORY ALLOCATOR*
 //TODO: TABLE INDEXING AND POINTER OFFSETS
-//TODO: RUNTIME DATABASE VS BINARY DATABASE ?
+//TODO: RUNTIME DATABASE VS BINARY DATABASE *? 
 
 int main()
 {	
 	WINDOWS_COLOR_CONSOLE
-	DISABLE
+	//DISABLE
 	{
 		//ddl start up
 		Initialize_GEXTypes();
@@ -47,8 +47,7 @@ int main()
 		}
 		//test import 
 		std::ifstream bImport{ "C:\\Users\\Droll\\Desktop\\Game\\testoimng\\TEST.mdb", std::ios::in | std::ios::binary };
-		ManifestRuntimeDatabase runtimeDatabase = ImportRuntimeDatabase(bImport);
-		//DISABLE
+		ManifestRuntimeDatabase runtimeDatabase = ImportRuntimeDatabase(bImport);		
 		{
 			for (auto i = 0; i < runtimeDatabase.binaryGeometryNodeTable.header.totalEntries; ++i)
 			{
@@ -77,20 +76,6 @@ int main()
 				std::cout << "}" << std::endl;
 			}
 		}
-	};
-	Manifest_Allocator allocator;
-	allocator.CreateHeap(64);
-	double long * dbllng = new(allocator.Alloc(sizeof(double long)))double long{ 65 };
-	DLOG(32, "dbllng: " << dbllng);
-	int* intptr2 = new(allocator.Alloc(sizeof(int)))int{ 32 };
-	DLOG(32, "intptr2: " << intptr2);
-	allocator.Dealloc(dbllng);
-	float* floatptr = new(allocator.Alloc(sizeof(float)))float{ 4.20 };
-	DLOG(32, "floatptr: " << floatptr);
-	float* floatptr2 = new(allocator.Alloc(sizeof(float)))float{ 6.9 };
-	DLOG(32, "floatptr2: " << floatptr2);
-	allocator.Dealloc(floatptr);
-	double long* dbllng2 = new(allocator.Alloc(sizeof(double long)))double long{ 1488 };
-	DLOG(32, "dbllng2: " << dbllng2);
+	};	
 	return 0;
 }
