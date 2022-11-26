@@ -12,7 +12,7 @@ ForeignKey Manifest_Persistence::TableEntry(const DDL_Structure& structure, Mate
 		switch (ExtractStructureType(substructure.identifier))
 		{
 			case GEX_BufferTypes::GEX_Color://tbd
-				entry.materialCode = TableEntry(substructure, textureTable);
+				TableEntry(substructure, entry.materialID , textureTable);
 				break;
 			DEFAULT_BREAK
 		}

@@ -137,6 +137,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="EXPERIMENTAL\Manifect_Allocator.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ManifestGLParser\FileFilter.cpp" />
     <ClCompile Include="ManifestGLParser\GEX_Material.cpp" />
@@ -172,6 +173,8 @@
     <ClCompile Include="ManifestGLPersistence\MDB\Manifest_VertexArray.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="EXPERIMENTAL\Manifest_Allocator.h" />
+    <ClInclude Include="EXPERIMENTAL\Manifest_Memory.h" />
     <ClInclude Include="ManifestGLParser\DDL_ExtendedTypes.h" />
     <ClInclude Include="ManifestGLParser\FileFilter.h" />
     <ClInclude Include="ManifestGLParser\OpenDDL\DDL_Buffers.h" />

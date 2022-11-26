@@ -27,7 +27,7 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_GeometryNode& geometryNode, c
 };
 
 //Material
-size_t Convert_MDB(const MDB_Material& material, const TextureTable& textureTable, Binary_Material& binaryMaterial)
+size_t Manifest_Persistence::Convert_MDB(const MDB_Material& material, const TextureTable& textureTable, Binary_Material& binaryMaterial)
 {
 	const auto& materialID = material.materialID;
 	std::vector<MDB_Texture> materialTextures;

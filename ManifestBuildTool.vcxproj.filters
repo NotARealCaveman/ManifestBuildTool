@@ -49,6 +49,12 @@
     <Filter Include="Header Files\Persistence\MDB\Binary">
       <UniqueIdentifier>{1f74ed3c-86ae-4329-bac5-e4806cf5b596}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\EXPERIMENTAL">
+      <UniqueIdentifier>{19278a86-00b8-4e95-ae4c-45ecb2f3763d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\EXPERIMENTAL">
+      <UniqueIdentifier>{75a16a27-9329-47a2-a2e0-984d70f87ca4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -149,6 +155,9 @@
     </ClCompile>
     <ClCompile Include="ManifestGLPersistence\MDB\Binary\Binary_Types.cpp">
       <Filter>Source Files\Persistence\MDB\Binary</Filter>
+    </ClCompile>
+    <ClCompile Include="EXPERIMENTAL\Manifect_Allocator.cpp">
+      <Filter>Source Files\EXPERIMENTAL</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -292,6 +301,12 @@
     </ClInclude>
     <ClInclude Include="ManifestGLPersistence\MDB\Binary\Binary_Material.h">
       <Filter>Header Files\Persistence\MDB\Binary</Filter>
+    </ClInclude>
+    <ClInclude Include="EXPERIMENTAL\Manifest_Allocator.h">
+      <Filter>Header Files\EXPERIMENTAL</Filter>
+    </ClInclude>
+    <ClInclude Include="EXPERIMENTAL\Manifest_Memory.h">
+      <Filter>Header Files\EXPERIMENTAL</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
