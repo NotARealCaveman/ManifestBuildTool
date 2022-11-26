@@ -12,13 +12,13 @@ using namespace Manifest_Persistence;
 using namespace Manifest_Memory;
 
 //* - IN PROGRESS ** - FINISHED ? - DESIGN QUESTION
-//TODO: MDB_COLOR/TEXTURE*
-//TODO: BINARY COLOR/TEXTURE/MATERIAL*
+//TODO: MDB_COLOR/TEXTURE**
+//TODO: BINARY COLOR/TEXTURE/MATERIAL**
 //TODO: RUNTIME DATABASE FILE HEADER
 //TODO: EX/IMPORT ORDER*
 //TODO: MEMORY ALLOCATOR*
 //TODO: TABLE INDEXING AND POINTER OFFSETS
-//TODO: RUNTIME DATABASE VS BINARY DATABASE *? 
+//TODO: RUNTIME DATABASE VS BINARY DATABASE *?
 
 int main()
 {	
@@ -54,9 +54,10 @@ int main()
 				const auto& importObject = runtimeDatabase.binaryGeometryNodeTable[i];
 				const auto& importGeometry = runtimeDatabase.binaryGeometryObjectTable[importObject.header.geometryID];
 				const auto& importMesh = runtimeDatabase.binaryMeshTable[importGeometry.header.meshID];
-				const auto& importTexture = runtimeDatabase.binaryTextureTable[importObject.header.materialID];
+				const auto& importMaterial = runtimeDatabase.binaryMaterialTable[importObject.header.materialID];
+				const auto& importTexture = runtimeDatabase.binaryTextureTable[importMaterial.header.diffuseID];
 				DLOG(37, "Reading from file:" << i);
-				DLOG(33, "Mesh Stride:" << importMesh.header.vboStride << " AttributeCode: " << +importMesh.header.activeArrayAttributes << " Vertex Buffer Size: " << importMesh.header.payloadSize << " bytes Vertex Buffer Elements: " << importMesh.header.payloadSize / sizeof(float) << " texture channels: " << +importTexture.header.nChannels);
+				DLOG(33, "Mesh Stride:" << importMesh.header.vboStride << " AttributeCode: " << +importMesh.header.activeArrayAttributes << " Vertex Buffer Size: " << importMesh.header.payloadSize << " bytes Vertex Buffer Elements: " << importMesh.header.payloadSize / sizeof(float) << " texture channels: " << +importTexture.header.nChannels <<" texture size: " << +importTexture.header.payloadSize);
 
 				auto nElements = (importMesh.header.eboOffset) / sizeof(float);
 				auto nSubArrayElements = nElements / importMesh.header.vboStride;

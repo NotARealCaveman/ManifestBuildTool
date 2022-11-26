@@ -10,11 +10,12 @@ namespace Manifest_Persistence
 	{
 		struct Entry_Header
 		{
-			MFsize payloadSize{ 0 };//amount of raw bytes comprising the material texture data		
-			MFsize normalOffset;//offset from diffuse to normal 
-			MFsize parallaxOffset;//offset from normal to parallax
+			const MFsize payloadSize{ 0 };//amount of raw bytes comprising the material texture data
+			MFsize diffuseID;//maps the texture id to the materials diffuse component
+			MFsize noramlID;//maps the texture id to the materials normal component
+			MFsize parallaxID;//maps the texture id to the materials parallax component
 		}header;
-		float* payload;//contains diffuse->normal->parallax material data
+		void* payload;//contains diffuse->normal->parallax material data
 	};
 	//see Buffer_Types.cpp for details
 	size_t Convert_MDB(const MDB_Material& material, const TextureTable& textureTable, Binary_Material& binaryMaterial);

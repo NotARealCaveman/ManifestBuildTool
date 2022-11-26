@@ -14,6 +14,7 @@ DDL_Structure GEX_Color::Build(const std::string& partitionedStructure, DDL_Refe
 		{
 			case PropertyList::ATTRIB:
 				attrib = property.value;
+				attrib.erase(std::remove(attrib.begin(), attrib.end(), '"'), attrib.end());
 				break;
 			DEFAULT_BREAK
 		}

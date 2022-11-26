@@ -17,6 +17,7 @@ void Manifest_Persistence::ExportRuntimeDatabase(const ManifestDatabaseBuild& da
 	//export binary tables to file
 	//TODO: settle on table ordering as ideally the entire table will be loaded into memory and a file header will be parsed to build the various table entrie payloads
 	ExportBinaryTable(exportDatabase.binaryMeshTable, exportFile);
+	ExportBinaryTable(exportDatabase.binaryMaterialTable, exportFile);
 	ExportBinaryTable(exportDatabase.binaryTextureTable, exportFile);
 	ExportBinaryTable(exportDatabase.binaryGeometryObjectTable, exportFile);
 	ExportBinaryTable(exportDatabase.binaryGeometryNodeTable, exportFile);
@@ -28,6 +29,7 @@ ManifestRuntimeDatabase Manifest_Persistence::ImportRuntimeDatabase(std::ifstrea
 	ManifestRuntimeDatabase result;
 
 	result.binaryMeshTable = ImportBinaryTable<Binary_Mesh>(importFile);	
+	result.binaryMaterialTable = ImportBinaryTable<Binary_Material>(importFile);
 	result.binaryTextureTable = ImportBinaryTable<Binary_Texture>(importFile);
 	result.binaryGeometryObjectTable = ImportBinaryTable<Binary_GeometryObject>(importFile);
 	result.binaryGeometryNodeTable = ImportBinaryTable<Binary_GeometryNode>(importFile);
@@ -37,7 +39,8 @@ ManifestRuntimeDatabase Manifest_Persistence::ImportRuntimeDatabase(std::ifstrea
 
 ManifestRuntimeDatabase::ManifestRuntimeDatabase(ManifestRuntimeDatabase&& other)
 	:	binaryMeshTable{ std::move(other.binaryMeshTable) },
-		binaryTextureTable {std::move(other.binaryTextureTable)},
-		binaryGeometryNodeTable{std::move(other.binaryGeometryNodeTable)},
-		binaryGeometryObjectTable{std::move(other.binaryGeometryObjectTable)}
+		binaryMaterialTable{ std::move(other.binaryMaterialTable) },
+		binaryTextureTable {std::move(other.binaryTextureTable) },
+		binaryGeometryNodeTable{std::move(other.binaryGeometryNodeTable) },
+		binaryGeometryObjectTable{std::move(other.binaryGeometryObjectTable) }		
 {}

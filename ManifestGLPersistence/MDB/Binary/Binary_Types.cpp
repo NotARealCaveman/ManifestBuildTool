@@ -28,13 +28,24 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_GeometryNode& geometryNode, c
 
 //Material
 size_t Manifest_Persistence::Convert_MDB(const MDB_Material& material, const TextureTable& textureTable, Binary_Material& binaryMaterial)
-{
-	const auto& materialID = material.materialID;
-	std::vector<MDB_Texture> materialTextures;
-	size_t texturePayload{ 0 };
+{	
 	for (const auto& texture : textureTable.entries)
-		if (texture.materialID == materialID)
-			texturePayload += GetCompositeWard(materialTextures.emplace_back(texture).textureInfo,TEXTURE_BOW_BITOFFSET);
+		if (texture.materialID == material.materialID)
+		{
+			switch (texture.textureType)
+			{
+				case TextureTypes::DIFFUSE_TEXTURE:
+					binaryMaterial.header.diffuseID = texture.textureID;
+					break;
+				case TextureTypes::NORMAL_TEXTURE:
+					binaryMaterial.header.noramlID = texture.textureID;
+					break;
+				case TextureTypes::PARALLAX_TEXTURE:
+					binaryMaterial.header.parallaxID= texture.textureID;
+					break;
+				DEFAULT_BREAK
+			}
+		}
 
 	return EntrySize(binaryMaterial);
 }
