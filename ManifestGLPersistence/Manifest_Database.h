@@ -13,8 +13,7 @@ namespace Manifest_Persistence
 		GeometryNodeTable geometryNodeTable;
 		ObjectRefTable objectRefTable;
 		MaterialRefTable materialRefTable;
-		MaterialTable materialTable;
-		MaterialSwitchTable materialSwitchTable;
+		MaterialTable materialTable;		
 		TextureTable textureTable;
 	};	
 
@@ -27,6 +26,7 @@ namespace Manifest_Persistence
 		ManifestRuntimeDatabase(ManifestRuntimeDatabase&& other);		
 				
 		BinaryMeshTable binaryMeshTable;		
+		BinaryMaterialTable binaryMaterialTable;
 		BinaryTextureTable binaryTextureTable;
 		BinaryGeometryObjectTable binaryGeometryObjectTable;
 		BinaryGeometryNodeTable binaryGeometryNodeTable;		

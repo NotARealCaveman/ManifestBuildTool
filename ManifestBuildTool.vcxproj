@@ -206,6 +206,7 @@
     <ClInclude Include="ManifestGLPersistence\Manifest_Table.h" />
     <ClInclude Include="ManifestGLPersistence\MDB\Binary\Binary_GeometryNode.h" />
     <ClInclude Include="ManifestGLPersistence\MDB\Binary\Binary_GeometryObject.h" />
+    <ClInclude Include="ManifestGLPersistence\MDB\Binary\Binary_Material.h" />
     <ClInclude Include="ManifestGLPersistence\MDB\Binary\Binary_Mesh.h" />
     <ClInclude Include="ManifestGLPersistence\MDB\Binary\Binary_Table.h" />
     <ClInclude Include="ManifestGLPersistence\MDB\Binary\Binary_Texture.h" />

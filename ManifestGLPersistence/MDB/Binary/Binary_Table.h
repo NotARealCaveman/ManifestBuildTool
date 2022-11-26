@@ -5,6 +5,8 @@
 #include "Binary_Texture.h"
 #include "Binary_GeometryObject.h"
 #include "Binary_GeometryNode.h"
+#include "Binary_Material.h"
+
 
 namespace Manifest_Persistence
 {	
@@ -25,20 +27,20 @@ namespace Manifest_Persistence
 			return *this;
 		}
 		//to change - eventually a look up table with byte offsets will also be ex/imported with the table and the index request will query the table and return the binary record at the offset from entries
-		Binary_TableType const* const operator[](const int32_t& index)
+		const Binary_TableType& operator[](const int32_t& index) const
 		{
-			Binary_TableType* result = nullptr;
 			if (index < 0 || index > header.totalEntries - 1)
-				return nullptr;
+				return {};
 
 			size_t byteOffset{ 0 };
+			Binary_TableType* result = nullptr;
 			for (int32_t entry = 0; entry <= index; ++entry)
 			{
 				auto tableAddress = reinterpret_cast<char*>(entries) + byteOffset;
 				result = reinterpret_cast<Binary_TableType*>(tableAddress);
 				byteOffset += sizeof(Binary_TableType) + result->header.payloadSize;
 			}
-			return result;
+			return *result;
 		};
 
 		struct Table_Header
@@ -65,6 +67,7 @@ namespace Manifest_Persistence
 	void ExportBinaryTable(const BinaryTable<Binary_TableType>& table, std::ofstream& currentExport)
 	{
 		currentExport.write(reinterpret_cast<const char*>(&table.header), sizeof(BinaryTable<Binary_TableType>::Table_Header));
+		
 		for (auto entry = 0; entry < table.header.totalEntries; ++entry)
 		{
 			const Binary_TableType& record{ table.entries[entry] };

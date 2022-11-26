@@ -12,7 +12,7 @@ namespace Manifest_Parser
 	struct GEX_Material : public RegisteredBuilder
 	{
 		struct PropertyList {
-			static constexpr int TWOSIDED{ 0 };			
+			static constexpr uint32_t TWOSIDED{ 0 };
 			static const std::map<std::string, uint32_t> typeProperties;
 		};
 		DDL_Structure Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap) final;
@@ -30,7 +30,7 @@ namespace Manifest_Parser
 	struct GEX_MaterialRef : public DDL_Reference
 	{		
 		struct PropertyList {
-			static constexpr int INDEX{ 0 };			
+			static constexpr uint32_t INDEX{ 0 };
 			static const std::map<std::string, uint32_t> typeProperties;		
 		};
 		DDL_Structure Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap) final;

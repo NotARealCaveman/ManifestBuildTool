@@ -9,10 +9,11 @@ void Manifest_Persistence::ExportRuntimeDatabase(const ManifestDatabaseBuild& da
 	//--		
 	//convert mdbs into binary records
 	ManifestRuntimeDatabase exportDatabase;
-	exportDatabase.binaryMeshTable =  BinaryTableConversion<Binary_Mesh, MeshTable, VertexTables, IndexTable>(databaseBuild.meshTable, databaseBuild.vertexTables, databaseBuild.indexTable) ;
-	exportDatabase.binaryTextureTable = BinaryTableConversion<Binary_Texture, TextureTable>(databaseBuild.textureTable);
-	exportDatabase.binaryGeometryObjectTable = BinaryTableConversion<Binary_GeometryObject, GeometryObjectTable>(databaseBuild.geometryObjectTable);
-	exportDatabase.binaryGeometryNodeTable = BinaryTableConversion<Binary_GeometryNode, GeometryNodeTable, ObjectRefTable, MaterialRefTable>(databaseBuild.geometryNodeTable, databaseBuild.objectRefTable, databaseBuild.materialRefTable);
+	exportDatabase.binaryMeshTable =  BinaryTableConversion<Binary_Mesh>(databaseBuild.meshTable, databaseBuild.vertexTables, databaseBuild.indexTable) ;
+	exportDatabase.binaryMaterialTable = BinaryTableConversion<Binary_Material>(databaseBuild.materialTable,databaseBuild.textureTable);
+	exportDatabase.binaryTextureTable = BinaryTableConversion<Binary_Texture>(databaseBuild.textureTable);
+	exportDatabase.binaryGeometryObjectTable = BinaryTableConversion<Binary_GeometryObject>(databaseBuild.geometryObjectTable);
+	exportDatabase.binaryGeometryNodeTable = BinaryTableConversion<Binary_GeometryNode>(databaseBuild.geometryNodeTable, databaseBuild.objectRefTable, databaseBuild.materialRefTable);
 	//export binary tables to file
 	//TODO: settle on table ordering as ideally the entire table will be loaded into memory and a file header will be parsed to build the various table entrie payloads
 	ExportBinaryTable(exportDatabase.binaryMeshTable, exportFile);
@@ -36,6 +37,7 @@ ManifestRuntimeDatabase Manifest_Persistence::ImportRuntimeDatabase(std::ifstrea
 
 ManifestRuntimeDatabase::ManifestRuntimeDatabase(ManifestRuntimeDatabase&& other)
 	:	binaryMeshTable{ std::move(other.binaryMeshTable) },
+		binaryTextureTable {std::move(other.binaryTextureTable)},
 		binaryGeometryNodeTable{std::move(other.binaryGeometryNodeTable)},
 		binaryGeometryObjectTable{std::move(other.binaryGeometryObjectTable)}
 {}

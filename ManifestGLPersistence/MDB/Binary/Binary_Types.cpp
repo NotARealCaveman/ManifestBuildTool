@@ -26,6 +26,19 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_GeometryNode& geometryNode, c
 	return EntrySize(binaryGeometryNode);
 };
 
+//Material
+size_t Convert_MDB(const MDB_Material& material, const TextureTable& textureTable, Binary_Material& binaryMaterial)
+{
+	const auto& materialID = material.materialID;
+	std::vector<MDB_Texture> materialTextures;
+	size_t texturePayload{ 0 };
+	for (const auto& texture : textureTable.entries)
+		if (texture.materialID == materialID)
+			texturePayload += materialTextures.emplace_back(texture).channelElements;
+
+	return EntrySize(binaryMaterial);
+}
+
 //Texture
 size_t Manifest_Persistence::Convert_MDB(const MDB_Texture& texture, Binary_Texture& binaryTexture)
 {

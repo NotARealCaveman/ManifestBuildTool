@@ -290,5 +290,8 @@
     <ClInclude Include="ManifestGLPersistence\MDB\Binary\Binary_Texture.h">
       <Filter>Header Files\Persistence\MDB\Binary</Filter>
     </ClInclude>
+    <ClInclude Include="ManifestGLPersistence\MDB\Binary\Binary_Material.h">
+      <Filter>Header Files\Persistence\MDB\Binary</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

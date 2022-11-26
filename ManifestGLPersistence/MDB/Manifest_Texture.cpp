@@ -2,11 +2,11 @@
 
 using namespace Manifest_Persistence;
 
-ForeignKey Manifest_Persistence::TableEntry(const DDL_Structure& structure, TextureTable& textureTable)
+void Manifest_Persistence::TableEntry(const DDL_Structure& structure, const ForeignKey& materialID, TextureTable& textureTable)
 {	
 	MDB_Texture& entry = textureTable.entries.emplace_back();
-	entry.colorID = textureTable.nextTableIndex++;
-	textureTable.mappedEntryKeys.insert({ structure.name,entry.colorID });
+	entry.textureID = textureTable.nextTableIndex++;
+	textureTable.mappedEntryKeys.insert({ structure.name,entry.textureID });
 	switch (DDL_BufferTypes::DDL_BufferTypeMap.find(structure.identifier)->second)
 	{
 		case GEX_BufferTypes::GEX_Color:
@@ -21,6 +21,4 @@ ForeignKey Manifest_Persistence::TableEntry(const DDL_Structure& structure, Text
 			break;
 		DEFAULT_BREAK
 	}
-	
-	return entry.colorID;
 }
