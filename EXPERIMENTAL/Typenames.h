@@ -1,6 +1,8 @@
 #pragma once
 #include <stdint.h>
 
+#include <ManifestGLUtility/GLDefinitions.h>
+
 namespace Manifest_Experimental
 {	
 	///single character types

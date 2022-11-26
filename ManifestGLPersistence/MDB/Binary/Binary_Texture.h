@@ -6,11 +6,10 @@ namespace Manifest_Persistence
 {	
 	struct Binary_Texture
 	{
-		struct Entry_Header
+		struct Entry_Header : Manifest_Texture
 		{
-			MFsize payloadSize{ 0 };//stores size of texture data in bytes		
-			MFu8 nChannels;//number of chanels used by the terxture			
-			MFu8 textureType;
+			MFsize payloadSize{ 0 };//stores size of texture data in bytes					
+			MFu8 textureType;//type of texture the map represents			
 		}header;
 		float* payload;
 	};

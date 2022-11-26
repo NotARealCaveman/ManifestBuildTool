@@ -55,6 +55,9 @@
     <Filter Include="Source Files\EXPERIMENTAL">
       <UniqueIdentifier>{75a16a27-9329-47a2-a2e0-984d70f87ca4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Utility">
+      <UniqueIdentifier>{e35e8723-40c2-4d8d-8fec-f7479d98ce13}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -310,6 +313,9 @@
     </ClInclude>
     <ClInclude Include="EXPERIMENTAL\Typenames.h">
       <Filter>Header Files\EXPERIMENTAL</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestGLUtility\GLDefinitions.h">
+      <Filter>Header Files\Utility</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -53,8 +53,31 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_Material& material, const Tex
 //Texture
 size_t Manifest_Persistence::Convert_MDB(const MDB_Texture& texture, Binary_Texture& binaryTexture)
 {
-	binaryTexture.header.nChannels = GetCompositeBow(texture.textureInfo,TEXTURE_BOW_BITOFFSET);
-	binaryTexture.header.payloadSize = GetCompositeWard(texture.textureInfo, TEXTURE_BOW_BITOFFSET);
+	//store base texture information
+	Manifest_Texture& baseTexture = binaryTexture.header;
+	baseTexture.nChannels = GetCompositeBow(texture.textureInfo, TEXTURE_INFO_BOW_BITOFFSET);
+	//set internal and data format information	
+	switch (baseTexture.nChannels)
+	{
+		case ChannelTypes::R:
+			baseTexture.internalFormat = GL_RED;
+			baseTexture.dataFormat = GL_R;
+			break;
+		case ChannelTypes::RGB:
+			baseTexture.internalFormat = texture.textureType == TextureTypes::DIFFUSE_TEXTURE ?	GL_SRGB8 : GL_RGB8;
+			baseTexture.dataFormat = GL_RGB;
+			break;
+		case ChannelTypes::RGBA:
+			baseTexture.internalFormat = texture.textureType == TextureTypes::DIFFUSE_TEXTURE ?	GL_SRGB8_ALPHA8 : GL_RGBA8;
+			baseTexture.dataFormat = GL_RGBA;
+			break;
+		DEFAULT_BREAK
+	}
+	
+	baseTexture.width = GetCompositeWard(texture.textureDimensions, TEXTURE_DIMENSION_BOW_BITOFFSET);
+	baseTexture.height = GetCompositeBow(texture.textureDimensions, TEXTURE_DIMENSION_BOW_BITOFFSET);
+	//store texture payload information
+	binaryTexture.header.payloadSize = GetCompositeWard(texture.textureInfo, TEXTURE_INFO_BOW_BITOFFSET);
 	binaryTexture.payload = new float[binaryTexture.header.payloadSize];	
 	memcpy(binaryTexture.payload, texture.channelData, (binaryTexture.header.payloadSize*=sizeof(float)));
 

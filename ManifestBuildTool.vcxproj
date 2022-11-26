@@ -223,6 +223,7 @@
     <ClInclude Include="ManifestGLPersistence\MDB\Manifest_Mesh.h" />
     <ClInclude Include="ManifestGLPersistence\MDB\Manifest_VertexArray.h" />
     <ClInclude Include="ManifestGLPersistence\ResourceFlags.h" />
+    <ClInclude Include="ManifestGLUtility\GLDefinitions.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
