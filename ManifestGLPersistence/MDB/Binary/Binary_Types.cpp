@@ -54,9 +54,9 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_Material& material, const Tex
 size_t Manifest_Persistence::Convert_MDB(const MDB_Texture& texture, Binary_Texture& binaryTexture)
 {
 	//store base texture information
-	Manifest_Texture& baseTexture = binaryTexture.header;
+	auto& baseTexture = binaryTexture.header;
 	baseTexture.nChannels = GetCompositeBow(texture.textureInfo, TEXTURE_INFO_BOW_BITOFFSET);
-	//set internal and data format information	
+	//set internal & data format information	
 	switch (baseTexture.nChannels)
 	{
 		case ChannelTypes::R:

@@ -39,15 +39,6 @@ namespace Manifest_Persistence
 		float* channelData = BUFFER_NOT_PRESENT;		
 	};
 
-	struct Manifest_Texture
-	{
-		MFu32 width;
-		MFu32 height;
-		MFu32 internalFormat;
-		MFu32 dataFormat;
-		MFu8 nChannels;		
-	};
-
 	typedef DatabaseTable<MDB_Texture> TextureTable;
 	void TableEntry(const DDL_Structure& structure,  const ForeignKey& materialID, TextureTable& textureTable);
 }
