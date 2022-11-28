@@ -11,9 +11,10 @@ namespace Manifest_Persistence
 		struct Entry_Header
 		{
 			const MFsize payloadSize{ 0 };//amount of raw bytes comprising the material texture data
-			MFsize diffuseID;//maps the texture id to the materials diffuse component
-			MFsize noramlID;//maps the texture id to the materials normal component
-			MFsize parallaxID;//maps the texture id to the materials parallax component
+			PrimaryKey materialID;//stored database id of the entry
+			ForeignKey diffuseID;//maps the texture id to the materials diffuse component
+			ForeignKey noramlID;//maps the texture id to the materials normal component
+			ForeignKey parallaxID;//maps the texture id to the materials parallax component
 		}header;
 		void* payload;//contains diffuse->normal->parallax material data
 	};

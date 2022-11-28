@@ -8,7 +8,8 @@ namespace Manifest_Persistence
 	{
 		struct Entry_Header
 		{
-			MFsize payloadSize{ 0 };//stores size of texture data in bytes					
+			MFsize payloadSize{ 0 };//stores size of texture data in bytes			
+			PrimaryKey textureID;//stored database id of the entry
 			MFu32 width;
 			MFu32 height;
 			MFu32 internalFormat;

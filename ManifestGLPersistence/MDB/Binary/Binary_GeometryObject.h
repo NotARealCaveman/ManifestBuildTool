@@ -9,6 +9,7 @@ namespace Manifest_Persistence
 		struct Entry_Header
 		{
 			size_t	payloadSize;
+			PrimaryKey geometryID;//stored database id of the entry
 			ForeignKey meshID;
 			ForeignKey morphID;
 		}header;

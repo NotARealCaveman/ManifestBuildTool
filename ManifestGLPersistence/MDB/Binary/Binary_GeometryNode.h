@@ -9,6 +9,7 @@ namespace Manifest_Persistence
 		struct Entry_Header
 		{
 			size_t	payloadSize{0};
+			PrimaryKey nodeID;
 			ForeignKey geometryID;
 			ForeignKey materialID;
 			

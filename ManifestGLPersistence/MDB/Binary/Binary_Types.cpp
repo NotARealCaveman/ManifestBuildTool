@@ -7,6 +7,7 @@ using namespace Manifest_Persistence;
 size_t Manifest_Persistence::Convert_MDB(const MDB_GeometryObject& geometryObject, Binary_GeometryObject& binaryGeometryObject)
 {
 	binaryGeometryObject.header.payloadSize = 0;
+	binaryGeometryObject.header.geometryID = geometryObject.geometryID;
 	binaryGeometryObject.header.meshID = geometryObject.meshID;
 	binaryGeometryObject.header.morphID = geometryObject.morphID;
 	return EntrySize(binaryGeometryObject);
@@ -15,6 +16,7 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_GeometryObject& geometryObjec
 //GeometryNode
 size_t Manifest_Persistence::Convert_MDB(const MDB_GeometryNode& geometryNode, const ObjectRefTable& objectRefTable, const MaterialRefTable& materialRefTable, Binary_GeometryNode& binaryGeometryNode)
 {		
+	binaryGeometryNode.header.nodeID - geometryNode.nodeID;
 	binaryGeometryNode.header.geometryID = *objectRefTable.entries[geometryNode.objectRefID].geometryIDs;
 	binaryGeometryNode.header.materialID = *materialRefTable.entries[geometryNode.materialRefID].materialIDs;	
 	if (geometryNode.transform != BUFFER_NOT_PRESENT)
@@ -29,6 +31,7 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_GeometryNode& geometryNode, c
 //Material
 size_t Manifest_Persistence::Convert_MDB(const MDB_Material& material, const TextureTable& textureTable, Binary_Material& binaryMaterial)
 {	
+	binaryMaterial.header.materialID = material.materialID;
 	for (const auto& texture : textureTable.entries)
 		if (texture.materialID == material.materialID)
 		{
@@ -55,6 +58,7 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_Texture& texture, Binary_Text
 {
 	//store base texture information
 	auto& baseTexture = binaryTexture.header;
+	baseTexture.textureID = texture.textureID;
 	baseTexture.nChannels = GetCompositeBow(texture.textureInfo, TEXTURE_INFO_BOW_BITOFFSET);
 	//set internal & data format information	
 	switch (baseTexture.nChannels)
@@ -87,6 +91,7 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_Texture& texture, Binary_Text
 //Mesh
 size_t Manifest_Persistence::Convert_MDB(const MDB_Mesh& mesh, const VertexTables& vertexTables, const IndexTable& indexTable, Binary_Mesh& binaryMesh)
 {
+	binaryMesh.header.meshID = mesh.meshID;
 	const auto& vertexTableIndices = mesh.vertexArrayIDs;
 	///store vertex information
 	//vertices
