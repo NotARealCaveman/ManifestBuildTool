@@ -3,7 +3,7 @@
 #include <ManifestGLParser/OpenGEX/GEX_Material.h>
 #include <ManifestGLPersistence/Manifest_Table.h>
 
-#include "Manifest_Texture.h"
+#include "MDB_Texture.h"
 
 namespace Manifest_Persistence
 {

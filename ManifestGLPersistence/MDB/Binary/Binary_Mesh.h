@@ -1,6 +1,6 @@
 #pragma once
 
-#include <ManifestGLPersistence/MDB/Manifest_Mesh.h>
+#include <ManifestGLPersistence/MDB/MDB_Mesh.h>
 
 namespace Manifest_Persistence
 {

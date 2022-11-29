@@ -3,7 +3,7 @@
 #include <ManifestGLParser/OpenGEX/GEX_GeometryObject.h>
 #include <ManifestGLPersistence/Manifest_Table.h>
 
-#include "Manifest_Mesh.h" 
+#include "MDB_Mesh.h" 
 
 using namespace Manifest_Parser;
 

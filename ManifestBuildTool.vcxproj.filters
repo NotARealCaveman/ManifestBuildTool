@@ -129,25 +129,25 @@
     <ClCompile Include="ManifestGLParser\RegisteredGeneraters.cpp">
       <Filter>Source Files\Parser</Filter>
     </ClCompile>
-    <ClCompile Include="ManifestGLPersistence\MDB\Manifest_Texture.cpp">
+    <ClCompile Include="ManifestGLPersistence\MDB\MDB_Texture.cpp">
       <Filter>Source Files\Persistence\MDB</Filter>
     </ClCompile>
-    <ClCompile Include="ManifestGLPersistence\MDB\Manifest_GeometryNode.cpp">
+    <ClCompile Include="ManifestGLPersistence\MDB\MDB_GeometryNode.cpp">
       <Filter>Source Files\Persistence\MDB</Filter>
     </ClCompile>
-    <ClCompile Include="ManifestGLPersistence\MDB\Manifest_GeometryObject.cpp">
+    <ClCompile Include="ManifestGLPersistence\MDB\MDB_GeometryObject.cpp">
       <Filter>Source Files\Persistence\MDB</Filter>
     </ClCompile>
-    <ClCompile Include="ManifestGLPersistence\MDB\Manifest_IndexArray.cpp">
+    <ClCompile Include="ManifestGLPersistence\MDB\MDB_IndexArray.cpp">
       <Filter>Source Files\Persistence\MDB</Filter>
     </ClCompile>
-    <ClCompile Include="ManifestGLPersistence\MDB\Manifest_Material.cpp">
+    <ClCompile Include="ManifestGLPersistence\MDB\MDB_Material.cpp">
       <Filter>Source Files\Persistence\MDB</Filter>
     </ClCompile>
-    <ClCompile Include="ManifestGLPersistence\MDB\Manifest_Mesh.cpp">
+    <ClCompile Include="ManifestGLPersistence\MDB\MDB_Mesh.cpp">
       <Filter>Source Files\Persistence\MDB</Filter>
     </ClCompile>
-    <ClCompile Include="ManifestGLPersistence\MDB\Manifest_VertexArray.cpp">
+    <ClCompile Include="ManifestGLPersistence\MDB\MDB_VertexArray.cpp">
       <Filter>Source Files\Persistence\MDB</Filter>
     </ClCompile>
     <ClCompile Include="ManifestGLPersistence\BuildTool.cpp">
@@ -254,25 +254,25 @@
     <ClInclude Include="ManifestGLPersistence\MDB\Binary\Binary_Mesh.h">
       <Filter>Header Files\Persistence\MDB\Binary</Filter>
     </ClInclude>
-    <ClInclude Include="ManifestGLPersistence\MDB\Manifest_Texture.h">
+    <ClInclude Include="ManifestGLPersistence\MDB\MDB_Texture.h">
       <Filter>Header Files\Persistence\MDB</Filter>
     </ClInclude>
-    <ClInclude Include="ManifestGLPersistence\MDB\Manifest_GeometryNode.h">
+    <ClInclude Include="ManifestGLPersistence\MDB\MDB_GeometryNode.h">
       <Filter>Header Files\Persistence\MDB</Filter>
     </ClInclude>
-    <ClInclude Include="ManifestGLPersistence\MDB\Manifest_GeometryObject.h">
+    <ClInclude Include="ManifestGLPersistence\MDB\MDB_GeometryObject.h">
       <Filter>Header Files\Persistence\MDB</Filter>
     </ClInclude>
-    <ClInclude Include="ManifestGLPersistence\MDB\Manifest_IndexArray.h">
+    <ClInclude Include="ManifestGLPersistence\MDB\MDB_IndexArray.h">
       <Filter>Header Files\Persistence\MDB</Filter>
     </ClInclude>
-    <ClInclude Include="ManifestGLPersistence\MDB\Manifest_Material.h">
+    <ClInclude Include="ManifestGLPersistence\MDB\MDB_Material.h">
       <Filter>Header Files\Persistence\MDB</Filter>
     </ClInclude>
-    <ClInclude Include="ManifestGLPersistence\MDB\Manifest_Mesh.h">
+    <ClInclude Include="ManifestGLPersistence\MDB\MDB_Mesh.h">
       <Filter>Header Files\Persistence\MDB</Filter>
     </ClInclude>
-    <ClInclude Include="ManifestGLPersistence\MDB\Manifest_VertexArray.h">
+    <ClInclude Include="ManifestGLPersistence\MDB\MDB_VertexArray.h">
       <Filter>Header Files\Persistence\MDB</Filter>
     </ClInclude>
     <ClInclude Include="ManifestGLPersistence\BuildTool.h">

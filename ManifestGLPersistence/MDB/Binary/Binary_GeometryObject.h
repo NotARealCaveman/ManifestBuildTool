@@ -1,6 +1,6 @@
 #pragma once
 
-#include <ManifestGLPersistence/MDB/Manifest_GeometryObject.h>
+#include <ManifestGLPersistence/MDB/MDB_GeometryObject.h>
 
 namespace Manifest_Persistence
 {

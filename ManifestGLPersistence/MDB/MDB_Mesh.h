@@ -2,8 +2,8 @@
 
 #include <ManifestGLPersistence/Manifest_Table.h>
 
-#include "Manifest_VertexArray.h"
-#include "Manifest_IndexArray.h"
+#include "MDB_VertexArray.h"
+#include "MDB_IndexArray.h"
 
 namespace Manifest_Persistence
 {

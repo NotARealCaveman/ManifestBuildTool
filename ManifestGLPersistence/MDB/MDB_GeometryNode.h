@@ -2,8 +2,8 @@
 
 #include <ManifestGLPersistence/Manifest_Table.h>
 
-#include "Manifest_Material.h"
-#include "Manifest_GeometryObject.h"
+#include "MDB_Material.h"
+#include "MDB_GeometryObject.h"
 
 using namespace Manifest_Parser;
 

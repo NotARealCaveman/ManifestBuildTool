@@ -165,13 +165,13 @@
     <ClCompile Include="ManifestGLPersistence\BuildTool.cpp" />
     <ClCompile Include="ManifestGLPersistence\Manifest_DatabaseBuilder.cpp" />
     <ClCompile Include="ManifestGLPersistence\MDB\Binary\Binary_Types.cpp" />
-    <ClCompile Include="ManifestGLPersistence\MDB\Manifest_Texture.cpp" />
-    <ClCompile Include="ManifestGLPersistence\MDB\Manifest_GeometryNode.cpp" />
-    <ClCompile Include="ManifestGLPersistence\MDB\Manifest_GeometryObject.cpp" />
-    <ClCompile Include="ManifestGLPersistence\MDB\Manifest_IndexArray.cpp" />
-    <ClCompile Include="ManifestGLPersistence\MDB\Manifest_Material.cpp" />
-    <ClCompile Include="ManifestGLPersistence\MDB\Manifest_Mesh.cpp" />
-    <ClCompile Include="ManifestGLPersistence\MDB\Manifest_VertexArray.cpp" />
+    <ClCompile Include="ManifestGLPersistence\MDB\MDB_Texture.cpp" />
+    <ClCompile Include="ManifestGLPersistence\MDB\MDB_GeometryNode.cpp" />
+    <ClCompile Include="ManifestGLPersistence\MDB\MDB_GeometryObject.cpp" />
+    <ClCompile Include="ManifestGLPersistence\MDB\MDB_IndexArray.cpp" />
+    <ClCompile Include="ManifestGLPersistence\MDB\MDB_Material.cpp" />
+    <ClCompile Include="ManifestGLPersistence\MDB\MDB_Mesh.cpp" />
+    <ClCompile Include="ManifestGLPersistence\MDB\MDB_VertexArray.cpp" />
     <ClCompile Include="ManifestGLPersistence\Runtime_Database.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -218,13 +218,13 @@
     <ClInclude Include="ManifestGLPersistence\MDB\Binary\Binary_Table.h" />
     <ClInclude Include="ManifestGLPersistence\MDB\Binary\Binary_Texture.h" />
     <ClInclude Include="ManifestGLPersistence\MDB\Binary\Binary_Types.h" />
-    <ClInclude Include="ManifestGLPersistence\MDB\Manifest_Texture.h" />
-    <ClInclude Include="ManifestGLPersistence\MDB\Manifest_GeometryNode.h" />
-    <ClInclude Include="ManifestGLPersistence\MDB\Manifest_GeometryObject.h" />
-    <ClInclude Include="ManifestGLPersistence\MDB\Manifest_IndexArray.h" />
-    <ClInclude Include="ManifestGLPersistence\MDB\Manifest_Material.h" />
-    <ClInclude Include="ManifestGLPersistence\MDB\Manifest_Mesh.h" />
-    <ClInclude Include="ManifestGLPersistence\MDB\Manifest_VertexArray.h" />
+    <ClInclude Include="ManifestGLPersistence\MDB\MDB_Texture.h" />
+    <ClInclude Include="ManifestGLPersistence\MDB\MDB_GeometryNode.h" />
+    <ClInclude Include="ManifestGLPersistence\MDB\MDB_GeometryObject.h" />
+    <ClInclude Include="ManifestGLPersistence\MDB\MDB_IndexArray.h" />
+    <ClInclude Include="ManifestGLPersistence\MDB\MDB_Material.h" />
+    <ClInclude Include="ManifestGLPersistence\MDB\MDB_Mesh.h" />
+    <ClInclude Include="ManifestGLPersistence\MDB\MDB_VertexArray.h" />
     <ClInclude Include="ManifestGLPersistence\ResourceFlags.h" />
     <ClInclude Include="ManifestGLPersistence\Runtime_Database.h" />
     <ClInclude Include="ManifestGLUtility\GLDefinitions.h" />

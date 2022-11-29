@@ -1,6 +1,6 @@
 #pragma once 
 
-#include <ManifestGLPersistence/MDB/Manifest_Texture.h>
+#include <ManifestGLPersistence/MDB/MDB_Texture.h>
 
 namespace Manifest_Persistence
 {	

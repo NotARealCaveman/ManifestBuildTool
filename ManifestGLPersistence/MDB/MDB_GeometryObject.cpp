@@ -1,4 +1,4 @@
-#include "Manifest_GeometryObject.h"
+#include "MDB_GeometryObject.h"
 
 using namespace Manifest_Persistence;
 
