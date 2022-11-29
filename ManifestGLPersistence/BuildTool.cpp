@@ -2,7 +2,7 @@
 
 using namespace Manifest_Persistence;
 
-void Manifest_Persistence::BuildOfflineDatabase(const DDL_File& file, ManifestDatabaseBuild& database)
+void Manifest_Persistence::BuildOfflineDatabase(const DDL_File& file, ManifestDatabaseBuilder& database)
 {		
 	std::vector<DDL_Structure> geometryObjects;
 	std::vector<DDL_Structure> materials;
@@ -31,10 +31,10 @@ void Manifest_Persistence::BuildOfflineDatabase(const DDL_File& file, ManifestDa
 	}		
 	//build geometry object and material tables first then nodes as they require references - split like this as if the database build becomes very large then these can be split into parallel parts and built together and then when complete the single thread can take over the references
 	for (const auto& geometryObject : geometryObjects)
-		TableEntry(geometryObject, database.geometryObjectTable, database.meshTable, database.vertexTables, database.indexTable);
+		TableEntry(geometryObject, database.geometryObjectBuildTable, database.meshBuildTable, database.vertexBuildTables, database.indexBuildTable);
 	for (const auto& material : materials)
-		TableEntry(material, database.materialTable, database.textureTable);
+		TableEntry(material, database.materialBuildTable, database.textureBuildTable);
 	for (const auto& geometryNode : geometryNodes)
-		TableEntry(geometryNode, database.geometryObjectTable, database.materialTable, database.geometryNodeTable, database.objectRefTable, database.materialRefTable);
+		TableEntry(geometryNode, database.geometryObjectBuildTable, database.materialBuildTable, database.geometryNodeBuildTable, database.objectRefBuildTable, database.materialRefBuildTable);
 }
 

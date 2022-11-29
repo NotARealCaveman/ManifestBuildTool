@@ -2,18 +2,18 @@
 
 using namespace Manifest_Persistence;
 
-ForeignKey Manifest_Persistence::TableEntry(const DDL_Structure& structure, const GeometryObjectTable& geometryObjectTable, ObjectRefTable& objectRefTable)
+ForeignKey Manifest_Persistence::TableEntry(const DDL_Structure& structure, const GeometryObjectBuildTable& geometryObjectBuildTable, ObjectRefBuildTable& objectRefBuildTable)
 {
-	MDB_ObjectRef& entry = objectRefTable.entries.emplace_back();
-	entry.objectRefID = objectRefTable.nextTableIndex++;
-	objectRefTable.mappedEntryKeys.insert({ structure.name,entry.objectRefID });
+	MDB_ObjectRef& entry = objectRefBuildTable.entries.emplace_back();
+	entry.objectRefID = objectRefBuildTable.nextTableIndex++;
+	objectRefBuildTable.mappedEntryKeys.insert({ structure.name,entry.objectRefID });
 	const GEX_ObjectRef& ref{ HeapData<GEX_ObjectRef>(structure) };
 	entry.numReferences = ref.referenceNames.size();
 	entry.geometryIDs = new ForeignKey[entry.numReferences];	
 	for (auto objectIndex = 0; objectIndex < entry.numReferences; ++objectIndex)
 	{
-		auto objectRef = geometryObjectTable.mappedEntryKeys.find(ref.referenceNames[objectIndex]);
-		if (objectRef != geometryObjectTable.mappedEntryKeys.end())
+		auto objectRef = geometryObjectBuildTable.mappedEntryKeys.find(ref.referenceNames[objectIndex]);
+		if (objectRef != geometryObjectBuildTable.mappedEntryKeys.end())
 			entry.geometryIDs[objectIndex] = objectRef->second;
 		else
 			entry.geometryIDs[objectIndex] = KEY_NOT_PRESENT;
@@ -22,18 +22,18 @@ ForeignKey Manifest_Persistence::TableEntry(const DDL_Structure& structure, cons
 	return entry.objectRefID;
 }
 
-ForeignKey Manifest_Persistence::TableEntry(const DDL_Structure& structure, const MaterialTable& materialTable, MaterialRefTable& materialRefTable)
+ForeignKey Manifest_Persistence::TableEntry(const DDL_Structure& structure, const MaterialBuildTable& materialBuildTable, MaterialRefBuildTable& materialRefBuildTable)
 {	
-	MDB_MaterialRef& entry = materialRefTable.entries.emplace_back();
-	entry.materialRefID = materialRefTable.nextTableIndex++;
-	materialRefTable.mappedEntryKeys.insert({ structure.name,entry.materialRefID });
+	MDB_MaterialRef& entry = materialRefBuildTable.entries.emplace_back();
+	entry.materialRefID = materialRefBuildTable.nextTableIndex++;
+	materialRefBuildTable.mappedEntryKeys.insert({ structure.name,entry.materialRefID });
 	const GEX_MaterialRef& ref{ HeapData<GEX_MaterialRef>(structure) };
 	entry.numReferences = ref.referenceNames.size();
 	entry.materialIDs = new ForeignKey[entry.numReferences];
 	for (auto objectIndex = 0; objectIndex < entry.numReferences; ++objectIndex)
 	{
-		auto objectRef = materialTable.mappedEntryKeys.find(ref.referenceNames[objectIndex]);
-		if (objectRef != materialTable.mappedEntryKeys.end())
+		auto objectRef = materialBuildTable.mappedEntryKeys.find(ref.referenceNames[objectIndex]);
+		if (objectRef != materialBuildTable.mappedEntryKeys.end())
 			*(entry.materialIDs + objectIndex) = objectRef->second;
 		else
 			*(entry.materialIDs + objectIndex) = KEY_NOT_PRESENT;
@@ -41,21 +41,21 @@ ForeignKey Manifest_Persistence::TableEntry(const DDL_Structure& structure, cons
 
 	return entry.materialRefID;
 }
-ForeignKey Manifest_Persistence::TableEntry(const DDL_Structure& structure, const GeometryObjectTable& geometryObjectTable, const MaterialTable& materialTable, GeometryNodeTable& geometryNodeTable, ObjectRefTable& objectRefTable, MaterialRefTable& materialRefTable)
+ForeignKey Manifest_Persistence::TableEntry(const DDL_Structure& structure, const GeometryObjectBuildTable& geometryObjectTable, const MaterialBuildTable& materialBuildTable, GeometryNodeBuildTable& geometryNodeBuildTable, ObjectRefBuildTable& objectRefBuildTable, MaterialRefBuildTable& materialRefBuildTable)
 {
-	MDB_GeometryNode& entry = geometryNodeTable.entries.emplace_back();
-	entry.nodeID = geometryNodeTable.nextTableIndex++;
-	geometryNodeTable.mappedEntryKeys.insert({ structure.name, entry.nodeID });
+	MDB_GeometryNode& entry = geometryNodeBuildTable.entries.emplace_back();
+	entry.nodeID = geometryNodeBuildTable.nextTableIndex++;
+	geometryNodeBuildTable.mappedEntryKeys.insert({ structure.name, entry.nodeID });
 	
 	for (const auto& substructure : structure.subSutructres)
 	{
 		switch (ExtractStructureType(substructure.identifier))
 		{
 			case GEX_BufferTypes::GEX_ObjectRef:
-				entry.objectRefID = TableEntry(substructure, geometryObjectTable, objectRefTable);
+				entry.objectRefID = TableEntry(substructure, geometryObjectTable, objectRefBuildTable);
 				break;
 			case GEX_BufferTypes::GEX_MaterialRef:
-				entry.materialRefID = TableEntry(substructure, materialTable, materialRefTable);
+				entry.materialRefID = TableEntry(substructure, materialBuildTable, materialRefBuildTable);
 				break;
 			case GEX_BufferTypes::GEX_Transform:	
 			{

@@ -15,7 +15,7 @@ namespace Manifest_Persistence
 		ForeignKey meshID = KEY_NOT_PRESENT;
 		ForeignKey morphID = KEY_NOT_PRESENT;
 	};
-	typedef DatabaseTable<MDB_GeometryObject> GeometryObjectTable;
-	ForeignKey TableEntry(const DDL_Structure& structure, GeometryObjectTable& geometryObjectTable, MeshTable& meshTable, VertexTables& vertexTables, IndexTable& indexTable);
+	typedef DatabaseBuildTable<MDB_GeometryObject> GeometryObjectBuildTable;
+	ForeignKey TableEntry(const DDL_Structure& structure, GeometryObjectBuildTable& geometryObjectBuildTable, MeshBuildTable& meshBuildTable, VertexBuildTables& vertexBuildTables, IndexBuildTable& indexBuildTable);
 	
 }

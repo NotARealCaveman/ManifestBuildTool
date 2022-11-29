@@ -19,5 +19,5 @@ namespace Manifest_Persistence
 		void* payload;//contains diffuse->normal->parallax material data
 	};
 	//see Buffer_Types.cpp for details
-	size_t Convert_MDB(const MDB_Material& material, const TextureTable& textureTable, Binary_Material& binaryMaterial);
+	size_t Convert_MDB(const MDB_Material& material, const TextureBuildTable& textureBuildTable, Binary_Material& binaryMaterial);
 }

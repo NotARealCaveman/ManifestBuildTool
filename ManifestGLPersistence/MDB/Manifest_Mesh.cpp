@@ -2,11 +2,11 @@
 
 using namespace Manifest_Persistence;
 
-ForeignKey Manifest_Persistence::TableEntry(const DDL_Structure& structure, MeshTable& meshTable, VertexTables& vertexTables, IndexTable& indexTable)
+ForeignKey Manifest_Persistence::TableEntry(const DDL_Structure& structure, MeshBuildTable& meshBuildTable, VertexBuildTables& vertexBuildTables, IndexBuildTable& indexBuildTable)
 {	
-	MDB_Mesh& entry = meshTable.entries.emplace_back();
-	entry.meshID = meshTable.nextTableIndex++; 
-	meshTable.mappedEntryKeys.insert({structure.name, entry.meshID});	
+	MDB_Mesh& entry = meshBuildTable.entries.emplace_back();
+	entry.meshID = meshBuildTable.nextTableIndex++;
+	meshBuildTable.mappedEntryKeys.insert({structure.name, entry.meshID});
 
 	for (const auto& substructure : structure.subSutructres)
 	{
@@ -17,19 +17,19 @@ ForeignKey Manifest_Persistence::TableEntry(const DDL_Structure& structure, Mesh
 				auto& vaIDs = entry.vertexArrayIDs;
 				auto bufferIndex{ HeapData<GEX_VertexArray>(substructure).bufferIndex };
 				if (bufferIndex == 0)
-					vaIDs.vertexID = TableEntry(substructure, vertexTables.vertexTable);
+					vaIDs.vertexID = TableEntry(substructure, vertexBuildTables.vertexTable);
 				else if (bufferIndex == 1)
-					vaIDs.uvID = TableEntry(substructure, vertexTables.uvTable);
+					vaIDs.uvID = TableEntry(substructure, vertexBuildTables.uvTable);
 				else if (bufferIndex == 2)
-					vaIDs.normalID = TableEntry(substructure, vertexTables.normalTable);
+					vaIDs.normalID = TableEntry(substructure, vertexBuildTables.normalTable);
 				else if (bufferIndex == 3)
-					vaIDs.tangentID = TableEntry(substructure, vertexTables.tangentTable);
+					vaIDs.tangentID = TableEntry(substructure, vertexBuildTables.tangentTable);
 				else if (bufferIndex == 4)
-					vaIDs.bitangentID = TableEntry(substructure, vertexTables.bitangentTable);
+					vaIDs.bitangentID = TableEntry(substructure, vertexBuildTables.bitangentTable);
 				break;
 			}				
 			case GEX_BufferTypes::GEX_IndexArray:
-				entry.indexArrayID = TableEntry(substructure, indexTable);
+				entry.indexArrayID = TableEntry(substructure, indexBuildTable);
 				break;
 			DEFAULT_BREAK
 		}

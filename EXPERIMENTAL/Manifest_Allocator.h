@@ -28,4 +28,9 @@ namespace Manifest_Memory
 			size_t heapSizeInBytes;
 			size_t maxHeapOffset;				
 	};
+
+	struct RefArray
+	{
+		int refs[3];
+	};
 };

@@ -161,8 +161,9 @@
     <ClCompile Include="ManifestGLParser\OpenGEX\GEX_Transform.cpp" />
     <ClCompile Include="ManifestGLParser\OpenGEX_Parser.cpp" />
     <ClCompile Include="ManifestGLParser\RegisteredGeneraters.cpp" />
+    <ClCompile Include="ManifestGLPersistence\Binary_Database.cpp" />
     <ClCompile Include="ManifestGLPersistence\BuildTool.cpp" />
-    <ClCompile Include="ManifestGLPersistence\Manifest_Database.cpp" />
+    <ClCompile Include="ManifestGLPersistence\Manifest_DatabaseBuilder.cpp" />
     <ClCompile Include="ManifestGLPersistence\MDB\Binary\Binary_Types.cpp" />
     <ClCompile Include="ManifestGLPersistence\MDB\Manifest_Texture.cpp" />
     <ClCompile Include="ManifestGLPersistence\MDB\Manifest_GeometryNode.cpp" />
@@ -171,6 +172,7 @@
     <ClCompile Include="ManifestGLPersistence\MDB\Manifest_Material.cpp" />
     <ClCompile Include="ManifestGLPersistence\MDB\Manifest_Mesh.cpp" />
     <ClCompile Include="ManifestGLPersistence\MDB\Manifest_VertexArray.cpp" />
+    <ClCompile Include="ManifestGLPersistence\Runtime_Database.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EXPERIMENTAL\Manifest_Allocator.h" />
@@ -203,10 +205,11 @@
     <ClInclude Include="ManifestGLParser\OpenGEX_Parser.h" />
     <ClInclude Include="ManifestGLParser\RegisteredBuilders.h" />
     <ClInclude Include="ManifestGLParser\RegisteredGenerators.h" />
+    <ClInclude Include="ManifestGLPersistence\Binary_Database.h" />
     <ClInclude Include="ManifestGLPersistence\BuildTool.h" />
     <ClInclude Include="ManifestGLPersistence\DatabaseTypes.h" />
     <ClInclude Include="ManifestGLPersistence\Database_Flags.h" />
-    <ClInclude Include="ManifestGLPersistence\Manifest_Database.h" />
+    <ClInclude Include="ManifestGLPersistence\Manifest_DatabaseBuilder.h" />
     <ClInclude Include="ManifestGLPersistence\Manifest_Table.h" />
     <ClInclude Include="ManifestGLPersistence\MDB\Binary\Binary_GeometryNode.h" />
     <ClInclude Include="ManifestGLPersistence\MDB\Binary\Binary_GeometryObject.h" />
@@ -223,6 +226,7 @@
     <ClInclude Include="ManifestGLPersistence\MDB\Manifest_Mesh.h" />
     <ClInclude Include="ManifestGLPersistence\MDB\Manifest_VertexArray.h" />
     <ClInclude Include="ManifestGLPersistence\ResourceFlags.h" />
+    <ClInclude Include="ManifestGLPersistence\Runtime_Database.h" />
     <ClInclude Include="ManifestGLUtility\GLDefinitions.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

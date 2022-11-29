@@ -14,11 +14,11 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_GeometryObject& geometryObjec
 }
 
 //GeometryNode
-size_t Manifest_Persistence::Convert_MDB(const MDB_GeometryNode& geometryNode, const ObjectRefTable& objectRefTable, const MaterialRefTable& materialRefTable, Binary_GeometryNode& binaryGeometryNode)
+size_t Manifest_Persistence::Convert_MDB(const MDB_GeometryNode& geometryNode, const ObjectRefBuildTable& objectRefBuildTable, const MaterialRefBuildTable& materialRefBuildTable, Binary_GeometryNode& binaryGeometryNode)
 {		
 	binaryGeometryNode.header.nodeID - geometryNode.nodeID;
-	binaryGeometryNode.header.geometryID = *objectRefTable.entries[geometryNode.objectRefID].geometryIDs;
-	binaryGeometryNode.header.materialID = *materialRefTable.entries[geometryNode.materialRefID].materialIDs;	
+	binaryGeometryNode.header.geometryID = *objectRefBuildTable.entries[geometryNode.objectRefID].geometryIDs;
+	binaryGeometryNode.header.materialID = *materialRefBuildTable.entries[geometryNode.materialRefID].materialIDs;
 	if (geometryNode.transform != BUFFER_NOT_PRESENT)
 	{
 		binaryGeometryNode.header.payloadSize =  TransformSize;
@@ -29,10 +29,10 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_GeometryNode& geometryNode, c
 };
 
 //Material
-size_t Manifest_Persistence::Convert_MDB(const MDB_Material& material, const TextureTable& textureTable, Binary_Material& binaryMaterial)
+size_t Manifest_Persistence::Convert_MDB(const MDB_Material& material, const TextureBuildTable& textureBuildTable, Binary_Material& binaryMaterial)
 {	
 	binaryMaterial.header.materialID = material.materialID;
-	for (const auto& texture : textureTable.entries)
+	for (const auto& texture : textureBuildTable.entries)
 		if (texture.materialID == material.materialID)
 		{
 			switch (texture.textureType)
@@ -89,7 +89,7 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_Texture& texture, Binary_Text
 }
 
 //Mesh
-size_t Manifest_Persistence::Convert_MDB(const MDB_Mesh& mesh, const VertexTables& vertexTables, const IndexTable& indexTable, Binary_Mesh& binaryMesh)
+size_t Manifest_Persistence::Convert_MDB(const MDB_Mesh& mesh, const VertexBuildTables& vertexBuildTables, const IndexBuildTable& indexTable, Binary_Mesh& binaryMesh)
 {
 	binaryMesh.header.meshID = mesh.meshID;
 	const auto& vertexTableIndices = mesh.vertexArrayIDs;
@@ -99,7 +99,7 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_Mesh& mesh, const VertexTable
 	std::vector<float> tempVertices;
 	if (vertexTableIndices.vertexID != KEY_NOT_PRESENT)
 	{
-		vertices = &vertexTables.vertexTable.entries[vertexTableIndices.vertexID];
+		vertices = &vertexBuildTables.vertexTable.entries[vertexTableIndices.vertexID];
 		tempVertices.resize(vertices->elements);
 		memcpy(tempVertices.data(), vertices->vertexData, sizeof(float) * vertices->elements);
 		binaryMesh.header.payloadSize += vertices->elements;
@@ -111,7 +111,7 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_Mesh& mesh, const VertexTable
 	std::vector<float> tempUVs;
 	if (vertexTableIndices.uvID != KEY_NOT_PRESENT)
 	{
-		uvs = &vertexTables.uvTable.entries[vertexTableIndices.uvID];
+		uvs = &vertexBuildTables.uvTable.entries[vertexTableIndices.uvID];
 		tempUVs.resize(uvs->elements);
 		memcpy(tempUVs.data(), uvs->vertexData, sizeof(float) * uvs->elements);
 		binaryMesh.header.payloadSize += uvs->elements;
@@ -123,7 +123,7 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_Mesh& mesh, const VertexTable
 	std::vector<float> tempNormals;
 	if (vertexTableIndices.normalID != KEY_NOT_PRESENT)
 	{
-		normals = &vertexTables.normalTable.entries[vertexTableIndices.normalID];
+		normals = &vertexBuildTables.normalTable.entries[vertexTableIndices.normalID];
 		tempNormals.resize(normals->elements);
 		memcpy(tempNormals.data(), normals->vertexData, sizeof(float) * normals->elements);
 		binaryMesh.header.payloadSize += normals->elements;
@@ -135,7 +135,7 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_Mesh& mesh, const VertexTable
 	std::vector<float> tempTangents;
 	if (vertexTableIndices.tangentID != KEY_NOT_PRESENT)
 	{
-		tangents = &vertexTables.tangentTable.entries[vertexTableIndices.tangentID];
+		tangents = &vertexBuildTables.tangentTable.entries[vertexTableIndices.tangentID];
 		tempTangents.resize(tangents->elements);
 		memcpy(tempTangents.data(), tangents->vertexData, sizeof(float) * tangents->elements);
 		binaryMesh.header.payloadSize += tangents->elements;
@@ -147,7 +147,7 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_Mesh& mesh, const VertexTable
 	std::vector<float> tempBitangents;
 	if (vertexTableIndices.bitangentID != KEY_NOT_PRESENT)
 	{
-		bitangents = &vertexTables.bitangentTable.entries[vertexTableIndices.bitangentID];
+		bitangents = &vertexBuildTables.bitangentTable.entries[vertexTableIndices.bitangentID];
 		tempBitangents.resize(bitangents->elements);
 		memcpy(tempBitangents.data(), bitangents->vertexData, sizeof(float) * bitangents->elements);
 		binaryMesh.header.payloadSize += bitangents->elements;

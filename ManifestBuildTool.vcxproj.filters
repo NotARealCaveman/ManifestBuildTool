@@ -153,7 +153,7 @@
     <ClCompile Include="ManifestGLPersistence\BuildTool.cpp">
       <Filter>Source Files\Persistence</Filter>
     </ClCompile>
-    <ClCompile Include="ManifestGLPersistence\Manifest_Database.cpp">
+    <ClCompile Include="ManifestGLPersistence\Manifest_DatabaseBuilder.cpp">
       <Filter>Source Files\Persistence</Filter>
     </ClCompile>
     <ClCompile Include="ManifestGLPersistence\MDB\Binary\Binary_Types.cpp">
@@ -161,6 +161,12 @@
     </ClCompile>
     <ClCompile Include="EXPERIMENTAL\Manifect_Allocator.cpp">
       <Filter>Source Files\EXPERIMENTAL</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestGLPersistence\Binary_Database.cpp">
+      <Filter>Source Files\Persistence</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestGLPersistence\Runtime_Database.cpp">
+      <Filter>Source Files\Persistence</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -278,7 +284,7 @@
     <ClInclude Include="ManifestGLPersistence\DatabaseTypes.h">
       <Filter>Header Files\Persistence</Filter>
     </ClInclude>
-    <ClInclude Include="ManifestGLPersistence\Manifest_Database.h">
+    <ClInclude Include="ManifestGLPersistence\Manifest_DatabaseBuilder.h">
       <Filter>Header Files\Persistence</Filter>
     </ClInclude>
     <ClInclude Include="ManifestGLPersistence\Manifest_Table.h">
@@ -316,6 +322,12 @@
     </ClInclude>
     <ClInclude Include="ManifestGLUtility\GLDefinitions.h">
       <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestGLPersistence\Binary_Database.h">
+      <Filter>Header Files\Persistence</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestGLPersistence\Runtime_Database.h">
+      <Filter>Header Files\Persistence</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

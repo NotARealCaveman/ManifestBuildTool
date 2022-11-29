@@ -13,6 +13,6 @@ namespace Manifest_Persistence
 		uint32_t* indexData = BUFFER_NOT_PRESENT;
 		size_t elements = 0;
 	};
-	typedef DatabaseTable<MDB_IndexArray> IndexTable;
-	ForeignKey TableEntry(const DDL_Structure& structure, IndexTable& indexTable);
+	typedef DatabaseBuildTable<MDB_IndexArray> IndexBuildTable;
+	ForeignKey TableEntry(const DDL_Structure& structure, IndexBuildTable& indexBuildTable);
 }

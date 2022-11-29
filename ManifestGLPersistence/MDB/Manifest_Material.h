@@ -11,6 +11,6 @@ namespace Manifest_Persistence
 	{
 		PrimaryKey materialID = KEY_NOT_PRESENT;		
 	};
-	typedef DatabaseTable<MDB_Material> MaterialTable;
-	ForeignKey TableEntry(const DDL_Structure& structure, MaterialTable& materialTable, TextureTable& colorTable);
+	typedef DatabaseBuildTable<MDB_Material> MaterialBuildTable;
+	ForeignKey TableEntry(const DDL_Structure& structure, MaterialBuildTable& materialBuildTable, TextureBuildTable& textureBuildTable);
 }

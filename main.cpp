@@ -3,7 +3,7 @@
 #include <ManifestGLParser/OpenGEX_Parser.h>
 #include <ManifestGLPersistence/BuildTool.h>
 #include <ManifestGLUtility/Console_Color.h>
-#include <ManifestGLPersistence/MDB/Binary/Binary_Types.h>
+#include <ManifestGLPersistence/Manifest_DatabaseBuilder.h>
 
 #include <EXPERIMENTAL/Manifest_Allocator.h>
 
@@ -34,28 +34,28 @@ int main()
 		ParseDDLFile("", fileObject);
 
 		//build offline database
-		ManifestDatabaseBuild database;
-		BuildOfflineDatabase(fileObject, database);
+		ManifestDatabaseBuilder databaseBuilder;
+		BuildOfflineDatabase(fileObject, databaseBuilder);
 		//export conversion
 
 		//export
 		std::ofstream bExport{ "C:\\Users\\Droll\\Desktop\\Game\\testoimng\\TEST.mdb", std::ios::out | std::ios::binary };
 		if (bExport.is_open())
 		{
-			ExportRuntimeDatabase(database, bExport);
+			ExportRuntimeDatabase(databaseBuilder, bExport);
 			bExport.close();
 		}
 		//test import 
 		std::ifstream bImport{ "C:\\Users\\Droll\\Desktop\\Game\\testoimng\\TEST.mdb", std::ios::in | std::ios::binary };
-		ManifestRuntimeDatabase runtimeDatabase = ImportRuntimeDatabase(bImport);		
+		ManifestBinaryDatabase binaryDatabase  = ImportBinaryDatabase(bImport);
 		{
-			for (auto i = 0; i < runtimeDatabase.binaryGeometryNodeTable.header.totalEntries; ++i)
+			for (auto i = 0; i < binaryDatabase.binaryGeometryNodeTable.header.totalEntries; ++i)
 			{
-				const auto& importObject = runtimeDatabase.binaryGeometryNodeTable[i];
-				const auto& importGeometry = runtimeDatabase.binaryGeometryObjectTable[importObject.header.geometryID];
-				const auto& importMesh = runtimeDatabase.binaryMeshTable[importGeometry.header.meshID];
-				const auto& importMaterial = runtimeDatabase.binaryMaterialTable[importObject.header.materialID];
-				const auto& importTexture = runtimeDatabase.binaryTextureTable[importMaterial.header.diffuseID];
+				const auto& importObject = binaryDatabase.binaryGeometryNodeTable[i];
+				const auto& importGeometry = binaryDatabase.binaryGeometryObjectTable[importObject.header.geometryID];
+				const auto& importMesh = binaryDatabase.binaryMeshTable[importGeometry.header.meshID];
+				const auto& importMaterial = binaryDatabase.binaryMaterialTable[importObject.header.materialID];
+				const auto& importTexture = binaryDatabase.binaryTextureTable[importMaterial.header.diffuseID];
 				DLOG(37, "Reading from file:" << i);
 				DLOG(33, "Mesh Stride:" << importMesh.header.vboStride << " AttributeCode: " << +importMesh.header.activeArrayAttributes << " Vertex Buffer Size: " << importMesh.header.payloadSize << " bytes Vertex Buffer Elements: " << importMesh.header.payloadSize / sizeof(float) << " texture channels: " << +importTexture.header.nChannels <<" texture size: " << +importTexture.header.payloadSize);
 

@@ -11,11 +11,11 @@ const std::map<std::string, MFu8> TextureTypes::textureTypeMap
 
 //TABLE INCLUDES COMPOSITE KEY: BITS 0-60 KEY WARD(size) BITS 61-63 KEY BOW(nChannels)
 //TABLE INCLUDES COMPOSITE KEY: BITS 0-31 KEY WARD(width) BITS 32-63 KEY BOW(height)
-void Manifest_Persistence::TableEntry(const DDL_Structure& structure, const ForeignKey& materialID, TextureTable& textureTable)
+void Manifest_Persistence::TableEntry(const DDL_Structure& structure, const ForeignKey& materialID, TextureBuildTable& textureBuildTable)
 {	
-	MDB_Texture& entry = textureTable.entries.emplace_back();
-	entry.textureID = textureTable.nextTableIndex++;	
-	textureTable.mappedEntryKeys.insert({ structure.name,entry.textureID });	
+	MDB_Texture& entry = textureBuildTable.entries.emplace_back();
+	entry.textureID = textureBuildTable.nextTableIndex++;
+	textureBuildTable.mappedEntryKeys.insert({ structure.name,entry.textureID });
 	entry.materialID = materialID;
 	switch (DDL_BufferTypes::DDL_BufferTypeMap.find(structure.identifier)->second)
 	{

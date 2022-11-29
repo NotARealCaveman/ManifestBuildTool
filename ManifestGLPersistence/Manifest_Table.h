@@ -8,7 +8,7 @@
 namespace Manifest_Persistence
 {	
 	template<typename MDB_TableType>
-	struct DatabaseTable
+	struct DatabaseBuildTable
 	{
 		std::map<std::string,PrimaryKey> mappedEntryKeys;
 		std::vector<MDB_TableType> entries;

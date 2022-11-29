@@ -14,15 +14,15 @@ namespace Manifest_Persistence
 		size_t elements = 0;
 	};
 
-	typedef DatabaseTable<MDB_VertexArray> VertexArrayTable;
-	ForeignKey TableEntry(const DDL_Structure& structure, VertexArrayTable& vertexArrayTable);
-	typedef VertexArrayTable VertexTable;
-	typedef VertexArrayTable UVTable;
-	typedef VertexArrayTable NormalTable;
-	typedef VertexArrayTable TangentTable;
-	typedef VertexArrayTable BitangentTable;
+	typedef DatabaseBuildTable<MDB_VertexArray> VertexArrayBuildTable;
+	ForeignKey TableEntry(const DDL_Structure& structure, VertexArrayBuildTable& vertexArrayBuildTable);
+	typedef VertexArrayBuildTable VertexTable;
+	typedef VertexArrayBuildTable UVTable;
+	typedef VertexArrayBuildTable NormalTable;
+	typedef VertexArrayBuildTable TangentTable;
+	typedef VertexArrayBuildTable BitangentTable;
 
-	struct VertexTables
+	struct VertexBuildTables
 	{
 		VertexTable vertexTable;
 		UVTable uvTable;

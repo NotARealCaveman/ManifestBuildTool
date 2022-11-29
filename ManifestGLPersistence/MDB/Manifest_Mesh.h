@@ -14,6 +14,6 @@ namespace Manifest_Persistence
 		VertexArrayIDs vertexArrayIDs;
 		ForeignKey indexArrayID;
 	}; 
-	typedef DatabaseTable<MDB_Mesh> MeshTable;
-	ForeignKey TableEntry(const DDL_Structure& structure, MeshTable& meshTable, VertexTables& vertexyTables, IndexTable& indexTable);
+	typedef DatabaseBuildTable<MDB_Mesh> MeshBuildTable;
+	ForeignKey TableEntry(const DDL_Structure& structure, MeshBuildTable& meshBuildTable, VertexBuildTables& vertexyBuildTables, IndexBuildTable& indexBuildTable);
 }

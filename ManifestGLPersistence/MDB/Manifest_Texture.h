@@ -39,6 +39,6 @@ namespace Manifest_Persistence
 		float* channelData = BUFFER_NOT_PRESENT;		
 	};
 
-	typedef DatabaseTable<MDB_Texture> TextureTable;
-	void TableEntry(const DDL_Structure& structure,  const ForeignKey& materialID, TextureTable& textureTable);
+	typedef DatabaseBuildTable<MDB_Texture> TextureBuildTable;
+	void TableEntry(const DDL_Structure& structure,  const ForeignKey& materialID, TextureBuildTable& textureBuildTable);
 }

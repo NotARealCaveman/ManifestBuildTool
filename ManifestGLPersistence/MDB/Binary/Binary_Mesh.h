@@ -17,5 +17,5 @@ namespace Manifest_Persistence
 		float* payload;
 	};
 	//see Buffer_Types.cpp for details
-	size_t Convert_MDB(const MDB_Mesh& mesh, const VertexTables& vertexTables, const IndexTable& indexTable, Binary_Mesh& binaryMesh);		
+	size_t Convert_MDB(const MDB_Mesh& mesh, const VertexBuildTables& vertexBuildTables, const IndexBuildTable& indexBuildTable, Binary_Mesh& binaryMesh);
 }
