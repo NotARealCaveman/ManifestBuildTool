@@ -17,5 +17,5 @@ namespace Manifest_Persistence
 		TextureBuildTable textureBuildTable;
 	};	
 
-	void ExportRuntimeDatabase(const ManifestDatabaseBuilder& databaseBuild, std::ofstream& exportFile);
+	void ExportBinaryDatabase(const ManifestDatabaseBuilder& databaseBuild, std::ofstream& exportFile);
 }

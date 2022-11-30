@@ -13,4 +13,3 @@ ForeignKey Manifest_Persistence::TableEntry(const DDL_Structure& structure, Inde
 	memcpy(entry.indexData, bufferData.typeHeap, entry.elements * sizeof(uint32_t));
 	return entry.indexArrayID;
 }
-

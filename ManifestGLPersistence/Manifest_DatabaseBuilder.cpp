@@ -3,7 +3,7 @@
 using namespace Manifest_Persistence;
 
 
-void Manifest_Persistence::ExportRuntimeDatabase(const ManifestDatabaseBuilder& databaseBuild, std::ofstream& exportFile)
+void Manifest_Persistence::ExportBinaryDatabase(const ManifestDatabaseBuilder& databaseBuild, std::ofstream& exportFile)
 {
 	//TODO: ADD TABLE HEADER FOR QUICK LOOK UP - SEE [] OVERLOAD IN TABLE FOR AN EXAMPLE
 	//--		
