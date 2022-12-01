@@ -10,13 +10,14 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_GeometryObject& geometryObjec
 	binaryGeometryObject.header.geometryID = geometryObject.geometryID;
 	binaryGeometryObject.header.meshID = geometryObject.meshID;
 	binaryGeometryObject.header.morphID = geometryObject.morphID;
+	DLOG(31, "Converting mdb_go with gID, mID, morphID : " << geometryObject.geometryID << " " << geometryObject.meshID << " " << geometryObject.morphID);
 	return EntrySize(binaryGeometryObject);
 }
 
 //GeometryNode
 size_t Manifest_Persistence::Convert_MDB(const MDB_GeometryNode& geometryNode, const ObjectRefBuildTable& objectRefBuildTable, const MaterialRefBuildTable& materialRefBuildTable, Binary_GeometryNode& binaryGeometryNode)
 {		
-	binaryGeometryNode.header.nodeID - geometryNode.nodeID;
+	binaryGeometryNode.header.nodeID = geometryNode.nodeID;
 	binaryGeometryNode.header.geometryID = *objectRefBuildTable.entries[geometryNode.objectRefID].geometryIDs;
 	binaryGeometryNode.header.materialID = *materialRefBuildTable.entries[geometryNode.materialRefID].materialIDs;
 	if (geometryNode.transform != BUFFER_NOT_PRESENT)
@@ -24,7 +25,8 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_GeometryNode& geometryNode, c
 		binaryGeometryNode.header.payloadSize =  TransformSize;
 		binaryGeometryNode.payload = new float[TransformSize];
 		memcpy(binaryGeometryNode.payload, geometryNode.transform, sizeof(float) * TransformSize);
-	}
+	}	
+	DLOG(32, "Converting mdb_gn with nID, gID, mtlID: " << geometryNode.nodeID <<" " << binaryGeometryNode.header.geometryID << " " << binaryGeometryNode.header.materialID);
 	return EntrySize(binaryGeometryNode);
 };
 
@@ -44,12 +46,12 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_Material& material, const Tex
 					binaryMaterial.header.noramlID = texture.textureID;
 					break;
 				case TextureTypes::PARALLAX_TEXTURE:
-					binaryMaterial.header.parallaxID= texture.textureID;
+					binaryMaterial.header.parallaxID = texture.textureID;
 					break;
 				DEFAULT_BREAK
 			}
 		}
-
+	DLOG(33, "Converting mdb_mtl with mtlID, tdID, tnID, tpID: " << material.materialID << " " << binaryMaterial.header.diffuseID << " " << binaryMaterial.header.noramlID << " "<< binaryMaterial.header.parallaxID);
 	return EntrySize(binaryMaterial);
 }
 
@@ -85,6 +87,7 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_Texture& texture, Binary_Text
 	binaryTexture.payload = new float[binaryTexture.header.payloadSize];	
 	memcpy(binaryTexture.payload, texture.channelData, (binaryTexture.header.payloadSize*=sizeof(float)));
 
+	DLOG(34, "Converting mdb_texture with tID: " << texture.textureID);
 	return EntrySize(binaryTexture);
 }
 
@@ -194,6 +197,6 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_Mesh& mesh, const VertexBuild
 	//convert to total bytes
 	binaryMesh.header.payloadSize *= sizeof(float);
 
-
+	DLOG(35, "Converting mdb_mesh with mID: " << mesh.meshID);
 	return EntrySize(binaryMesh);
 }

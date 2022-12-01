@@ -6,8 +6,7 @@ ForeignKey Manifest_Persistence::TableEntry(const DDL_Structure& structure, Geom
 {		
 	MDB_GeometryObject& entry = geometryObjectBuildTable.entries.emplace_back();
 	entry.geometryID = geometryObjectBuildTable.nextTableIndex++;
-	geometryObjectBuildTable.mappedEntryKeys.insert({ structure.name,entry.geometryID });
-	entry.geometryID = geometryObjectBuildTable.nextTableIndex++;
+	geometryObjectBuildTable.mappedEntryKeys.insert({ structure.name,entry.geometryID });	
 	for (const auto& substructure : structure.subSutructres)
 	{
 		switch (ExtractStructureType(substructure.identifier))

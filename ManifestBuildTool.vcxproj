@@ -141,7 +141,6 @@
     <ClCompile Include="EXPERIMENTAL\Manifect_Allocator.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ManifestGLParser\FileFilter.cpp" />
-    <ClCompile Include="ManifestGLParser\GEX_Material.cpp" />
     <ClCompile Include="ManifestGLParser\OpenDDL\DDL_Buffers.cpp" />
     <ClCompile Include="ManifestGLParser\OpenDDL\DDL_Primitives.cpp" />
     <ClCompile Include="ManifestGLParser\OpenDDL\DDL_Reference.cpp" />

@@ -81,9 +81,6 @@
     <ClCompile Include="ManifestGLParser\OpenGEX\GEX_GeometryObject.cpp">
       <Filter>Source Files\Parser\OpenGEX</Filter>
     </ClCompile>
-    <ClCompile Include="ManifestGLParser\OpenGEX\GEX_Material.cpp">
-      <Filter>Source Files\Parser\OpenGEX</Filter>
-    </ClCompile>
     <ClCompile Include="ManifestGLParser\OpenGEX\GEX_Mesh.cpp">
       <Filter>Source Files\Parser\OpenGEX</Filter>
     </ClCompile>
@@ -115,9 +112,6 @@
       <Filter>Source Files\Parser\OpenGEX</Filter>
     </ClCompile>
     <ClCompile Include="ManifestGLParser\FileFilter.cpp">
-      <Filter>Source Files\Parser</Filter>
-    </ClCompile>
-    <ClCompile Include="ManifestGLParser\GEX_Material.cpp">
       <Filter>Source Files\Parser</Filter>
     </ClCompile>
     <ClCompile Include="ManifestGLParser\OpenDDL_Parser.cpp">
@@ -170,6 +164,9 @@
     </ClCompile>
     <ClCompile Include="EXPERIMENTAL\EXPERIMENTAL_RUNTIME_DATA_STRUCTURES.cpp">
       <Filter>Source Files\EXPERIMENTAL</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestGLParser\OpenGEX\GEX_Material.cpp">
+      <Filter>Source Files\Parser\OpenGEX</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

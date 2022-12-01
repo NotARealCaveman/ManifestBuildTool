@@ -73,7 +73,7 @@ namespace Manifest_Persistence
 			const Binary_TableType& record{ table.entries[entry] };
 			currentExport.write(reinterpret_cast<const char*>(&record.header), sizeof(record.header));//write header data
 			currentExport.write("\0\0\0\0\0\0\0\0", sizeof(Binary_TableType*));//write storage for payload ptr - nullptr
-			currentExport.write(reinterpret_cast<const char*>(record.payload), record.header.payloadSize);//write payload
+			currentExport.write(reinterpret_cast<const char*>(record.payload), record.header.payloadSize);//write payload			
 		}
 	}
 
