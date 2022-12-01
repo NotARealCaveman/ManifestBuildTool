@@ -26,6 +26,19 @@ void RuntimeTest()
 {
 	//DISABLE	
 	{
+
+		Table<int, int> ints;
+		ints.tableEntries = ints.tableSize = 3;
+		ints.keys = new int[ints.tableSize]; ints.keys[0] = 3; ints.keys[1] = 4; ints.keys[2] = 5;
+		ints.values = new int[ints.tableSize]; ints.values[0] = 0; ints.values[1] = 1; ints.values[2] = 2;
+
+		DLOG(34, "values: " << ints.values << " keys: " << ints.keys);
+		std::for_each(ints.begin<>(), ints.end<>(), [](const auto& i) {DLOG(31 , i << " " << &i); });
+		DLOG(35, "begin<values>: " << ints.begin<>() << " end: " << ints.begin<>());
+		std::for_each(ints.begin<false>(), ints.end<false>(), [](const auto& i) {DLOG(32, i << " " << &i); });
+		DLOG(35, "begin<keys>: " << ints.begin<false>() <<" end: " << ints.begin<false>());
+
+
 		const auto nNodes{ 5 };
 		const auto nMeshes{ 3 };
 		const auto nMaterials{ 3 };
@@ -42,8 +55,8 @@ void RuntimeTest()
 		//textures
 		graphicResources.tIDs.tableSize = nMeshes;
 		graphicResources.tIDs.tableEntries = 0;
-		graphicResources.tIDs.keys = new UniqueKey[nMeshes];
-		graphicResources.tIDs.values = new MFu32[nNodes];
+		graphicResources.tIDs.keys = new UniqueKey[nMaterials];
+		graphicResources.tIDs.values = new MFu32[nMaterials];
 
 
 
@@ -82,11 +95,31 @@ void RuntimeTest()
 			auto& tIDTable = graphicResources.tIDs;
 			begin = tIDTable.begin<PrimaryKey>();
 			end = tIDTable.end<PrimaryKey>();
-
-			
-			DLOG(32, "mtID: " << gnMtid << " key: " << key);
+			gnMtid = binaryDatabase.binaryGeometryNodeTable[i].header.materialID;
+			key = binaryDatabase.binaryMaterialTable[gnMtid].header.diffuseID;			
+			if (std::find(begin, end, key) == end)
+			{
+				tIDTable.keys[tIDTable.tableEntries] = key;
+				tIDTable.values[tIDTable.tableEntries] = idCounter++;
+				tIDTable.tableEntries++;
+			}/*
+			key = binaryDatabase.binaryMaterialTable[gnMtid].header.noramlID;			
+			if (std::find(begin, end, key) == end )
+			{
+				tIDTable.keys[tIDTable.tableEntries] = key;
+				tIDTable.values[tIDTable.tableEntries] = idCounter++;
+				tIDTable.tableEntries++;
+			}
+			key = binaryDatabase.binaryMaterialTable[gnMtid].header.parallaxID;			
+			if (std::find(begin, end, key) == end)
+			{
+				tIDTable.keys[tIDTable.tableEntries] = key;
+				tIDTable.values[tIDTable.tableEntries] = idCounter++;
+				tIDTable.tableEntries++;
+			}*/
 		}
-		std::for_each(graphicResources.VAOs.begin<GraphicID>(), graphicResources.VAOs.end<GraphicID>(), [](const auto& id) {DLOG(35, "ID: " << id); });
+		std::for_each(graphicResources.VAOs.begin<GraphicID>(), graphicResources.VAOs.end<GraphicID>(), [](const auto& id) {DLOG(36, "Mesh Resource ID: " << id); });
+		std::for_each(graphicResources.tIDs.begin<GraphicID>(), graphicResources.tIDs.end<GraphicID>(), [](const auto& id) {DLOG(37, "Texture Resource ID: " << id); });
 
 		ManifestRuntimeDatabase database(binaryDatabase, worldSpaces, graphicResources);
 	}
@@ -153,7 +186,7 @@ int main()
 {
 	WINDOWS_COLOR_CONSOLE;
 	
-	//DISABLE
+	DISABLE
 		BuildAndExport();
 	DISABLE
 		ImportAndTest();

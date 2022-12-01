@@ -8,9 +8,11 @@ using namespace Manifest_Persistence;
 
 namespace Manifest_Experimental
 {	
-	//unique table types
+	//table types
 	template<typename Key, typename Value>
 	concept UniqueType = !std::is_same<Key, Value>::value;
+	template<typename Key, typename Value>
+	concept EqualType = !UniqueType<Key, Value>;
 	//table iterators
 	template<typename Iterator, typename Key, typename Value>	
 	concept KeyIterator = std::is_same<Iterator, Key>::value && UniqueType<Key, Value>;
@@ -24,17 +26,17 @@ namespace Manifest_Experimental
 		MFsize tableSize;
 		Key* keys;
 		Value* values;
-
-		//default begin & end for when Type(Key)==Type(Value) - avoids branching
-		Key* begin(const bool valueSearch = false)
+		
+		//default begin for when Type(Key)==Type(Value) - avoids branching
+		//default, .begin<>(), search is for values; .begin<false>(), search is for keys
+		template <bool valueSearch = true>
+		requires EqualType<Key, Value>
+		Key* begin()
 		{
-			return keys + valueSearch * sizeof(keys);
+			Key** ptr = (&keys+valueSearch);
+			return &(*ptr)[0];
 		}
-		Key* end(const bool valueSearch = false)
-		{
-			return  (keys + valueSearch * sizeof(keys)) + tableEntries;
-		}		
-		//specialized functions for begin - fewer instructions than defualts
+		//specialized functions for begin - fewer instructions than defualt
 		template<typename Iterator>
 		requires KeyIterator<Iterator,Key, Value>
 		Iterator* begin()
@@ -47,18 +49,27 @@ namespace Manifest_Experimental
 		{
 			return values;
 		}
-		//specialized functions for end - fewer instructions than defualts
+		//default end for when Type(Key)==Type(Value) - avoids branching
+		//default, .begin<>(), search is for values; .begin<false>(), search is for keys
+		template <bool valueSearch = true>
+		requires EqualType<Key, Value>
+		Key* end()
+		{			
+			Key** ptr = (&keys + valueSearch);
+			return &(*ptr)[tableEntries];
+		}
+		//specialized functions for end - fewer instructions than defualt
 		template<typename Iterator>
 		requires KeyIterator<Iterator, Key, Value>
 		Iterator* end()
 		{
-			return keys + tableEntries;
+			return &keys[tableEntries];
 		}
 		template<typename Iterator>
 		requires ValueIterator<Iterator, Key, Value>
 		Iterator* end()
 		{
-			return values + tableEntries;
+			return &values[tableEntries];
 		}
 	};
 
