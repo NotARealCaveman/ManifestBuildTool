@@ -24,20 +24,24 @@ using namespace Manifest_Memory;
 
 void RuntimeTest()
 {
-	//DISABLE	
+	const auto& EqualTypeTest = []()
 	{
-
 		Table<int, int> ints;
 		ints.tableEntries = ints.tableSize = 3;
 		ints.keys = new int[ints.tableSize]; ints.keys[0] = 3; ints.keys[1] = 4; ints.keys[2] = 5;
 		ints.values = new int[ints.tableSize]; ints.values[0] = 0; ints.values[1] = 1; ints.values[2] = 2;
 
 		DLOG(34, "values: " << ints.values << " keys: " << ints.keys);
-		std::for_each(ints.begin<>(), ints.end<>(), [](const auto& i) {DLOG(31 , i << " " << &i); });
+		std::for_each(ints.begin<>(), ints.end<>(), [](const auto& i) {DLOG(31, i << " " << &i); });
 		DLOG(35, "begin<values>: " << ints.begin<>() << " end: " << ints.begin<>());
 		std::for_each(ints.begin<false>(), ints.end<false>(), [](const auto& i) {DLOG(32, i << " " << &i); });
-		DLOG(35, "begin<keys>: " << ints.begin<false>() <<" end: " << ints.begin<false>());
+		DLOG(35, "begin<keys>: " << ints.begin<false>() << " end: " << ints.begin<false>());
+	};
+	DISABLE
+		EqualTypeTest();
 
+	//DISABLE	
+	{		
 
 		const auto nNodes{ 5 };
 		const auto nMeshes{ 3 };
@@ -97,26 +101,27 @@ void RuntimeTest()
 			end = tIDTable.end<PrimaryKey>();
 			gnMtid = binaryDatabase.binaryGeometryNodeTable[i].header.materialID;
 			key = binaryDatabase.binaryMaterialTable[gnMtid].header.diffuseID;			
-			if (std::find(begin, end, key) == end)
-			{
-				tIDTable.keys[tIDTable.tableEntries] = key;
-				tIDTable.values[tIDTable.tableEntries] = idCounter++;
-				tIDTable.tableEntries++;
-			}/*
-			key = binaryDatabase.binaryMaterialTable[gnMtid].header.noramlID;			
-			if (std::find(begin, end, key) == end )
+			if (std::find(begin, end, key) == end && key != KEY_NOT_PRESENT)
 			{
 				tIDTable.keys[tIDTable.tableEntries] = key;
 				tIDTable.values[tIDTable.tableEntries] = idCounter++;
 				tIDTable.tableEntries++;
 			}
+			key = binaryDatabase.binaryMaterialTable[gnMtid].header.noramlID;			
+			if ((std::find(begin, end, key)== end) && (key != KEY_NOT_PRESENT))
+			{
+				DLOG(36, "(key != KEY_NOT_PRESENT): " << (key != KEY_NOT_PRESENT) << ": " << "(" << key << " != " << KEY_NOT_PRESENT<<")");
+				tIDTable.keys[tIDTable.tableEntries] = key;
+				tIDTable.values[tIDTable.tableEntries] = idCounter++;
+				tIDTable.tableEntries++;
+			}			
 			key = binaryDatabase.binaryMaterialTable[gnMtid].header.parallaxID;			
-			if (std::find(begin, end, key) == end)
+			if (std::find(begin, end, key) == end && key != KEY_NOT_PRESENT)
 			{
 				tIDTable.keys[tIDTable.tableEntries] = key;
 				tIDTable.values[tIDTable.tableEntries] = idCounter++;
 				tIDTable.tableEntries++;
-			}*/
+			}
 		}
 		std::for_each(graphicResources.VAOs.begin<GraphicID>(), graphicResources.VAOs.end<GraphicID>(), [](const auto& id) {DLOG(36, "Mesh Resource ID: " << id); });
 		std::for_each(graphicResources.tIDs.begin<GraphicID>(), graphicResources.tIDs.end<GraphicID>(), [](const auto& id) {DLOG(37, "Texture Resource ID: " << id); });
@@ -186,11 +191,12 @@ int main()
 {
 	WINDOWS_COLOR_CONSOLE;
 	
-	DISABLE
+	//DISABLE
 		BuildAndExport();
 	DISABLE
 		ImportAndTest();
-	RuntimeTest();
+	//DISABLE
+		RuntimeTest();
 	
 	return 0;
 }

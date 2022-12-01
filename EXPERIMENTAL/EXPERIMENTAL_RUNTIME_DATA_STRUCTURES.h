@@ -31,21 +31,20 @@ namespace Manifest_Experimental
 		//default, .begin<>(), search is for values; .begin<false>(), search is for keys
 		template <bool valueSearch = true>
 		requires EqualType<Key, Value>
-		Key* begin()
-		{
-			Key** ptr = (&keys+valueSearch);
-			return &(*ptr)[0];
+		inline Key* begin()
+		{			
+			return &(keys + valueSearch)[0];
 		}
 		//specialized functions for begin - fewer instructions than defualt
 		template<typename Iterator>
 		requires KeyIterator<Iterator,Key, Value>
-		Iterator* begin()
+		inline Iterator* begin()
 		{
 			return keys;
 		}
 		template<typename Iterator>
 		requires ValueIterator<Iterator, Key, Value>
-		Iterator* begin()
+		inline Iterator* begin()
 		{
 			return values;
 		}
@@ -53,21 +52,20 @@ namespace Manifest_Experimental
 		//default, .begin<>(), search is for values; .begin<false>(), search is for keys
 		template <bool valueSearch = true>
 		requires EqualType<Key, Value>
-		Key* end()
-		{			
-			Key** ptr = (&keys + valueSearch);
-			return &(*ptr)[tableEntries];
+		inline Key* end()
+		{						
+			return &(keys + valueSearch)[tableEntries];
 		}
 		//specialized functions for end - fewer instructions than defualt
 		template<typename Iterator>
 		requires KeyIterator<Iterator, Key, Value>
-		Iterator* end()
+		inline Iterator* end()
 		{
 			return &keys[tableEntries];
 		}
 		template<typename Iterator>
 		requires ValueIterator<Iterator, Key, Value>
-		Iterator* end()
+		inline Iterator* end()
 		{
 			return &values[tableEntries];
 		}
