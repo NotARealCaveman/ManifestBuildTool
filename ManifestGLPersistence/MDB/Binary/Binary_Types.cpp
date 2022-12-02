@@ -21,10 +21,9 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_GeometryNode& geometryNode, c
 	binaryGeometryNode.header.geometryID = *objectRefBuildTable.entries[geometryNode.objectRefID].geometryIDs;
 	binaryGeometryNode.header.materialID = *materialRefBuildTable.entries[geometryNode.materialRefID].materialIDs;
 	if (geometryNode.transform != BUFFER_NOT_PRESENT)
-	{
-		binaryGeometryNode.header.payloadSize =  TransformSize;
-		binaryGeometryNode.payload = new float[TransformSize];
-		memcpy(binaryGeometryNode.payload, geometryNode.transform, sizeof(float) * TransformSize);
+	{		
+		binaryGeometryNode.payload = new MFfloat[TransformSize];
+		memcpy(binaryGeometryNode.payload, geometryNode.transform, binaryGeometryNode.header.payloadSize = sizeof(MFfloat) * TransformSize);
 	}	
 	DLOG(32, "Converting mdb_gn with nID, gID, mtlID: " << geometryNode.nodeID <<" " << binaryGeometryNode.header.geometryID << " " << binaryGeometryNode.header.materialID);
 	return EntrySize(binaryGeometryNode);

@@ -22,7 +22,7 @@ namespace Manifest_Experimental
 	template<typename Key, typename Value>	
 	struct Table
 	{
-		MFsize tableEntries;
+		MFsize tableEntries{0};
 		MFsize tableSize;
 		Key* keys;
 		Value* values;
@@ -36,15 +36,15 @@ namespace Manifest_Experimental
 			return &(keys + valueSearch)[0];
 		}
 		//specialized functions for begin - fewer instructions than defualt
-		template<typename Iterator>
-		requires KeyIterator<Iterator,Key, Value>
-		inline Iterator* begin()
+		template<typename KIterator>
+		requires KeyIterator<KIterator,Key, Value>
+		inline KIterator* begin()
 		{
 			return keys;
 		}
-		template<typename Iterator>
-		requires ValueIterator<Iterator, Key, Value>
-		inline Iterator* begin()
+		template<typename VIterator>
+		requires ValueIterator<VIterator, Key, Value>
+		inline VIterator* begin()
 		{
 			return values;
 		}
@@ -57,15 +57,15 @@ namespace Manifest_Experimental
 			return &(keys + valueSearch)[tableEntries];
 		}
 		//specialized functions for end - fewer instructions than defualt
-		template<typename Iterator>
-		requires KeyIterator<Iterator, Key, Value>
-		inline Iterator* end()
+		template<typename KIterator>
+		requires KeyIterator<KIterator, Key, Value>
+		inline KIterator* end()
 		{
 			return &keys[tableEntries];
 		}
-		template<typename Iterator>
-		requires ValueIterator<Iterator, Key, Value>
-		inline Iterator* end()
+		template<typename VIterator>
+		requires ValueIterator<VIterator, Key, Value>
+		inline VIterator* end()
 		{
 			return &values[tableEntries];
 		}

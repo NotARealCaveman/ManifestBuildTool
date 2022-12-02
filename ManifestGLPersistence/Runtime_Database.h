@@ -16,8 +16,8 @@ namespace Manifest_Persistence
 
 	struct GeometryNodes
 	{		
-		Table<UniqueKey, GraphicID> VAOs;
-		Table<PrimaryKey, UniqueKey> materials;
+		Table<UniqueKey, PrimaryKey> instancedNodeIDs;//pairs runtime ids to database nodes
+		Table<PrimaryKey, GraphicID*> vaoRefs;//pairs database mesh IDs to runtime ids
 	};		
 
 	class ManifestRuntimeDatabase

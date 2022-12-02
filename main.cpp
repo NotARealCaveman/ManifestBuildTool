@@ -37,98 +37,95 @@ void RuntimeTest()
 		std::for_each(ints.begin<false>(), ints.end<false>(), [](const auto& i) {DLOG(32, i << " " << &i); });
 		DLOG(35, "begin<keys>: " << ints.begin<false>() << " end: " << ints.begin<false>());
 	};
-	DISABLE
-		EqualTypeTest();
+	DISABLE	EqualTypeTest();
 
-	//DISABLE	
-	{		
+	const auto nNodes{ 5 };
+	const auto nMeshes{ 3 };
+	const auto nMaterials{ 3 };
+	const auto nTextures{ 3 * nMaterials };
 
-		const auto nNodes{ 5 };
-		const auto nMeshes{ 3 };
-		const auto nMaterials{ 3 };
-		const auto nTextures{ 3 * nMaterials };
+	//xforms
+	WorldSpaces worldSpaces;
+	worldSpaces.xforms.tableSize = nNodes;
+	worldSpaces.xforms.tableEntries = 0;
+	worldSpaces.xforms.keys = new UniqueKey[nNodes];
+	worldSpaces.xforms.values = new Xform[nNodes];
 
-		//xforms
-		WorldSpaces worldSpaces;
-		worldSpaces.xforms.tableSize = nNodes;
-		worldSpaces.xforms.tableEntries = 0;
-		worldSpaces.xforms.keys = new UniqueKey[nNodes];
-		worldSpaces.xforms.values = new Xform[nNodes];
+	GraphicResources graphicResources;
+	//textures
+	graphicResources.tIDs.tableSize = nMeshes;
+	graphicResources.tIDs.tableEntries = 0;
+	graphicResources.tIDs.keys = new UniqueKey[nMaterials];
+	graphicResources.tIDs.values = new MFu32[nMaterials];
 
-		GraphicResources graphicResources;
-		//textures
-		graphicResources.tIDs.tableSize = nMeshes;
-		graphicResources.tIDs.tableEntries = 0;
-		graphicResources.tIDs.keys = new UniqueKey[nMaterials];
-		graphicResources.tIDs.values = new MFu32[nMaterials];
+	//meshes
+	graphicResources.VAOs.tableSize = nMeshes;
+	graphicResources.VAOs.tableEntries = 0;
+	graphicResources.VAOs.keys = new UniqueKey[nMeshes];
+	graphicResources.VAOs.values = new MFu32[nMeshes];
 
+	std::ifstream bImport{ "C:\\Users\\Droll\\Desktop\\Game\\testoimng\\TEST2.mdb", std::ios::in | std::ios::binary };
+	ManifestBinaryDatabase binaryDatabase = ImportBinaryDatabase(bImport);
 
-
-		//meshes
-		graphicResources.VAOs.tableSize = nMeshes;
-		graphicResources.VAOs.tableEntries = 0;
-		graphicResources.VAOs.keys = new UniqueKey[nMeshes];
-		graphicResources.VAOs.values = new MFu32[nMeshes];
-
-
-		std::ifstream bImport{ "C:\\Users\\Droll\\Desktop\\Game\\testoimng\\TEST2.mdb", std::ios::in | std::ios::binary };
-		ManifestBinaryDatabase binaryDatabase = ImportBinaryDatabase(bImport);
-
-		int idCounter{ 0 };
-		//pair manifest ids to runtime ids
-		
-		for (int i = 0; i < nNodes; ++i)
+	int idCounter{ 0 };
+	//pair manifest ids to runtime ids
+	for (int i = 0; i < nNodes; ++i)
+	{
+		//check manifest mesh ID against current table entries
+		auto& VAOTable = graphicResources.VAOs;
+		VAOTable.begin<PrimaryKey>();
+		auto begin = VAOTable.begin<PrimaryKey>();
+		auto end = VAOTable.end<PrimaryKey>();
+		auto gnMtid = binaryDatabase.binaryGeometryNodeTable[i].header.geometryID;
+		PrimaryKey key = binaryDatabase.binaryMeshTable[gnMtid].header.meshID;
+		//search for mesh with manifest key 
+		auto geometry = std::find(begin, end, key);
+		//key not in table - add and pair with runtime generated id
+		if (geometry == end)
 		{
-			//check manifest mesh ID against current table entries
-			auto& VAOTable = graphicResources.VAOs;
-			VAOTable.begin<PrimaryKey>();
-			auto begin = VAOTable.begin<PrimaryKey>();
-			auto end = VAOTable.end<PrimaryKey>();
-			auto gnMtid = binaryDatabase.binaryGeometryNodeTable[i].header.geometryID;
-			PrimaryKey key = binaryDatabase.binaryMeshTable[gnMtid].header.meshID;			
-			//search for mesh with manifest key 
-			auto geometry = std::find(begin, end, key);	
-			//key not in table - add and pair with runtime generated id
-			if (geometry == end)
-			{
-				VAOTable.keys[VAOTable.tableEntries] = key;
-				VAOTable.values[VAOTable.tableEntries] = idCounter++;
-				VAOTable.tableEntries++;
-			}
-			//repeat for materials
-			auto& tIDTable = graphicResources.tIDs;
-			begin = tIDTable.begin<PrimaryKey>();
-			end = tIDTable.end<PrimaryKey>();
-			gnMtid = binaryDatabase.binaryGeometryNodeTable[i].header.materialID;
-			key = binaryDatabase.binaryMaterialTable[gnMtid].header.diffuseID;			
-			if (std::find(begin, end, key) == end && key != KEY_NOT_PRESENT)
-			{
-				tIDTable.keys[tIDTable.tableEntries] = key;
-				tIDTable.values[tIDTable.tableEntries] = idCounter++;
-				tIDTable.tableEntries++;
-			}
-			key = binaryDatabase.binaryMaterialTable[gnMtid].header.noramlID;			
-			if ((std::find(begin, end, key)== end) && (key != KEY_NOT_PRESENT))
-			{
-				DLOG(36, "(key != KEY_NOT_PRESENT): " << (key != KEY_NOT_PRESENT) << ": " << "(" << key << " != " << KEY_NOT_PRESENT<<")");
-				tIDTable.keys[tIDTable.tableEntries] = key;
-				tIDTable.values[tIDTable.tableEntries] = idCounter++;
-				tIDTable.tableEntries++;
-			}			
-			key = binaryDatabase.binaryMaterialTable[gnMtid].header.parallaxID;			
-			if (std::find(begin, end, key) == end && key != KEY_NOT_PRESENT)
-			{
-				tIDTable.keys[tIDTable.tableEntries] = key;
-				tIDTable.values[tIDTable.tableEntries] = idCounter++;
-				tIDTable.tableEntries++;
-			}
+			VAOTable.keys[VAOTable.tableEntries] = key;
+			VAOTable.values[VAOTable.tableEntries] = idCounter++;
+			VAOTable.tableEntries++;
 		}
-		std::for_each(graphicResources.VAOs.begin<GraphicID>(), graphicResources.VAOs.end<GraphicID>(), [](const auto& id) {DLOG(36, "Mesh Resource ID: " << id); });
-		std::for_each(graphicResources.tIDs.begin<GraphicID>(), graphicResources.tIDs.end<GraphicID>(), [](const auto& id) {DLOG(37, "Texture Resource ID: " << id); });
-
-		ManifestRuntimeDatabase database(binaryDatabase, worldSpaces, graphicResources);
+		//repeat for materials
+		auto& tIDTable = graphicResources.tIDs;
+		begin = tIDTable.begin<PrimaryKey>();
+		end = tIDTable.end<PrimaryKey>();
+		gnMtid = binaryDatabase.binaryGeometryNodeTable[i].header.materialID;
+		key = binaryDatabase.binaryMaterialTable[gnMtid].header.diffuseID;
+		if (std::find(begin, end, key) == end && key != KEY_NOT_PRESENT)
+		{
+			tIDTable.keys[tIDTable.tableEntries] = key;
+			tIDTable.values[tIDTable.tableEntries] = idCounter++;
+			tIDTable.tableEntries++;
+		}
+		key = binaryDatabase.binaryMaterialTable[gnMtid].header.noramlID;
+		if ((std::find(begin, end, key) == end) && (key != KEY_NOT_PRESENT))
+		{
+			DLOG(36, "(key != KEY_NOT_PRESENT): " << (key != KEY_NOT_PRESENT) << ": " << "(" << key << " != " << KEY_NOT_PRESENT << ")");
+			tIDTable.keys[tIDTable.tableEntries] = key;
+			tIDTable.values[tIDTable.tableEntries] = idCounter++;
+			tIDTable.tableEntries++;
+		}
+		key = binaryDatabase.binaryMaterialTable[gnMtid].header.parallaxID;
+		if (std::find(begin, end, key) == end && key != KEY_NOT_PRESENT)
+		{
+			tIDTable.keys[tIDTable.tableEntries] = key;
+			tIDTable.values[tIDTable.tableEntries] = idCounter++;
+			tIDTable.tableEntries++;
+		}
 	}
+
+	std::for_each(graphicResources.VAOs.begin<PrimaryKey>(), graphicResources.VAOs.end<PrimaryKey>(), [](const auto& id) {DLOG(36, "Mesh Resource key: " << id); });
+	std::for_each(graphicResources.VAOs.begin<GraphicID>(), graphicResources.VAOs.end<GraphicID>(), [](const auto& id) {DLOG(36, "Mesh Resource ID: " << id); });	
+	//link database to runtime structures
+	ManifestRuntimeDatabase database(binaryDatabase, worldSpaces, graphicResources);
+	auto begin = database.geometryNodes.vaoRefs.begin<GraphicID*>();	
+	auto end = database.geometryNodes.vaoRefs.end<GraphicID*>();
+	DLOG(37, "range begin: " << begin << " end: " << end);
+	std::for_each(begin, end, [](const GraphicID* vao) {DLOG(31, "runtime pointed vao: " << *vao << " &"<<vao); });
 }
+
 
 void BuildAndExport()
 {
@@ -153,7 +150,7 @@ void BuildAndExport()
 		bExport.close();
 	}
 }
-
+	
 void ImportAndTest()
 {
 
