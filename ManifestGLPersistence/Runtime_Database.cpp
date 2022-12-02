@@ -14,17 +14,18 @@ ManifestRuntimeDatabase::ManifestRuntimeDatabase(const ManifestBinaryDatabase& b
 	geometryNodes.vaoRefs.values = new GraphicID*[nNodes];
 
 	auto& i = geometryNodes.instancedNodeIDs.tableEntries;
-	for (;i< nNodes; ++i)
+	auto counter{ 0 };
+	for (;i< nNodes;)
 	{
 		const auto& node = binaryDatabase.binaryGeometryNodeTable[i];
+		geometryNodes.instancedNodeIDs.keys[i] = ++counter;		
+		geometryNodes.instancedNodeIDs.values[i] = node.header.nodeID;
 		geometryNodes.vaoRefs.keys[i] = node.header.geometryID;
 		int index = 0;
 		while (graphicResources.VAOs.keys[index] != node.header.geometryID)
-		{
-			DLOG(31, graphicResources.VAOs.keys[index]);
-			++index;
-		}		
-		geometryNodes.vaoRefs.values[i] = &graphicResources.VAOs.values[index];		
-		++geometryNodes.vaoRefs.tableEntries;
+			++index;			
+		geometryNodes.vaoRefs.values[i] = &graphicResources.VAOs.values[index]; 
+		++geometryNodes.instancedNodeIDs.tableEntries;
+		++geometryNodes.vaoRefs.tableEntries;		
 	}
 }

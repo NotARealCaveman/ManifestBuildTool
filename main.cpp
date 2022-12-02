@@ -188,7 +188,7 @@ int main()
 {
 	WINDOWS_COLOR_CONSOLE;
 	
-	//DISABLE
+	DISABLE
 		BuildAndExport();
 	DISABLE
 		ImportAndTest();

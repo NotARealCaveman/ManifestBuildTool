@@ -9,15 +9,21 @@ namespace Manifest_Persistence
 {
 	typedef MFu32 GraphicID;
 
+	struct Material
+	{		
+		GraphicID* ids[3];
+	};
+
 	struct Materials
 	{
-		Table<UniqueKey, GraphicID[3]> materailIDs;
+		Table<UniqueKey, Material> materailIDs;//pairs runtime mtl id with graphic tIDs
 	};
 
 	struct GeometryNodes
 	{		
 		Table<UniqueKey, PrimaryKey> instancedNodeIDs;//pairs runtime ids to database nodes
 		Table<PrimaryKey, GraphicID*> vaoRefs;//pairs database mesh IDs to runtime ids
+		Table<PrimaryKey, UniqueKey> materialRefs;//pairs database mtls to runtime ids
 	};		
 
 	class ManifestRuntimeDatabase
