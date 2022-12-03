@@ -33,7 +33,7 @@ namespace Manifest_Experimental
 		requires EqualType<Key, Value>
 		inline Key* begin()
 		{			
-			return &(keys + valueSearch)[0];
+			return *(&keys+valueSearch);
 		}
 		//specialized functions for begin - fewer instructions than defualt
 		template<typename KIterator>
@@ -54,7 +54,7 @@ namespace Manifest_Experimental
 		requires EqualType<Key, Value>
 		inline Key* end()
 		{						
-			return &(keys + valueSearch)[tableEntries];
+			return &(*(&keys + valueSearch))[tableEntries];
 		}
 		//specialized functions for end - fewer instructions than defualt
 		template<typename KIterator>
