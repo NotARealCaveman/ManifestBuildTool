@@ -37,8 +37,8 @@ namespace Manifest_Parser
 	{
 		void* typeHeap = nullptr;
 		DDL_BufferType bufferType;//buffer type will only ever be of the original primitive
-		size_t subBufferElements;//number of elements per sub buffer
-		size_t subBufferCount;//number of sub buffers
+		MFsize subBufferElements;//number of elements per sub buffer
+		MFsize subBufferCount;//number of sub buffers
 	};
 	
 	//buffer is converted to type T then offset with count of Ts
@@ -48,9 +48,10 @@ namespace Manifest_Parser
 		return reinterpret_cast<Type*>(buffer.typeHeap)+offset;
 	}
 
-	//preapres sub buffer data - returns the number of elements per sub buffer
+	//prepares sub buffer data - returns the number of elements per sub buffer
+	//allocates room for buffer data on buffer::typeHeap
 	template<typename T>
-	size_t PrepareSubBuffer(const std::string& partitionedStructure,const size_t bufferCount ,DDL_Buffer& buffer)
+	size_t PrepareSubBuffer(const std::string& partitionedStructure,const size_t& bufferCount ,DDL_Buffer& buffer)
 	{
 		auto beginSubBuffer = partitionedStructure.find_first_of('[');
 		auto endSubBuffer = partitionedStructure.find_first_of(']');						
@@ -63,7 +64,7 @@ namespace Manifest_Parser
 
 	//fills a sub buffer array with the per substructure extracted from payload information
 	template<typename T>
-	void ExtractSubBuffer(const std::vector<std::string> & subBufferData,const size_t& subBufferArraySize, const DDL_Buffer& buffer)
+	void ExtractSubBuffer(const std::vector<std::string> & subBufferData,const size_t& subBufferElementCount, const DDL_Buffer& buffer)
 	{
 		uint32_t subBuffer = 0;
 		for (const auto& bufferData : subBufferData)
@@ -71,7 +72,7 @@ namespace Manifest_Parser
 			//DLOG(0, bufferData);
 			auto payloadIndex = bufferData.find_first_of("{");
 			auto payload = bufferData.substr(payloadIndex + 1, bufferData.find_first_of('}') - payloadIndex - 1);
-			for (uint32_t bufferPosition = 0; bufferPosition < subBufferArraySize; ++bufferPosition)
+			for (uint32_t bufferPosition = 0; bufferPosition < subBufferElementCount; ++bufferPosition)
 			{
 				*(reinterpret_cast<T*>(buffer.typeHeap) + subBuffer++) = std::stof
 				(payload.substr(0));
@@ -84,7 +85,7 @@ namespace Manifest_Parser
 	void BuildSubBuffer(const std::string& partitionedStructure, DDL_Buffer& buffer)
 	{
 		std::vector<std::string> subBufferData = PartitionDDLSubStructures(partitionedStructure);
-		size_t subBufferArraySize = PrepareSubBuffer<T>(partitionedStructure, subBufferData.size(), buffer);
-		ExtractSubBuffer<T>(subBufferData, subBufferArraySize, buffer);
+		size_t subBufferElementCount = PrepareSubBuffer<T>(partitionedStructure, subBufferData.size(), buffer);
+		ExtractSubBuffer<T>(subBufferData, subBufferElementCount, buffer);
 	}
 }

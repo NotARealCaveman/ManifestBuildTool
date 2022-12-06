@@ -139,6 +139,7 @@
   <ItemGroup>
     <ClCompile Include="EXPERIMENTAL\EXPERIMENTAL_RUNTIME_DATA_STRUCTURES.cpp" />
     <ClCompile Include="EXPERIMENTAL\Manifect_Allocator.cpp" />
+    <ClCompile Include="EXPERIMENTAL\RNG.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ManifestGLParser\FileFilter.cpp" />
     <ClCompile Include="ManifestGLParser\OpenDDL\DDL_Buffers.cpp" />
@@ -178,6 +179,7 @@
     <ClInclude Include="EXPERIMENTAL\EXPERIMENTAL_RUNTIME_DATA_STRUCTURES.h" />
     <ClInclude Include="EXPERIMENTAL\Manifest_Allocator.h" />
     <ClInclude Include="EXPERIMENTAL\Manifest_Memory.h" />
+    <ClInclude Include="EXPERIMENTAL\RNG.h" />
     <ClInclude Include="EXPERIMENTAL\Typenames.h" />
     <ClInclude Include="ManifestGLParser\DDL_ExtendedTypes.h" />
     <ClInclude Include="ManifestGLParser\FileFilter.h" />

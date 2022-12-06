@@ -5,7 +5,7 @@ using namespace Manifest_Parser;
 void Manifest_Parser::Initialize_GEXGenerators()
 {	
 	//init generators
-	RegisteredGenerator::registeredGenerators.insert({ "Metric",new Generator<GEX_Metric> });	
+	RegisteredGenerator::registeredGenerators.insert({ "Metric",new Generator<GEX_Metric> });
 	RegisteredGenerator::registeredGenerators.insert({ "GeometryNode",new Generator<GEX_GeometryNode> });
 	RegisteredGenerator::registeredGenerators.insert({ "GeometryObject",new Generator<GEX_GeometryObject> });
 	RegisteredGenerator::registeredGenerators.insert({ "Material",new Generator<GEX_Material> });

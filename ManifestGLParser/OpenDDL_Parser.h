@@ -26,6 +26,6 @@ namespace Manifest_Parser
 	std::vector<std::string> PartitionDDLFile(const std::string& filteredFile);
 	//partition a previously partitioned structure into its substructures
 	std::vector<std::string> PartitionDDLSubStructures(const std::string& partitionedStructure);		
-	const std::string LoadFileContents(const std::string& fileName, DDL_File& fileObject);
+	const std::string LoadFileContents(const std::string& fileName);
 	void ParseDDLFile(const std::string& fileName, DDL_File& file);	
 }

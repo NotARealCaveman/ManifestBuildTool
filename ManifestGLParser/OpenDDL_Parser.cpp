@@ -85,7 +85,7 @@ std::string Manifest_Parser::PartitionDDLStructures(const std::string& filteredF
 //performs the structuer partition on an entire file or previously partitioned structure
 std::vector<std::string> Manifest_Parser::PartitionDDLFile(const std::string& filteredFile)
 {
-	std::vector<std::string> result;	
+	std::vector<std::string> result;//list of top level structures to be generated	
 	std::string file = filteredFile;
 	size_t offset = 0;
 	for (; *file.begin() != static_cast<char>(0); file = file.substr(offset))
@@ -106,11 +106,10 @@ std::vector<std::string> Manifest_Parser::PartitionDDLSubStructures(const std::s
 	return result;
 }
 
-const std::string Manifest_Parser::LoadFileContents(const std::string& fileName, DDL_File& fileObject)
+const std::string Manifest_Parser::LoadFileContents(const std::string& fileName)
 {	
-	std::string gexFile = "C:\\Users\\Droll\\Desktop\\Game\\testoimng\\TEST2.GEX";
-	fileObject.fileStream = std::fstream{ gexFile,std::ios::in };
-	auto& fileStream = fileObject.fileStream;
+	std::string gexFile = TEST_PATH+TEST_GEX;
+	auto fileStream = std::fstream{ gexFile,std::ios::in };	
 	std::string result;
 	if (fileStream.is_open())
 	{
@@ -126,7 +125,7 @@ const std::string Manifest_Parser::LoadFileContents(const std::string& fileName,
 
 void Manifest_Parser::ParseDDLFile(const std::string& fileName, DDL_File& fileObject)
 {	
-	for (const auto& structure : PartitionDDLFile(FilterFile(LoadFileContents(fileName,fileObject))))
+	for (const auto& structure : PartitionDDLFile(FilterFile(LoadFileContents(fileName))))
 	{
 		auto identifier = structure.substr(0, structure.find_first_of("$%({"));
 		auto registeredGenerator = RegisteredGenerator::registeredGenerators.find(identifier);

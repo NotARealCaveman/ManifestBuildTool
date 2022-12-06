@@ -5,7 +5,10 @@
 
 namespace Manifest_Parser
 {		
-	constexpr uint32_t  VECTOR_RESERVATION_SIZE = 64;
+	const std::string TEST_PATH{ "C:\\Users\\Droll\\Desktop\\Game\\testing\\" };
+	const std::string TEST_GEX{ "Test2.gex" };
+	const std::string TEST_MDB{ "Test2.mdb" };
+	constexpr uint32_t  VECTOR_RESERVATION_SIZE = 64;//to change
 
 	typedef std::string DDL_Identifier;
 	typedef std::string DDL_Name;

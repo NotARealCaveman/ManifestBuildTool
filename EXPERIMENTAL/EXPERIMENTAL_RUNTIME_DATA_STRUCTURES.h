@@ -25,8 +25,8 @@ namespace Manifest_Experimental
 		MFsize tableEntries{0};
 		MFsize tableSize;
 		Key* keys;
-		Value* values;
-		
+		Value* values;	
+
 		//default begin for when Type(Key)==Type(Value) - avoids branching
 		//default, .begin<>(), search is for values; .begin<false>(), search is for keys
 		template <bool valueSearch = true>
@@ -71,20 +71,4 @@ namespace Manifest_Experimental
 		}
 	};
 
-	struct Xform
-	{
-		MFfloat data[16];
-	};
-
-	//this will be supplied inside the simulation engine Rigidbodies::worldSpaces	
-	struct WorldSpaces
-	{
-		Table<UniqueKey,Xform> xforms;//uses the uuid of the generated runtime object 
-	};
-
-	struct GraphicResources
-	{
-		Table<PrimaryKey, MFu32> VAOs;
-		Table<PrimaryKey, MFu32> tIDs;
-	};
 }
