@@ -37,8 +37,8 @@ namespace Manifest_Parser
 	{
 		void* typeHeap = nullptr;
 		DDL_BufferType bufferType;//buffer type will only ever be of the original primitive
-		MFsize subBufferElements;//number of elements per sub buffer
-		MFsize subBufferCount;//number of sub buffers
+		size_t subBufferElements;//number of elements per sub buffer
+		size_t subBufferCount;//number of sub buffers
 	};
 	
 	//buffer is converted to type T then offset with count of Ts

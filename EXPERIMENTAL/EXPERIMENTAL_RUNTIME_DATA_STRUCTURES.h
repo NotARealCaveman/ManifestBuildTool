@@ -27,6 +27,41 @@ namespace Manifest_Experimental
 		Key* keys;
 		Value* values;	
 
+		//TABLE FIND METHODS
+		//returns the key/value if found - nullptr if not. value can be used to calculate complimentary index
+		//default begin for when Type(Key)==Type(Value)
+		template<typename bool valueSeach = true>
+		requires EqualType<Key, Value>
+		Key* find(const Key& value)
+		{				
+			for(auto entry = begin<std::forward<bool>(valueSeach)>(); entry < end<std::forward<bool>(valueSeach)>(); ++entry)
+				if (*entry == value)
+					return entry;			
+			
+			return nullptr;
+		}
+		template<typename KIterator>
+		requires KeyIterator<KIterator, Key, Value>
+		KIterator* find(const Key& key)
+		{
+			for (auto entry = 0; entry < tableEntries; ++entry)			
+				if (keys[entry] == key)
+					return keys + entry;			
+
+			return nullptr;
+		}
+		template<typename VIterator>
+		requires ValueIterator<VIterator, Key, Value>
+		VIterator* find(const Value& value)
+		{
+			for (auto entry = 0; entry < tableEntries; ++entry)			
+				if (values[entry] == value)
+					return values + entry;			
+
+			return nullptr;
+		}
+
+		///TABLE BEGIN AND END FUNCTIONS
 		//default begin for when Type(Key)==Type(Value) - avoids branching
 		//default, .begin<>(), search is for values; .begin<false>(), search is for keys
 		template <bool valueSearch = true>
@@ -70,5 +105,4 @@ namespace Manifest_Experimental
 			return &values[tableEntries];
 		}
 	};
-
 }

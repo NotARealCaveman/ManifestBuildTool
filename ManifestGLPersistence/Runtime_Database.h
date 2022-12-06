@@ -42,10 +42,11 @@ namespace Manifest_Persistence
 		Table<PrimaryKey, Material> materials;//pairs database mtls to runtime ids
 	};
 
+	//this reference system may require some "smart" tracking for multithreading/general persistence
 	struct GeometryNodes
 	{
 		Table<UniqueKey, PrimaryKey> instancedNodeIDs;//pairs runtime ids to database nodes		
-		Table<UniqueKey, GeometryObjects*> geoemtryRefs;//points to nodes geometry
+		PrimaryKey* nodeGeometries;//matches table indices to the proper geometryNode entry
 		
 	};
 
