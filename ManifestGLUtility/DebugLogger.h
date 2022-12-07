@@ -15,8 +15,9 @@
 #define RLOG(COLOR,x)
 #endif
 
+
 #ifndef DISABLE
-#define DISABLE if(0)
+#define DISABLE if(0)//disable code path
 #endif // !DISABLE
 
 #ifndef DEFAULT_BREAK//used in switch statments to indicate defualt case may be used in the future 

@@ -25,8 +25,8 @@ namespace Manifest_Experimental
 		MFsize tableEntries{0};
 		MFsize tableSize;
 		Key* keys;
-		Value* values;	
-
+		Value* values;			
+		/*
 		//TABLE FIND METHODS
 		//returns the key/value if found - nullptr if not. value can be used to calculate complimentary index
 		//default begin for when Type(Key)==Type(Value)
@@ -60,6 +60,7 @@ namespace Manifest_Experimental
 
 			return nullptr;
 		}
+		*/
 
 		///TABLE BEGIN AND END FUNCTIONS
 		//default begin for when Type(Key)==Type(Value) - avoids branching

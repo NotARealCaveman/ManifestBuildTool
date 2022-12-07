@@ -47,6 +47,7 @@ namespace Manifest_Persistence
 	{
 		Table<UniqueKey, PrimaryKey> instancedNodeIDs;//pairs runtime ids to database nodes		
 		PrimaryKey* nodeGeometries;//matches table indices to the proper geometryNode entry
+		PrimaryKey* nodeMaterials;//matches table indices to the proper material entry
 		
 	};
 

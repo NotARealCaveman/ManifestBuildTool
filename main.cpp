@@ -45,10 +45,13 @@ void RuntimeTest()
 
 	std::ifstream bImport{ TEST_PATH + TEST_MDB, std::ios::in | std::ios::binary };	
 	ManifestRuntimeDatabase runtimeDatabase{ ImportBinaryDatabase(bImport), worldSpaces };
+	
 	for (auto nodeEntry = 0; nodeEntry < runtimeDatabase.geometryNodes.instancedNodeIDs.tableSize; ++nodeEntry)
 	{			
 		//get geometryObject id from the key address offset
-		auto goID = runtimeDatabase.geometryObjects.geometryObjects.find<PrimaryKey>(runtimeDatabase.geometryNodes.nodeGeometries[nodeEntry]);
+		auto goBegin = runtimeDatabase.geometryObjects.geometryObjects.begin<PrimaryKey>();
+		auto goEnd = runtimeDatabase.geometryObjects.geometryObjects.end<PrimaryKey>();
+		auto goID = std::find(goBegin, goEnd, runtimeDatabase.geometryNodes.nodeGeometries[nodeEntry]);
 		auto index = goID - runtimeDatabase.geometryObjects.geometryObjects.begin<PrimaryKey>();
 		auto VAO = runtimeDatabase.geometryObjects.geometryObjects.values[index];
 		DLOG(31, "Geometry Node with id: " << runtimeDatabase.geometryNodes.instancedNodeIDs.values[nodeEntry] << " has VAO: " << VAO);
