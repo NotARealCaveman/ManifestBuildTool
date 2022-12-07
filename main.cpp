@@ -52,9 +52,14 @@ void RuntimeTest()
 		auto goBegin = runtimeDatabase.geometryObjects.geometryObjects.begin<PrimaryKey>();
 		auto goEnd = runtimeDatabase.geometryObjects.geometryObjects.end<PrimaryKey>();
 		auto goID = std::find(goBegin, goEnd, runtimeDatabase.geometryNodes.nodeGeometries[nodeEntry]);
-		auto index = goID - runtimeDatabase.geometryObjects.geometryObjects.begin<PrimaryKey>();
+		auto index = goID - goBegin;
 		auto VAO = runtimeDatabase.geometryObjects.geometryObjects.values[index];
-		DLOG(31, "Geometry Node with id: " << runtimeDatabase.geometryNodes.instancedNodeIDs.values[nodeEntry] << " has VAO: " << VAO);
+		auto mtlBegin = runtimeDatabase.materials.materials.begin<PrimaryKey>();
+		auto mtlEnd = runtimeDatabase.materials.materials.end<PrimaryKey>();
+		auto mtlID = std::find(mtlBegin, mtlEnd, runtimeDatabase.geometryNodes.nodeMaterials[nodeEntry]);
+		index = mtlID - mtlBegin;
+		auto MTL = runtimeDatabase.materials.materials.values[index];
+		DLOG(31, "Geometry Node with id: " << runtimeDatabase.geometryNodes.instancedNodeIDs.values[nodeEntry] << " has VAO: " << VAO << " and MTL diffuse: " << MTL[0] <<" normal: " << MTL[1]<< " parallax: " << MTL[2]);
 	}
 }
 

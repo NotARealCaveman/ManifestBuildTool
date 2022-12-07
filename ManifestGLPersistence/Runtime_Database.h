@@ -35,6 +35,12 @@ namespace Manifest_Persistence
 	struct Material
 	{
 		GraphicID materialIDs[3];
+		const GraphicID& operator[](const MFint32& index)
+		{
+			if (index < 0 || index > 2)
+				return materialIDs[0];
+			return materialIDs[index];
+		}
 	};
 
 	struct Materials
