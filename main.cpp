@@ -61,7 +61,7 @@ void RuntimeTest()
 		auto MTL = runtimeDatabase.materials.materials.values[index];
 		DLOG(31, "Geometry Node with id: " << runtimeDatabase.geometryNodes.instancedNodeIDs.values[nodeEntry] << " has VAO: " << VAO << " and MTL diffuse: " << MTL[0] <<" normal: " << MTL[1]<< " parallax: " << MTL[2]);
 	}
-}
+} 
 
 
 

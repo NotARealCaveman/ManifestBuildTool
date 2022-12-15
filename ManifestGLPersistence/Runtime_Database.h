@@ -1,12 +1,11 @@
 #pragma once
 #include <vector>	
+#include <atomic>
 
 #include "Binary_Database.h"
 
 #include<EXPERIMENTAL/EXPERIMENTAL_RUNTIME_DATA_STRUCTURES.h>
 #include <EXPERIMENTAL/RNG.h>
-
-
 
 namespace Manifest_Persistence
 {
@@ -17,12 +16,31 @@ namespace Manifest_Persistence
 		MFfloat data[16];
 	};
 
+	template<typename Collider>
+	struct BVH
+	{
+		MFfloat pos[3];
+		Collider collider;
+	};
+
+	constexpr int Sphere = 0;
+	constexpr float Cube = 1;
+
 	//leaning on graphic resources reading from the database and the simulation writing to it.
 	//simulation data changed much more drastically and in larger batches than graphic data.		
 	//this will be supplied inside the simulation engine Rigidbodies::worldSpaces	
-	struct WorldSpaces
+
+	struct Simulation
+	{
+		Xform xforms;
+		BVH<decltype(Sphere)> spheres;
+		BVH<decltype(Cube)> cubes;
+	};
+
+	struct SimulationSnapshot
 	{
 		Table<UniqueKey, Xform> xforms;//uses the uuid of the generated runtime object 
+		Table<UniqueKey, BVH> xforms;//uses the uuid of the generated runtime object 
 	};
 
 
@@ -60,8 +78,9 @@ namespace Manifest_Persistence
 	class ManifestRuntimeDatabase
 	{
 		public:								
-			ManifestRuntimeDatabase(const ManifestBinaryDatabase& binaryDatabase, const WorldSpaces& worldSpaces);
+			ManifestRuntimeDatabase(const ManifestBinaryDatabase& binaryDatabase);
 
+			std::atomic<SimulationSnapshot*> simulationSnapshot;
 			GeometryObjects geometryObjects;
 			Materials materials;
 			GeometryNodes geometryNodes;						

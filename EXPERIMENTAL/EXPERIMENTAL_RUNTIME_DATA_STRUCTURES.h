@@ -24,52 +24,16 @@ namespace Manifest_Experimental
 	{
 		MFsize tableEntries{0};
 		MFsize tableSize;
-		Key* keys;
-		Value* values;			
-		/*
-		//TABLE FIND METHODS
-		//returns the key/value if found - nullptr if not. value can be used to calculate complimentary index
-		//default begin for when Type(Key)==Type(Value)
-		template<typename bool valueSeach = true>
-		requires EqualType<Key, Value>
-		Key* find(const Key& value)
-		{				
-			for(auto entry = begin<std::forward<bool>(valueSeach)>(); entry < end<std::forward<bool>(valueSeach)>(); ++entry)
-				if (*entry == value)
-					return entry;			
-			
-			return nullptr;
-		}
-		template<typename KIterator>
-		requires KeyIterator<KIterator, Key, Value>
-		KIterator* find(const Key& key)
-		{
-			for (auto entry = 0; entry < tableEntries; ++entry)			
-				if (keys[entry] == key)
-					return keys + entry;			
-
-			return nullptr;
-		}
-		template<typename VIterator>
-		requires ValueIterator<VIterator, Key, Value>
-		VIterator* find(const Value& value)
-		{
-			for (auto entry = 0; entry < tableEntries; ++entry)			
-				if (values[entry] == value)
-					return values + entry;			
-
-			return nullptr;
-		}
-		*/
-
+		Key* keys;//byte 16
+		Value* values;//byte 16 + sizeof(Key)	
 		///TABLE BEGIN AND END FUNCTIONS
 		//default begin for when Type(Key)==Type(Value) - avoids branching
 		//default, .begin<>(), search is for values; .begin<false>(), search is for keys
 		template <bool valueSearch = true>
 		requires EqualType<Key, Value>
 		inline Key* begin()
-		{			
-			return *(&keys+valueSearch);
+		{	
+			return *(&keys+valueSearch);//returns field by using size as offset
 		}
 		//specialized functions for begin - fewer instructions than defualt
 		template<typename KIterator>

@@ -2,7 +2,7 @@
 
 using namespace Manifest_Persistence;
 
-ManifestRuntimeDatabase::ManifestRuntimeDatabase(const ManifestBinaryDatabase& binaryDatabase, const WorldSpaces& worldSpaces)
+ManifestRuntimeDatabase::ManifestRuntimeDatabase(const ManifestBinaryDatabase& binaryDatabase)
 {
 	xoshiro256ss_state ss;
 	//store number of nodes and create	
