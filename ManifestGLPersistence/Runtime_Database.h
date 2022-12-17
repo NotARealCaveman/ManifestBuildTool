@@ -45,7 +45,7 @@ namespace Manifest_Persistence
 		Xform* worldSpaces;		
 	};
 
-	typedef Table<UniqueKey*, Xform> XformTable;
+	typedef Table<UniqueKey, Xform> XformTable;
 
 	struct Simulation
 	{		
@@ -56,8 +56,7 @@ namespace Manifest_Persistence
 	struct SimulationSnapshot
 	{
 		std::atomic<MFu64> simulationFrame{ 0 };
-		UniqueKey* snapshotIDs;
-		Xform* snapshotWorldSpaces;		
+		XformTable xformTable;
 	};
 
 	//inserting into the database should be designed to be obstruction free where possible
@@ -87,7 +86,7 @@ namespace Manifest_Persistence
 			Materials materials;
 
 			std::atomic_flag init = ATOMIC_FLAG_INIT;
-			ExchangeLock simulationLock;
+			ExchangeLock simulationLock;			
 	};	
 
 	void SimThread(ManifestRuntimeDatabase& runtimeDatabase);
