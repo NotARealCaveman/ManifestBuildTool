@@ -3,7 +3,7 @@
 using namespace Manifest_Persistence;
 
 ManifestRuntimeDatabase::ManifestRuntimeDatabase(const ManifestBinaryDatabase& binaryDatabase)
-{
+{	
 	xoshiro256ss_state ss;
 	//store number of nodes and create	
 	geometryNodes.instancedNodeIDs.tableSize = binaryDatabase.binaryGeometryNodeTable.header.totalEntries;
@@ -69,5 +69,70 @@ ManifestRuntimeDatabase::ManifestRuntimeDatabase(const ManifestBinaryDatabase& b
 		geometryNodes.nodeMaterials[geometryNodes.instancedNodeIDs.tableEntries] = *instance;
 		//account for the new node
 		++geometryNodes.instancedNodeIDs.tableEntries;
+	}
+}
+
+void Manifest_Persistence::SimThread(ManifestRuntimeDatabase& runtimeDatabase)
+{	
+	const auto& nPhysicsObjects = runtimeDatabase.geometryNodes.instancedNodeIDs.tableEntries;
+	Simulation simulation;
+	auto simulationBuffer = simulation.simulationFrame % 2;
+	simulation.bodies.bodyID = new UniqueKey[nPhysicsObjects];
+	simulation.bodies.worldSpaces = new Xform[nPhysicsObjects*2];
+	memset(simulation.bodies.worldSpaces, 0, sizeof(Xform) * nPhysicsObjects*2);		
+	runtimeDatabase.simulationSnapshot.snapshotIDs = simulation.bodies.bodyID;
+	runtimeDatabase.simulationSnapshot.snapshotWorldSpaces= simulation.bodies.worldSpaces;
+	runtimeDatabase.init.test_and_set();
+	runtimeDatabase.init.notify_one();
+	//sleep and predicition
+	auto simInterval = std::chrono::duration<double>{ 1/50.0 };
+	auto begin = std::chrono::high_resolution_clock::now();
+	for(;;)
+	{				
+		simulationBuffer = ++simulation.simulationFrame % 2;
+		//DLOG(33, "Beginning simulation:  " << simulation.simulationFrame <<" using simulation buffer: " << simulationBuffer);
+		auto prediction = begin + simulation.simulationFrame * simInterval;
+		for (auto ws{ 0 }; ws < nPhysicsObjects; ++ws)
+		{
+			auto write = &simulation.bodies.worldSpaces[simulationBuffer * nPhysicsObjects].field[13];
+			auto read = &simulation.bodies.worldSpaces[(~simulationBuffer&0x01) * nPhysicsObjects].field[13];
+			//ping-pong shared sim data between buffers with logical not
+			simulation.bodies.worldSpaces[simulationBuffer * nPhysicsObjects].field[13] = simulation.bodies.worldSpaces[(~simulationBuffer & 0x01) * nPhysicsObjects].field[13] + 1;
+		}
+		//sync end simulation results
+		runtimeDatabase.simulationLock.Lock();
+		runtimeDatabase.simulationSnapshot.simulationFrame.store(simulation.simulationFrame, std::memory_order_release);
+		runtimeDatabase.simulationLock.Unlock();
+		if (prediction > std::chrono::high_resolution_clock::now())
+			std::this_thread::sleep_until(prediction);
+	}
+}
+
+void Manifest_Persistence::RenderThread(ManifestRuntimeDatabase& runtimeDatabase)
+{
+	auto set = false;	
+	if (!(set=runtimeDatabase.init.test()))
+		runtimeDatabase.init.wait(set,std::memory_order_relaxed);	
+	MFu64 renderFrame = 0;
+	MFu64 simulationFrame = 0;
+	//represents the handle to the graphic resource which works with the world space data
+	Xform* instancedVBOHandle = new Xform[runtimeDatabase.geometryNodes.instancedNodeIDs.tableEntries];
+	//sleep and predicition
+	auto frameInterval = std::chrono::duration<double>{ 1 / 60.0 };
+	auto begin = std::chrono::high_resolution_clock::now();
+	for (;;)
+	{		
+		auto prediction = begin + renderFrame * frameInterval;
+		auto nObjects = runtimeDatabase.geometryNodes.instancedNodeIDs.tableEntries;
+		//get current simulation data
+		runtimeDatabase.simulationLock.Lock();
+		simulationFrame = runtimeDatabase.simulationSnapshot.simulationFrame.load(std::memory_order_acquire);
+		auto simulationBuffer = simulationFrame % 2;
+		memcpy(instancedVBOHandle ,&runtimeDatabase.simulationSnapshot.snapshotWorldSpaces[(~simulationBuffer & 0x01) * nObjects], sizeof(Xform)*nObjects);
+		runtimeDatabase.simulationLock.Unlock();
+		DLOG(35, "Render Frame: " << renderFrame << " using Simulation Frame: " << simulationFrame << " simulation data: " << instancedVBOHandle[0].field[13]);		
+		renderFrame++;
+		if (prediction > std::chrono::high_resolution_clock::now())
+			std::this_thread::sleep_until(prediction);
 	}
 }

@@ -9,6 +9,9 @@
 #include <EXPERIMENTAL/Manifest_Allocator.h>
 #include <EXPERIMENTAL/EXPERIMENTAL_RUNTIME_DATA_STRUCTURES.h>
 
+#include <thread>
+#include <chrono>
+
 using namespace Manifest_Parser;
 using namespace Manifest_Persistence;
 using namespace Manifest_Memory;
@@ -36,16 +39,15 @@ void RuntimeTest()
 	const auto nMaterials{ 3 };
 	const auto nTextures{ 3 * nMaterials };
 
-	//xforms
-	WorldSpaces worldSpaces;
-	worldSpaces.xforms.tableSize = nNodes;
-	worldSpaces.xforms.tableEntries = 0;
-	worldSpaces.xforms.keys = new UniqueKey[nNodes];
-	worldSpaces.xforms.values = new Xform[nNodes];
+	//xforms	
+	//WorldSpaces worldSpaces;
+	//worldSpaces.xforms.tableSize = nNodes;
+	//worldSpaces.xforms.tableEntries = 0;
+	//worldSpaces.xforms.keys = new UniqueKey[nNodes];
+	//worldSpaces.xforms.values = new Xform[nNodes];
 
 	std::ifstream bImport{ TEST_PATH + TEST_MDB, std::ios::in | std::ios::binary };	
-	ManifestRuntimeDatabase runtimeDatabase{ ImportBinaryDatabase(bImport), worldSpaces };
-	
+	ManifestRuntimeDatabase runtimeDatabase{ ImportBinaryDatabase(bImport) };	
 	for (auto nodeEntry = 0; nodeEntry < runtimeDatabase.geometryNodes.instancedNodeIDs.tableSize; ++nodeEntry)
 	{			
 		//get geometryObject id from the key address offset
@@ -140,15 +142,31 @@ void ImportAndTest()
 	}
 }
 
+void RandomSleepAndRead(int x) 
+{
+	std::this_thread::sleep_for(std::chrono::duration<double,std::milli>(x));
+}
+
+void RandomSleepAndIncrement()
+{
+
+}
+
 int main()
 {
 	WINDOWS_COLOR_CONSOLE;	
+
+	std::ifstream bImport{ TEST_PATH + TEST_MDB, std::ios::in | std::ios::binary };
+	ManifestRuntimeDatabase runtimeDatabase{ ImportBinaryDatabase(bImport) };
+	std::thread rthread{ RenderThread,std::ref(runtimeDatabase) };
+	SimThread(runtimeDatabase);//runs on main thread
+
 
 	DISABLE
 		BuildAndExport();
 	DISABLE
 		ImportAndTest();
-	//DISABLE
+	DISABLE
 		RuntimeTest();
 	
 	return 0;

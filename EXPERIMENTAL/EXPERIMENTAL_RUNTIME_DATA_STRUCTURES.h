@@ -69,5 +69,5 @@ namespace Manifest_Experimental
 		{
 			return &values[tableEntries];
 		}
-	};
+	};	
 }
