@@ -24,5 +24,7 @@ namespace Manifest_Parser
 
 			return result;
 		};
-	};
+	};	
+
+	
 }

@@ -16,6 +16,10 @@ using namespace Manifest_Parser;
 using namespace Manifest_Persistence;
 using namespace Manifest_Memory;
 
+const std::string TEST_PATH{ "C:\\Users\\Droll\\Desktop\\Game\\testing\\" };
+const std::string TEST_GEX{ "Test2.gex" };
+const std::string TEST_MDB{ "Test2.mdb" };
+
 void RuntimeTest()
 {
 	const auto& EqualTypeTest = []()
@@ -65,49 +69,12 @@ void RuntimeTest()
 	}
 } 
 
-
-
 void PrintInfo(const DDL_Structure& structure)
 {
 	DLOG(33, "Structure " << structure.name << " with type: " << structure.identifier << " contains: " << structure.subSutructres.size() << " substructures");
 	for (const auto& substructure : structure.subSutructres)
 		PrintInfo(substructure);
 };
-
-void BuildAndExport()
-{
-	auto file = LoadFileContents(TEST_PATH + TEST_GEX);
-	DLOG(31, file);
-	auto filtered = FilterFile(file);
-	DLOG(32, filtered);
-
-	//ddl start up
-	Initialize_GEXTypes();
-	Initialize_GEXGenerators();
-	//parse
-	DDL_File fileObject;	
-
-	ParseDDLFile("", fileObject);
-
-	for (const auto& primary : fileObject.primaryStructures)
-	{
-		PrintInfo(primary);
-		DLOG(31,"");
-	}
-
-	//build offline database
-	ManifestDatabaseBuilder databaseBuilder;
-	BuildOfflineDatabase(fileObject, databaseBuilder);
-	//export conversion
-
-	//export
-	std::ofstream bExport{ TEST_PATH+TEST_MDB, std::ios::out | std::ios::binary };
-	if (bExport.is_open())
-	{
-		ExportBinaryDatabase(databaseBuilder, bExport);
-		bExport.close();
-	}
-}
 	
 void ImportAndTest()
 {
@@ -138,33 +105,85 @@ void ImportAndTest()
 		char* beginIndices = reinterpret_cast<char*>(importMesh.payload) + importMesh.header.eboOffset;
 		for (auto index = 0; index < nIndices; ++index)
 			std::cout << reinterpret_cast<uint32_t*>(beginIndices)[index] << ",";
-
+		std::cout << std::endl;
+		DLOG(31, "Material: " << importMaterial.header.materialID << " MTL(Diffuse): " << importMaterial.header.diffuseID << " MTL(Normal) : " << importMaterial.header.noramlID << " MTL(Parllax) : " << importMaterial.header.parallaxID);
+		DLOG(35, "Texture info - w: " << importTexture.header.width << " h: " << importTexture.header.height << " nChannels: " << +importTexture.header.nChannels << " size: " << importTexture.header.payloadSize);		
+		std::cout << "Texture Data: ";	
+		auto nTextureElements{ importTexture.header.payloadSize / sizeof(MFfloat)};
+		for (auto data{ 0 }; data < nTextureElements; ++data)
+			std::cout << importTexture.payload[data] << ", ";
+		std::cout << std::endl;		
 	}
 }
 
-void RandomSleepAndRead(int x) 
+void BuildAndExport()
 {
-	std::this_thread::sleep_for(std::chrono::duration<double,std::milli>(x));
-}
+	//for printing purposes
+	auto file = LoadFileContents(TEST_PATH + TEST_GEX);
+	DLOG(31, file);
+	auto filtered = FilterFile(file);
+	DLOG(32, filtered);
 
-void RandomSleepAndIncrement()
-{
+	//begin actual parse
+	//ddl start up
+	Initialize_GEXTypes();
+	Initialize_GEXGenerators();	
+	DDL_File fileObject;
+	//performs load and filter and begins parse
+	ParseDDLFile(TEST_PATH + TEST_GEX, fileObject);
+	//prints primary and substructure information per top level sturcture
+	for (const auto& primary : fileObject.primaryStructures)
+	{
+		PrintInfo(primary);
+		DLOG(31, "");
+	}
 
+	auto gn = fileObject.primaryStructures[3];
+	const GEX_GeometryNode& node = *reinterpret_cast<GEX_GeometryNode*>(gn.typeHeap);
+	const GEX_Transform& transform = node.transforms[0];
+	const DDL_Float& data = transform.field;
+	const DDL_Buffer& buffer = data.data;
+	for (auto row = 0; row< 4; ++row)
+	{
+		for (auto col = 0; col < 4; ++col)
+		{
+			auto offset = row * 4 + col;
+			auto field = reinterpret_cast<float*>(buffer.typeHeap);
+			std::cout << field[offset]<<"  ";
+		}
+		std::cout << std::endl;
+	}
+
+	//NEXT TIME
+	//build offline database
+	ManifestDatabaseBuilder databaseBuilder;
+	BuildOfflineDatabase(fileObject, databaseBuilder);
+	//export conversion
+
+	//export
+	std::ofstream bExport{ TEST_PATH + TEST_MDB, std::ios::out | std::ios::binary };
+	if (bExport.is_open())
+	{
+		ExportBinaryDatabase(databaseBuilder, bExport);
+		bExport.close();
+	}
 }
 
 int main()
 {
 	WINDOWS_COLOR_CONSOLE;	
+	
+	//runtime DB testing DISABLE
+	{
+		std::ifstream bImport{ TEST_PATH + TEST_MDB, std::ios::in | std::ios::binary };
+		ManifestRuntimeDatabase runtimeDatabase{ ImportBinaryDatabase(bImport) };
+		std::thread rthread{ RenderThread,std::ref(runtimeDatabase) };
+		SimThread(runtimeDatabase);//runs on main thread
+	}
 
-	std::ifstream bImport{ TEST_PATH + TEST_MDB, std::ios::in | std::ios::binary };
-	ManifestRuntimeDatabase runtimeDatabase{ ImportBinaryDatabase(bImport) };
-	std::thread rthread{ RenderThread,std::ref(runtimeDatabase) };
-	SimThread(runtimeDatabase);//runs on main thread
-
-
-	DISABLE
+	//DISABLE
 		BuildAndExport();
-	DISABLE
+	//DISABLE
 		ImportAndTest();
 	DISABLE
 		RuntimeTest();

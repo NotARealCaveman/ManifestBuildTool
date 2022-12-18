@@ -29,7 +29,7 @@ DDL_Structure GEX_Transform::Build(const std::string& partitionedStructure, DDL_
 	//tbd - multiple transforms
 	result.typeHeap = static_cast<void*>(this);
 	MapStructureName(result, referenceMap);
-	return result;
+	return result; 
 }
 
 //potentially swaps ownersip of unformattedData with newly allocated memory and cleans up old memory
@@ -46,6 +46,7 @@ void Manifest_Parser::FormatTransform(const size_t& transformType, float** unfor
 		0,0,1,0,//8,9,10,11
 		0,0,0,1 //12,13,14,15
 	};
+	//takes the identity and supplies the given transform data
 	switch (transformType)
 	{	
 		case 12:
@@ -73,5 +74,5 @@ void Manifest_Parser::FormatTransform(const size_t& transformType, float** unfor
 	auto temp = *unformattedData;//temp takes reference of old memory
 	*unformattedData = new float[TransformSize];//pointer to old memory is given allocation for formatted data
 	memcpy(*unformattedData, formattedData, sizeof(float) * TransformSize);//copy formatted data into previously unformatted data	
-	delete[] temp;//clean up old memory from caller
+	//delete[] temp;//clean up old memory from caller - scratch pad
 }

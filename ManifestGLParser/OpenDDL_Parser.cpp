@@ -108,8 +108,7 @@ std::vector<std::string> Manifest_Parser::PartitionDDLSubStructures(const std::s
 
 const std::string Manifest_Parser::LoadFileContents(const std::string& fileName)
 {	
-	std::string gexFile = TEST_PATH+TEST_GEX;
-	auto fileStream = std::fstream{ gexFile,std::ios::in };	
+	auto fileStream = std::fstream{ fileName,std::ios::in };
 	std::string result;
 	if (fileStream.is_open())
 	{

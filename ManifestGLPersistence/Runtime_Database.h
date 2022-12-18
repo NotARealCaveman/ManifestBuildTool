@@ -53,6 +53,7 @@ namespace Manifest_Persistence
 		MFu64 simulationFrame{ 0 };
 	};
 
+	//acts as a double buffer for the simulation to store shared data of a complete simulation frame 
 	struct SimulationSnapshot
 	{
 		std::atomic<MFu64> simulationFrame{ 0 };
@@ -87,9 +88,10 @@ namespace Manifest_Persistence
 
 			std::atomic_flag init = ATOMIC_FLAG_INIT;
 			ExchangeLock simulationLock;			
+			ExchangeLock printLock;			
 	};	
 
 	void SimThread(ManifestRuntimeDatabase& runtimeDatabase);
-	void RenderThread(ManifestRuntimeDatabase& runtimeDatabase);
+	void RenderThread(ManifestRuntimeDatabase& runtimeDatabase);	
 }
 

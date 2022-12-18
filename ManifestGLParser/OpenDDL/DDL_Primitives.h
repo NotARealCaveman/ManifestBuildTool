@@ -23,6 +23,7 @@ namespace Manifest_Parser
 			{
 				auto payloadIndex = partitionedStructure.find_first_of("{");
 				data.subBufferElements = data.subBufferCount= 1;
+				//make room for primitive buffer - will require an additional allocation from the original generation
 				data.typeHeap = new T;
 				*reinterpret_cast<float*>(data.typeHeap) = std::stof(partitionedStructure.substr(payloadIndex + 1));
 			}
