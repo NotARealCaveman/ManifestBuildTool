@@ -1,7 +1,8 @@
 #pragma once
-#include <vector>	
 #include <atomic>
 #include <chrono>
+#include <vector>	
+
 
 #include "Binary_Database.h"
 
@@ -74,6 +75,15 @@ namespace Manifest_Persistence
 		void Lock() { while (lock.exchange(LOCKED, std::memory_order_acquire)); };
 		void Unlock() { lock.store(UNLOCKED, std::memory_order_release); };
 	};	
+
+	struct RWExchangeLock
+	{
+		std::atomic<MFu8> lock{ UNLOCKED };
+		std::atomic_flag reading= ATOMIC_FLAG_INIT;
+		std::atomic_flag writing= ATOMIC_FLAG_INIT;
+		void Lock() { while (lock.exchange(LOCKED, std::memory_order_acquire)); };
+		void Unlock() { lock.store(UNLOCKED, std::memory_order_release); };
+	};
 
 	class ManifestRuntimeDatabase
 	{

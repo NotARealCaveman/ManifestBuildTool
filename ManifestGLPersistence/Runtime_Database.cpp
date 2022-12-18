@@ -88,13 +88,12 @@ void Manifest_Persistence::SimThread(ManifestRuntimeDatabase& runtimeDatabase)
 	runtimeDatabase.init.test_and_set();
 	runtimeDatabase.init.notify_one();
 	//sleep and predicition
-	auto simInterval = std::chrono::duration<double>{ 1/50.0 };
+	auto simInterval = std::chrono::duration<double>{ 1/999000.0 };
 	auto begin = std::chrono::high_resolution_clock::now();	
 	for(;;)
 	{			
 		auto prediction = begin + simulation.simulationFrame * simInterval;						
-		for (auto object{ 0 }; object < nPhysicsObjects; ++object)								
-			simulation.bodies.worldSpaces[object].field[13] = simulation.bodies.worldSpaces[object].field[13] + 1;
+		for (auto object{ 0 }; object < nPhysicsObjects; ++object)			simulation.bodies.worldSpaces[object].field[13] = simulation.bodies.worldSpaces[object].field[13] + 1;
 		//sync end simulation results				
 		runtimeDatabase.simulationLock.Lock();
 		runtimeDatabase.simulationSnapshot.simulationFrame.store(simulation.simulationFrame, std::memory_order_release);
@@ -120,24 +119,29 @@ void Manifest_Persistence::RenderThread(ManifestRuntimeDatabase& runtimeDatabase
 	auto nObjects = runtimeDatabase.geometryNodes.instancedNodeIDs.tableEntries;	
 	Xform* instancedVBOHandle = new Xform[nObjects];
 	//sleep and predicition
-	auto frameInterval = std::chrono::duration<double>{ 1 / 144.0 };
+	auto frameInterval = std::chrono::duration<double>{ 1 / 1500000.0 };
 	auto begin = std::chrono::high_resolution_clock::now();
+	auto& snapFrame = runtimeDatabase.simulationSnapshot.simulationFrame;
 	for (;;)
 	{
 		auto prediction = begin + renderFrame * frameInterval;		
 		//get current simulation data		
-		auto currentSim = runtimeDatabase.simulationSnapshot.simulationFrame.load(std::memory_order_acquire);
+		auto currentSim = snapFrame.load(std::memory_order_acquire);
 		//runtimeDatabase.printLock.Lock();
+	//if(!snapFrame.compare_exchange_strong(simulationFrame,simulationFrame,std::memory_order_acquire))
 		if (simulationFrame != currentSim)
 		{
 			//DLOG(31, "new simulation detected Old: " << simulationFrame <<" Current: " << currentSim);			
 			runtimeDatabase.simulationLock.Lock();
+			currentSim = snapFrame.load(std::memory_order_acquire);
 			memcpy(instancedVBOHandle, runtimeDatabase.simulationSnapshot.xformTable.values, sizeof(Xform) * nObjects);
 			runtimeDatabase.simulationLock.Unlock();
 			simulationFrame = currentSim;
 		}
-		
-		DLOG(35, "Render Frame: " << renderFrame << " using Simulation Frame: " << simulationFrame << " simulation data: " << instancedVBOHandle[0].field[13]);		
+	if (simulationFrame != instancedVBOHandle[0].field[13] - 1)
+		RLOG(31, "Failure deteced on render frame: " << renderFrame << " sim: " << simulationFrame << " data: " << instancedVBOHandle[0].field[13]);
+	RLOG(31, "data: " << instancedVBOHandle[0].field[13]);
+		//DLOG(35, "Render Frame: " << renderFrame << " using Simulation Frame: " << simulationFrame << " simulation data: " << instancedVBOHandle[0].field[13]);		
 		//runtimeDatabase.printLock.Unlock();
 		renderFrame++;
 		
