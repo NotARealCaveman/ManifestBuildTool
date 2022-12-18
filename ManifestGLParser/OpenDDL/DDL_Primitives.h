@@ -12,7 +12,7 @@ namespace Manifest_Parser
 	template<typename T, DDL_BufferType bufferType>
 	struct Primitive : public RegisteredBuilder
 	{
-		DDL_Structure Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap)
+		DDL_Structure Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap) final
 		{			
 			DDL_Structure result;
 			ParseStructureHeader(partitionedStructure, result);
@@ -24,8 +24,8 @@ namespace Manifest_Parser
 				auto payloadIndex = partitionedStructure.find_first_of("{");
 				data.subBufferElements = data.subBufferCount= 1;
 				//make room for primitive buffer - will require an additional allocation from the original generation
-				data.typeHeap = new T;
-				*reinterpret_cast<float*>(data.typeHeap) = std::stof(partitionedStructure.substr(payloadIndex + 1));
+				data.typeHeap = new T;				
+				*reinterpret_cast<T*>(data.typeHeap) = static_cast<T>(std::stof(partitionedStructure.substr(payloadIndex + 1)));;				
 			}
 			else
 				BuildSubBuffer<T>(partitionedStructure, data);
@@ -51,7 +51,7 @@ namespace Manifest_Parser
 
 	struct DDL_String : public RegisteredBuilder
 	{
-		DDL_Structure Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap);
+		DDL_Structure Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap) final;
 
 		std::string data;
 	};

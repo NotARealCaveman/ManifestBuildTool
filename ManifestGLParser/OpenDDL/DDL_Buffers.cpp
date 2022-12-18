@@ -8,10 +8,10 @@ std::map<std::string, DDL_BufferType> DDL_BufferTypes::DDL_BufferTypeMap
 	//references
 	{"ref",	DDL_BufferTypes::DDL_ref},
 	//signed ints
-	{"uint8",	DDL_BufferTypes::DDL_uint8},	{ "u8",			DDL_BufferTypes::DDL_uint8 },
-	{"uint16",	DDL_BufferTypes::DDL_uint16 },	{ "u16",		DDL_BufferTypes::DDL_uint16 },
-	{"uint32",	DDL_BufferTypes::DDL_uint32 },	{ "u32",		DDL_BufferTypes::DDL_uint32 },
-	{"uint64",	DDL_BufferTypes::DDL_uint64 },	{ "u64",		DDL_BufferTypes::DDL_uint64 },
+	{"int8",	DDL_BufferTypes::DDL_int8},	{ "i8",			DDL_BufferTypes::DDL_uint8 },
+	{"int16",	DDL_BufferTypes::DDL_int16 },	{ "i16",		DDL_BufferTypes::DDL_uint16 },
+	{"int32",	DDL_BufferTypes::DDL_int32 },	{ "i32",		DDL_BufferTypes::DDL_uint32 },
+	{"int64",	DDL_BufferTypes::DDL_int64 },	{ "i64",		DDL_BufferTypes::DDL_uint64 },
 	//unsigned ints
 	{"uint8",	DDL_BufferTypes::DDL_uint8},	{ "u8",			DDL_BufferTypes::DDL_uint8 },
 	{"uint16",	DDL_BufferTypes::DDL_uint16 },	{ "u16",		DDL_BufferTypes::DDL_uint16 },

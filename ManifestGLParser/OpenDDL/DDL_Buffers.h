@@ -74,8 +74,9 @@ namespace Manifest_Parser
 			auto payload = bufferData.substr(payloadIndex + 1, bufferData.find_first_of('}') - payloadIndex - 1);
 			for (uint32_t bufferPosition = 0; bufferPosition < subBufferElementCount; ++bufferPosition)
 			{
-				*(reinterpret_cast<T*>(buffer.typeHeap) + subBuffer++) = std::stof
-				(payload.substr(0));
+				T temp = static_cast<T>(std::stof
+				(payload.substr(0)));				
+				*(reinterpret_cast<T*>(buffer.typeHeap) + subBuffer++) = temp;				
 				payload = payload.substr(payload.find_first_of(',') + 1);
 			}
 		}

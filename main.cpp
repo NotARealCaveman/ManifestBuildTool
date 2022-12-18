@@ -17,8 +17,8 @@ using namespace Manifest_Persistence;
 using namespace Manifest_Memory;
 
 const std::string TEST_PATH{ "C:\\Users\\Droll\\Desktop\\Game\\testing\\" };
-const std::string TEST_GEX{ "Test2.gex" };
-const std::string TEST_MDB{ "Test2.mdb" };
+const std::string TEST_GEX{ "Test1.gex" };
+const std::string TEST_MDB{ "Test1.mdb" };
 
 void RuntimeTest()
 {
@@ -143,9 +143,9 @@ void BuildAndExport()
 	const GEX_Transform& transform = node.transforms[0];
 	const DDL_Float& data = transform.field;
 	const DDL_Buffer& buffer = data.data;
-	for (auto row = 0; row< 4; ++row)
+	for (auto col = 0; col < 4; ++col)
 	{
-		for (auto col = 0; col < 4; ++col)
+		for (auto row = 0; row < 4; ++row)
 		{
 			auto offset = row * 4 + col;
 			auto field = reinterpret_cast<float*>(buffer.typeHeap);
@@ -173,7 +173,7 @@ int main()
 {
 	WINDOWS_COLOR_CONSOLE;	
 	
-	//runtime DB testing DISABLE
+	DISABLE//runtime DB testing 
 	{
 		std::ifstream bImport{ TEST_PATH + TEST_MDB, std::ios::in | std::ios::binary };
 		ManifestRuntimeDatabase runtimeDatabase{ ImportBinaryDatabase(bImport) };
