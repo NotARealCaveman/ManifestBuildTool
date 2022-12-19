@@ -74,34 +74,33 @@ ManifestRuntimeDatabase::ManifestRuntimeDatabase(const ManifestBinaryDatabase& b
 
 void Manifest_Persistence::SimThread(ManifestRuntimeDatabase& runtimeDatabase)
 {	
-	const auto& nPhysicsObjects = runtimeDatabase.geometryNodes.instancedNodeIDs.tableEntries;	
+	DLOG(35, "SimThread ID: " << std::this_thread::get_id());
+	auto nPhysicsObjects = runtimeDatabase.geometryNodes.instancedNodeIDs.tableEntries;	nPhysicsObjects = 200000;
 	Simulation simulation;	
 	simulation.bodies.bodyID = new UniqueKey[nPhysicsObjects];
 	simulation.bodies.worldSpaces = new Xform[nPhysicsObjects];
-	memset(simulation.bodies.worldSpaces, 0, sizeof(Xform) * nPhysicsObjects);
-	runtimeDatabase.simulationSnapshot.xformTable.tableEntries =
-		runtimeDatabase.simulationSnapshot.xformTable.tableSize = nPhysicsObjects;
-	runtimeDatabase.simulationSnapshot.xformTable.tableEntries = runtimeDatabase.simulationSnapshot.xformTable.tableSize = nPhysicsObjects;
-	//simulation "double-buffer"
-	runtimeDatabase.simulationSnapshot.xformTable.keys = new UniqueKey[nPhysicsObjects];
-	runtimeDatabase.simulationSnapshot.xformTable.values = new Xform[nPhysicsObjects];
+	memset(simulation.bodies.worldSpaces, 0, sizeof(Xform) * nPhysicsObjects);	
 	runtimeDatabase.init.test_and_set();
 	runtimeDatabase.init.notify_one();
 	//sleep and predicition
-	auto simInterval = std::chrono::duration<double>{ 1/999000.0 };
+	auto simInterval = std::chrono::duration<double>{ 1/60.0 };
 	auto begin = std::chrono::high_resolution_clock::now();	
 	for(;;)
 	{			
 		auto prediction = begin + simulation.simulationFrame * simInterval;						
 		for (auto object{ 0 }; object < nPhysicsObjects; ++object)			simulation.bodies.worldSpaces[object].field[13] = simulation.bodies.worldSpaces[object].field[13] + 1;
-		//sync end simulation results				
-		runtimeDatabase.simulationLock.Lock();
-		runtimeDatabase.simulationSnapshot.simulationFrame.store(simulation.simulationFrame, std::memory_order_release);
-		memcpy(runtimeDatabase.simulationSnapshot.xformTable.values, simulation.bodies.worldSpaces, sizeof(Xform) * nPhysicsObjects);
-		//runtimeDatabase.printLock.Lock();
-		//DLOG(31, "Pushing simulation : " << simulation.simulationFrame);
-		//runtimeDatabase.printLock.Unlock();
-		runtimeDatabase.simulationLock.Unlock();
+		//copy results to snapshot
+		std::shared_ptr<SimulationSnapshot> snapshot{std::make_unique<SimulationSnapshot>()};
+		snapshot->simulationFrame = simulation.simulationFrame;	
+		snapshot->xformTable.tableEntries = snapshot->xformTable.tableSize = nPhysicsObjects;		
+		snapshot->xformTable.keys = new UniqueKey[nPhysicsObjects];
+		snapshot->xformTable.values = new Xform[nPhysicsObjects];
+		memcpy(snapshot->xformTable.values, simulation.bodies.worldSpaces, sizeof(Xform) * nPhysicsObjects);
+		//sync end simulation results			
+		runtimeDatabase.simulationLock.Write(std::function([&]()
+		{
+			runtimeDatabase.simulationSnapshot = std::move(snapshot);//moves ownership of temp unique
+		}));		
 		simulation.simulationFrame++;				
 		if (prediction > std::chrono::high_resolution_clock::now())
 			std::this_thread::sleep_until(prediction);
@@ -110,39 +109,38 @@ void Manifest_Persistence::SimThread(ManifestRuntimeDatabase& runtimeDatabase)
 
 void Manifest_Persistence::RenderThread(ManifestRuntimeDatabase& runtimeDatabase)
 {
+	DLOG(35, "RenderThread ID : " << std::this_thread::get_id());
 	auto set = false;
 	if (!(set = runtimeDatabase.init.test()))
 		runtimeDatabase.init.wait(set, std::memory_order_relaxed);
 	MFu64 renderFrame = 0;
 	MFu64 simulationFrame = -1;
 	//represents the handle to the graphic resource which works with the world space data
-	auto nObjects = runtimeDatabase.geometryNodes.instancedNodeIDs.tableEntries;	
+	auto nObjects = runtimeDatabase.geometryNodes.instancedNodeIDs.tableEntries;	nObjects = 200000;
 	Xform* instancedVBOHandle = new Xform[nObjects];
 	//sleep and predicition
-	auto frameInterval = std::chrono::duration<double>{ 1 / 1500000.0 };
-	auto begin = std::chrono::high_resolution_clock::now();
-	auto& snapFrame = runtimeDatabase.simulationSnapshot.simulationFrame;
+	auto frameInterval = std::chrono::duration<double>{ 1 / 144.0 };
+	auto begin = std::chrono::high_resolution_clock::now();	
+	std::shared_ptr<SimulationSnapshot> snapshot;
 	for (;;)
 	{
 		auto prediction = begin + renderFrame * frameInterval;		
-		//get current simulation data		
-		auto currentSim = snapFrame.load(std::memory_order_acquire);
-		//runtimeDatabase.printLock.Lock();
-	//if(!snapFrame.compare_exchange_strong(simulationFrame,simulationFrame,std::memory_order_acquire))
-		if (simulationFrame != currentSim)
-		{
-			//DLOG(31, "new simulation detected Old: " << simulationFrame <<" Current: " << currentSim);			
-			runtimeDatabase.simulationLock.Lock();
-			currentSim = snapFrame.load(std::memory_order_acquire);
-			memcpy(instancedVBOHandle, runtimeDatabase.simulationSnapshot.xformTable.values, sizeof(Xform) * nObjects);
-			runtimeDatabase.simulationLock.Unlock();
-			simulationFrame = currentSim;
-		}
-	if (simulationFrame != instancedVBOHandle[0].field[13] - 1)
-		RLOG(31, "Failure deteced on render frame: " << renderFrame << " sim: " << simulationFrame << " data: " << instancedVBOHandle[0].field[13]);
-	RLOG(31, "data: " << instancedVBOHandle[0].field[13]);
-		//DLOG(35, "Render Frame: " << renderFrame << " using Simulation Frame: " << simulationFrame << " simulation data: " << instancedVBOHandle[0].field[13]);		
-		//runtimeDatabase.printLock.Unlock();
+		//get current simulation data	
+		if (runtimeDatabase.simulationSnapshot.load(std::memory_order_acquire))
+		{	
+			//release old simulation data
+			if (snapshot)
+			{
+				delete[] snapshot->xformTable.keys;
+				delete[] snapshot->xformTable.values;
+			}
+			runtimeDatabase.simulationLock.Read(std::function([&]() {
+				snapshot = std::move(runtimeDatabase.simulationSnapshot);
+				}));
+			memcpy(instancedVBOHandle, snapshot->xformTable.values, sizeof(Xform) * nObjects);
+			simulationFrame = snapshot->simulationFrame;
+		}	
+		//DLOG(35, "Render Frame: " << renderFrame << " using Simulation Frame: " << simulationFrame << " simulation data: " << instancedVBOHandle[0].field[13]);	
 		renderFrame++;
 		
 		if (prediction > std::chrono::high_resolution_clock::now())

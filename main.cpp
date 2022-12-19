@@ -171,9 +171,9 @@ void BuildAndExport()
 
 int main()
 {
-	WINDOWS_COLOR_CONSOLE;	
-	
-	DISABLE//runtime DB testing 
+	WINDOWS_COLOR_CONSOLE;		
+
+	//runtime DB testing DISABLE
 	{
 		std::ifstream bImport{ TEST_PATH + TEST_MDB, std::ios::in | std::ios::binary };
 		ManifestRuntimeDatabase runtimeDatabase{ ImportBinaryDatabase(bImport) };
@@ -181,9 +181,9 @@ int main()
 		SimThread(runtimeDatabase);//runs on main thread
 	}
 
-	//DISABLE
+	DISABLE
 		BuildAndExport();
-	//DISABLE
+	DISABLE
 		ImportAndTest();
 	DISABLE
 		RuntimeTest();

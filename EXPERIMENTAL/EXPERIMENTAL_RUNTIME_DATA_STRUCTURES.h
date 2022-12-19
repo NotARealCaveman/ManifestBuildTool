@@ -1,13 +1,64 @@
 #pragma once
 #include <type_traits>
 #include <concepts>
+#include <atomic>
+#include <thread>
 
 #include <ManifestGLPersistence/DatabaseTypes.h>
+#include <ManifestGLUtility/DebugLogger.h>
 
 using namespace Manifest_Persistence;
 
 namespace Manifest_Experimental
 {	
+	//loop on exchange while lock is held(1) until released(0)
+	constexpr MFu8 LOCKED{ 1 };
+	constexpr MFu8 UNLOCKED{ 0 };
+	struct ExchangeLock
+	{
+	protected:
+		std::atomic<MFu8> lock{ UNLOCKED };
+	public:
+		//attempts to lock, spins on exchange until locked
+		void Lock();
+		//restores lock to unlocked state
+		void Unlock();
+	};
+
+	//single reader single writing
+	struct SRSWExchangeLock : public ExchangeLock
+	{
+	private:
+		std::atomic_flag reading = ATOMIC_FLAG_INIT;
+		std::atomic_flag writing = ATOMIC_FLAG_INIT;
+	public:
+		//returns true if a reader is not reading
+		bool Try_Write();
+		//returns true if a writer is not writing
+		bool Try_Read();
+		//locks for writing, sets writing flag, performs write
+		template<typename Function, typename... Params>
+		void Write(const Function& writeFunc, const Params&... params)
+		{
+			Lock();
+			writing.test_and_set(std::memory_order_release);
+			writeFunc(params...);
+			writing.clear(std::memory_order_release);
+			Unlock();
+		};
+		//locks for reading, sets reading flag, performs read
+		template<typename Function, typename... Params>
+		void Read(const Function& readFunc, const Params... params)
+		{
+			Lock();
+			reading.test_and_set(std::memory_order_release);
+			readFunc(params...);
+			reading.clear(std::memory_order_release);
+			Unlock();
+		}
+
+	};
+
 	//table types
 	template<typename Key, typename Value>
 	concept UniqueType = !std::is_same<Key, Value>::value;

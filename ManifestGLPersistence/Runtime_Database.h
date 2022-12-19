@@ -1,8 +1,7 @@
 #pragma once
-#include <atomic>
 #include <chrono>
 #include <vector>	
-
+#include <functional>
 
 #include "Binary_Database.h"
 
@@ -57,7 +56,7 @@ namespace Manifest_Persistence
 	//acts as a double buffer for the simulation to store shared data of a complete simulation frame 
 	struct SimulationSnapshot
 	{
-		std::atomic<MFu64> simulationFrame{ 0 };
+		MFu64 simulationFrame;
 		XformTable xformTable;
 	};
 
@@ -65,39 +64,20 @@ namespace Manifest_Persistence
 	//only the rendering thread should be inserting/removing graphic related entries from the db
 	//only the mt/sim thread should be updating the simulation data pointer
 	//synchronization should only occur when data will be interacted with both threads during runtime
-
-	//loop on exchange while lock is held(1) until released(0)
-	constexpr MFu8 LOCKED{ 1 };
-	constexpr MFu8 UNLOCKED{ 0 };
-	struct ExchangeLock
-	{
-		std::atomic<MFu8> lock{ UNLOCKED };
-		void Lock() { while (lock.exchange(LOCKED, std::memory_order_acquire)); };
-		void Unlock() { lock.store(UNLOCKED, std::memory_order_release); };
-	};	
-
-	struct RWExchangeLock
-	{
-		std::atomic<MFu8> lock{ UNLOCKED };
-		std::atomic_flag reading= ATOMIC_FLAG_INIT;
-		std::atomic_flag writing= ATOMIC_FLAG_INIT;
-		void Lock() { while (lock.exchange(LOCKED, std::memory_order_acquire)); };
-		void Unlock() { lock.store(UNLOCKED, std::memory_order_release); };
-	};
-
 	class ManifestRuntimeDatabase
 	{
 		private:				
 		public:								
 			ManifestRuntimeDatabase(const ManifestBinaryDatabase& binaryDatabase);			
 			
-			SimulationSnapshot simulationSnapshot;
+			//if present - new snapshot
+			std::atomic<std::shared_ptr<SimulationSnapshot>> simulationSnapshot;
 			GeometryNodes geometryNodes;
 			GeometryObjects geometryObjects;
 			Materials materials;
 
 			std::atomic_flag init = ATOMIC_FLAG_INIT;
-			ExchangeLock simulationLock;			
+			SRSWExchangeLock simulationLock;
 			ExchangeLock printLock;			
 	};	
 
