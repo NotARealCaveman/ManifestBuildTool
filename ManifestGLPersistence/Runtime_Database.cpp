@@ -75,7 +75,7 @@ ManifestRuntimeDatabase::ManifestRuntimeDatabase(const ManifestBinaryDatabase& b
 void Manifest_Persistence::SimThread(ManifestRuntimeDatabase& runtimeDatabase)
 {	
 	DLOG(35, "SimThread ID: " << std::this_thread::get_id());
-	auto nPhysicsObjects = runtimeDatabase.geometryNodes.instancedNodeIDs.tableEntries;	nPhysicsObjects = 200000;
+	auto nPhysicsObjects = runtimeDatabase.geometryNodes.instancedNodeIDs.tableEntries;	nPhysicsObjects = 2000;
 	Simulation simulation;	
 	simulation.bodies.bodyID = new UniqueKey[nPhysicsObjects];
 	simulation.bodies.worldSpaces = new Xform[nPhysicsObjects];
@@ -90,17 +90,28 @@ void Manifest_Persistence::SimThread(ManifestRuntimeDatabase& runtimeDatabase)
 		auto prediction = begin + simulation.simulationFrame * simInterval;						
 		for (auto object{ 0 }; object < nPhysicsObjects; ++object)			simulation.bodies.worldSpaces[object].field[13] = simulation.bodies.worldSpaces[object].field[13] + 1;
 		//copy results to snapshot
-		std::shared_ptr<SimulationSnapshot> snapshot{std::make_unique<SimulationSnapshot>()};
+		SimulationSnapshot* snapshot{ new SimulationSnapshot };
 		snapshot->simulationFrame = simulation.simulationFrame;	
 		snapshot->xformTable.tableEntries = snapshot->xformTable.tableSize = nPhysicsObjects;		
 		snapshot->xformTable.keys = new UniqueKey[nPhysicsObjects];
 		snapshot->xformTable.values = new Xform[nPhysicsObjects];
 		memcpy(snapshot->xformTable.values, simulation.bodies.worldSpaces, sizeof(Xform) * nPhysicsObjects);
-		//sync end simulation results			
+		//sync end simulation results					
+		SimulationSnapshot* prevSim = nullptr;
+		//atomically check for old sim and store new
 		runtimeDatabase.simulationLock.Write(std::function([&]()
-		{
-			runtimeDatabase.simulationSnapshot = std::move(snapshot);//moves ownership of temp unique
+		{						
+			prevSim = runtimeDatabase.simulationSnapshot.load(std::memory_order_acquire);
+			runtimeDatabase.simulationSnapshot.store(snapshot, std::memory_order_release);		
 		}));		
+		//if previous sim found delete - renderer missed sim
+		if (prevSim)
+		{
+			delete[] prevSim->xformTable.keys;
+			delete[] prevSim->xformTable.values;
+			delete prevSim;
+			prevSim = nullptr;
+		}
 		simulation.simulationFrame++;				
 		if (prediction > std::chrono::high_resolution_clock::now())
 			std::this_thread::sleep_until(prediction);
@@ -116,29 +127,33 @@ void Manifest_Persistence::RenderThread(ManifestRuntimeDatabase& runtimeDatabase
 	MFu64 renderFrame = 0;
 	MFu64 simulationFrame = -1;
 	//represents the handle to the graphic resource which works with the world space data
-	auto nObjects = runtimeDatabase.geometryNodes.instancedNodeIDs.tableEntries;	nObjects = 200000;
+	auto nObjects = runtimeDatabase.geometryNodes.instancedNodeIDs.tableEntries;	nObjects = 2000;
 	Xform* instancedVBOHandle = new Xform[nObjects];
 	//sleep and predicition
 	auto frameInterval = std::chrono::duration<double>{ 1 / 144.0 };
 	auto begin = std::chrono::high_resolution_clock::now();	
-	std::shared_ptr<SimulationSnapshot> snapshot;
+	SimulationSnapshot* snapshot{nullptr};
 	for (;;)
 	{
-		auto prediction = begin + renderFrame * frameInterval;		
+		auto prediction = begin + renderFrame * frameInterval;	
 		//get current simulation data	
 		if (runtimeDatabase.simulationSnapshot.load(std::memory_order_acquire))
-		{	
-			//release old simulation data
-			if (snapshot)
-			{
-				delete[] snapshot->xformTable.keys;
-				delete[] snapshot->xformTable.values;
-			}
+		{				
+			//release old simulation data	
+			auto prevSim = snapshot;			
 			runtimeDatabase.simulationLock.Read(std::function([&]() {
-				snapshot = std::move(runtimeDatabase.simulationSnapshot);
+				snapshot = runtimeDatabase.simulationSnapshot.load(std::memory_order_acquire);
+				runtimeDatabase.simulationSnapshot.store(nullptr, std::memory_order_release);				
 				}));
 			memcpy(instancedVBOHandle, snapshot->xformTable.values, sizeof(Xform) * nObjects);
-			simulationFrame = snapshot->simulationFrame;
+			simulationFrame = snapshot->simulationFrame;		
+			//relase old memory
+			if (prevSim)
+			{
+				delete[] prevSim->xformTable.keys;
+				delete[] prevSim->xformTable.values;
+				delete prevSim;
+			}
 		}	
 		//DLOG(35, "Render Frame: " << renderFrame << " using Simulation Frame: " << simulationFrame << " simulation data: " << instancedVBOHandle[0].field[13]);	
 		renderFrame++;

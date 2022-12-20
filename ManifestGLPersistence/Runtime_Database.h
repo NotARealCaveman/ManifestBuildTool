@@ -71,7 +71,7 @@ namespace Manifest_Persistence
 			ManifestRuntimeDatabase(const ManifestBinaryDatabase& binaryDatabase);			
 			
 			//if present - new snapshot
-			std::atomic<std::shared_ptr<SimulationSnapshot>> simulationSnapshot;
+			std::atomic<SimulationSnapshot*> simulationSnapshot;
 			GeometryNodes geometryNodes;
 			GeometryObjects geometryObjects;
 			Materials materials;
