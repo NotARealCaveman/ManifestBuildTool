@@ -72,10 +72,55 @@ ManifestRuntimeDatabase::ManifestRuntimeDatabase(const ManifestBinaryDatabase& b
 	}
 }
 
+void ManifestRuntimeDatabase::PushStates(XformTable* stateSnapshot)
+{
+	XformTable* prevStates{ nullptr };
+	//atomically check for old sim and store new
+	stateLock.Write(std::function([&]()
+		{
+			prevStates = newStates.load(std::memory_order_acquire);
+			newStates.store(stateSnapshot, std::memory_order_release);
+		}));
+	//if previous sim found delete - renderer missed sim
+	if (prevStates)
+	{
+		delete[] prevStates->keys;
+		delete[] prevStates->values;
+		delete prevStates;
+		prevStates = nullptr;
+	}
+}
+
+XformTable* ManifestRuntimeDatabase::PullStates()
+{
+	//return committed if nothing new present
+	if (!newStates.load(std::memory_order_acquire))
+		return committedSimulation.xformTable;
+
+	//new simulation present - store old simulation
+	XformTable* prevStates{ nullptr };
+	//atomically updates simulation and removes flag
+	stateLock.Read(std::function([&]()
+		{
+			prevStates = committedSimulation.xformTable;
+			committedSimulation.xformTable = newStates.load(std::memory_order_acquire);//upate simulation	
+			newStates.store(nullptr, std::memory_order_release);//remove flag
+		}));
+	//relase old memory if applicable 				
+	if (prevStates)
+	{//may explore option that requires sim to render
+		delete[] prevStates->keys;
+		delete[] prevStates->values;
+		delete prevStates;
+	}
+
+	return committedSimulation.xformTable;
+}
+
 void Manifest_Persistence::SimThread(ManifestRuntimeDatabase& runtimeDatabase)
 {	
 	DLOG(35, "SimThread ID: " << std::this_thread::get_id());
-	auto nPhysicsObjects = runtimeDatabase.geometryNodes.instancedNodeIDs.tableEntries;	nPhysicsObjects = 2000;
+	auto nPhysicsObjects = runtimeDatabase.geometryNodes.geometryNodeTable.tableEntries;
 	Simulation simulation;	
 	simulation.bodies.bodyID = new UniqueKey[nPhysicsObjects];
 	simulation.bodies.worldSpaces = new Xform[nPhysicsObjects];
@@ -83,7 +128,7 @@ void Manifest_Persistence::SimThread(ManifestRuntimeDatabase& runtimeDatabase)
 	runtimeDatabase.init.test_and_set();
 	runtimeDatabase.init.notify_one();
 	//sleep and predicition
-	auto simInterval = std::chrono::duration<double>{ 1/60.0 };
+	auto simInterval = std::chrono::duration<double>{ 1/600.0 };
 	auto begin = std::chrono::high_resolution_clock::now();	
 	for(;;)
 	{			
@@ -96,8 +141,9 @@ void Manifest_Persistence::SimThread(ManifestRuntimeDatabase& runtimeDatabase)
 		stateSnapshot->values = new Xform[nPhysicsObjects];
 		memcpy(stateSnapshot->values, simulation.bodies.worldSpaces, sizeof(Xform) * nPhysicsObjects);
 		//sync end simulation results - handles memory cleanup	
-		runtimeDatabase.PushStates(stateSnapshot);		
-		//update sim frame
+		runtimeDatabase.PushStates(stateSnapshot);	
+		//continue sim and push updates
+		//update sim frame - concludes simulation for frame
 		simulation.simulationFrame++;				
 		//sleep if permissible
 		if (prediction > std::chrono::high_resolution_clock::now())
@@ -113,7 +159,7 @@ void Manifest_Persistence::RenderThread(ManifestRuntimeDatabase& runtimeDatabase
 		runtimeDatabase.init.wait(set, std::memory_order_relaxed);
 	MFu64 renderFrame = 0;	
 	//represents the handle to the graphic resource which works with the world space data
-	auto nObjects = runtimeDatabase.geometryNodes.instancedNodeIDs.tableEntries;	nObjects = 2000;
+	auto nObjects = runtimeDatabase.geometryNodes.geometryNodeTable.tableEntries;
 	Xform* instancedVBOHandle = new Xform[nObjects];
 	//sleep and predicition
 	auto frameInterval = std::chrono::duration<double>{ 1 / 144.0 };
@@ -126,7 +172,7 @@ void Manifest_Persistence::RenderThread(ManifestRuntimeDatabase& runtimeDatabase
 		//get current simulation data - update vbo if new
 		if (currentStates != (stateSnapshot = runtimeDatabase.PullStates()))
 			memcpy(instancedVBOHandle, stateSnapshot->values, sizeof(Xform) * nObjects);		
-		DLOG(35, "Render Frame: " << renderFrame << " simulation data: " << instancedVBOHandle[0].field[13]);	
+		DLOG(35, "Render Frame: " << renderFrame << " simulation data: " << instancedVBOHandle[0].field[13]);
 		//update render frame
 		renderFrame++;
 		//sleep if permissible
