@@ -60,25 +60,65 @@ namespace Manifest_Persistence
 		XformTable xformTable;
 	};
 
-	//inserting into the database should be designed to be obstruction free where possible
-	//only the rendering thread should be inserting/removing graphic related entries from the db
-	//only the mt/sim thread should be updating the simulation data pointer
-	//synchronization should only occur when data will be interacted with both threads during runtime
+	//Currently exploring a push/pull paradigm for updating and centralizing shared game state in the runtime database
 	class ManifestRuntimeDatabase
 	{
-		private:				
-		public:								
-			ManifestRuntimeDatabase(const ManifestBinaryDatabase& binaryDatabase);			
-			
+		private:	
 			//if present - new snapshot
-			std::atomic<SimulationSnapshot*> simulationSnapshot;
+			std::atomic<SimulationSnapshot*> newSimulation{ nullptr };			
+		public:								
+			ManifestRuntimeDatabase(const ManifestBinaryDatabase& binaryDatabase);	
+			//atomically pushes a new simulation to the database and cleans up unused simulation memory if present
+			void PushSimulation(SimulationSnapshot* snapshot)
+			{
+				SimulationSnapshot* prevSim = nullptr;
+				//atomically check for old sim and store new
+				simulationLock.Write(std::function([&]()
+					{
+						prevSim = newSimulation.load(std::memory_order_acquire);
+						newSimulation.store(snapshot, std::memory_order_release);
+					}));
+				//if previous sim found delete - renderer missed sim
+				if (prevSim)
+				{
+					delete[] prevSim->xformTable.keys;
+					delete[] prevSim->xformTable.values;
+					delete prevSim;
+					prevSim = nullptr;
+				}
+			}
+			//returns the currently committed simulation - if a new simulation has been pushed, atomically pulls update and cleans up previous simulation memory 
+			SimulationSnapshot* PullSimulation()
+			{
+				//return committed if nothing new present
+				if (!newSimulation.load(std::memory_order_acquire))
+					return committedSimulation;
+
+				//new simulation present - store old simulation
+				auto prevSim = committedSimulation;
+				//atomically updates simulation and removes flag
+				simulationLock.Read(std::function([&]()
+					{
+						committedSimulation = newSimulation.load(std::memory_order_acquire);//upate simulation	
+						newSimulation.store(nullptr, std::memory_order_release);//remove flag
+					}));
+				//relase old memory if applicable 				
+				if (prevSim)
+				{//may explore option that requires sim to render
+					delete[] prevSim->xformTable.keys;
+					delete[] prevSim->xformTable.values;
+					delete prevSim;
+				}
+
+				return committedSimulation;
+			}			
+			SimulationSnapshot* committedSimulation{ nullptr };
 			GeometryNodes geometryNodes;
 			GeometryObjects geometryObjects;
-			Materials materials;
+			Materials materials;			
 
 			std::atomic_flag init = ATOMIC_FLAG_INIT;
-			SRSWExchangeLock simulationLock;
-			ExchangeLock printLock;			
+			SRSWExchangeLock simulationLock;			
 	};	
 
 	void SimThread(ManifestRuntimeDatabase& runtimeDatabase);
