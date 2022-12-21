@@ -4,40 +4,41 @@
 #include <ManifestGLPersistence/DatabaseTypes.h>
 #include <ManifestGLUtility/DebugLogger.h>
 
-//will be implementing an subscription-subscriber pattern to handle cross framework messaging
+//will be implementing an Publisher-Subscriber pattern to handle cross framework messaging
 namespace Manifest_Experimental
 {
-	constexpr MFu32 NEW_MESSAGE{ 1 };
-	constexpr MFu32 ANOTHER_MESSAGE{ 2 };
-	
-	struct Message
-	{
-		MFu32 singal{ UINT32_MAX };
-	};
 
-	struct Event
-	{
-		Message message;
-	};
+	typedef MFu32 Message;	
+	constexpr Message NEW_MESSAGE{ 1 };
+		
 
 	struct Subscriber
 	{
 		void ReceiveMessage(const Message& message);
-		void ProcessMessage(const Message& message);
+		virtual void ProcessMessage(const Message& message)=0;
+	};
+	struct ISub :public Subscriber
+	{
+		void ProcessMessage(const Message& message) { };
 	};
 
 	struct Distributer
 	{
-		void DistributeMessage();
+		void DistributeMessages();
 
-		std::vector<Message> messages;		
+		std::vector<Message> messages;
 		std::vector<Subscriber*> subscribers;
 	};
 
-	struct Subscription
+	struct Publisher
 	{
-		void PublishMessage(const Event& event);
+		void PublishMessage(const Message& message);
 
 		Distributer* distributer;
 	};	
+
+	struct PhysicsSubscriber : public Subscriber
+	{
+		void ProcessMessage(const Message& message) { };
+	};
 }

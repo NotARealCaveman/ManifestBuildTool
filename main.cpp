@@ -188,19 +188,16 @@ void ThreadTest()
 
 void MessageTest()
 {
-	Subscriber subscriber;
+	ISub subscriber;
 	Distributer distributer;
-	Subscription subscription;
+	Publisher publisher;
 
-	subscription.distributer = &distributer;
+	publisher.distributer = &distributer;
 	distributer.subscribers.emplace_back(&subscriber);
 
-	subscription.PublishMessage(Event{NEW_MESSAGE});
-	distributer.DistributeMessage();
-
-	subscription.PublishMessage(Event{ NEW_MESSAGE });
-	subscription.PublishMessage(Event{ ANOTHER_MESSAGE });
-	distributer.DistributeMessage();
+	publisher.PublishMessage(Message{NEW_MESSAGE});
+	publisher.PublishMessage(Message{ NEW_MESSAGE });
+	distributer.DistributeMessages();	
 }
 
 int main()
@@ -208,9 +205,9 @@ int main()
 	WINDOWS_COLOR_CONSOLE;		
 
 	//db threading
-	//DISABLE
-		MessageTest();
 	DISABLE
+		MessageTest();
+	//DISABLE
 		ThreadTest();
 	//persistence tests
 	DISABLE

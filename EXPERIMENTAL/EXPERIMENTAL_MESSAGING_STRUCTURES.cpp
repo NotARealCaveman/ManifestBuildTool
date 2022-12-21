@@ -2,13 +2,13 @@
 
 using namespace Manifest_Experimental;
 
-void Subscription::PublishMessage(const Event& event)
+void Publisher::PublishMessage(const Message& message)
 {	
 	DLOG(31, "Subscription pushing message");
-	distributer->messages.emplace_back(event.message);
+	distributer->messages.emplace_back(message);
 }
 
-void Distributer::DistributeMessage()
+void Distributer::DistributeMessages()
 {
 	//distribute pending messages
 	DLOG(32, "Distributing messages");
@@ -23,9 +23,4 @@ void Subscriber::ReceiveMessage(const Message& message)
 {
 	DLOG(33, "Message received");
 	ProcessMessage(message);
-}
-
-void Subscriber::ProcessMessage(const Message& message)
-{
-	DLOG(34, "Singal: " << message.singal);
 }

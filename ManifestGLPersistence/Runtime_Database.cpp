@@ -185,7 +185,7 @@ void Manifest_Persistence::RenderThread(ManifestRuntimeDatabase& runtimeDatabase
 		//get current simulation data - update vbo if new
 		if (currentStates != (stateSnapshot = runtimeDatabase.PullStates()))
 			memcpy(instancedVBOHandle, stateSnapshot->values, sizeof(Xform) * nObjects);		
-		//DLOG(35, "Render Frame: " << renderFrame << " simulation data: " << instancedVBOHandle[0].field[13]);
+		DLOG(35, "Render Frame: " << renderFrame << " simulation data: " << instancedVBOHandle[0].field[13]);
 		//update render frame
 		renderFrame++;
 		//sleep if permissible

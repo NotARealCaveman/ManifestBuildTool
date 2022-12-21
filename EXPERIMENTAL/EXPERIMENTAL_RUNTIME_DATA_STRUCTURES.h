@@ -40,21 +40,21 @@ namespace Manifest_Experimental
 		template<typename Function, typename... Params>
 		void Write(const Function& writeFunc, const Params&... params)
 		{
-			Lock();
+			//Lock();
 			writing.test_and_set(std::memory_order_release);
 			writeFunc(params...);
 			writing.clear(std::memory_order_release);
-			Unlock();
+			//Unlock();
 		};
 		//locks for reading, sets reading flag, performs read
 		template<typename Function, typename... Params>
 		void Read(const Function& readFunc, const Params... params)
 		{
-			Lock();
+			//Lock();
 			reading.test_and_set(std::memory_order_release);
 			readFunc(params...);
 			reading.clear(std::memory_order_release);
-			Unlock();
+			//Unlock();
 		}
 
 	};
