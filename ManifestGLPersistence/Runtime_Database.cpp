@@ -6,20 +6,20 @@ ManifestRuntimeDatabase::ManifestRuntimeDatabase(const ManifestBinaryDatabase& b
 {	
 	xoshiro256ss_state ss;
 	//store number of nodes and create	
-	geometryNodes.instancedNodeIDs.tableSize = binaryDatabase.binaryGeometryNodeTable.header.totalEntries;
-	geometryNodes.instancedNodeIDs.keys = new UniqueKey[geometryNodes.instancedNodeIDs.tableSize];
-	geometryNodes.instancedNodeIDs.values = new PrimaryKey[geometryNodes.instancedNodeIDs.tableSize];
+	geometryNodes.geometryNodeTable.tableSize = binaryDatabase.binaryGeometryNodeTable.header.totalEntries;
+	geometryNodes.geometryNodeTable.keys = new UniqueKey[geometryNodes.geometryNodeTable.tableSize];
+	geometryNodes.geometryNodeTable.values = new PrimaryKey[geometryNodes.geometryNodeTable.tableSize];
 	//create storage for node references
-	geometryNodes.nodeGeometries = new PrimaryKey[geometryNodes.instancedNodeIDs.tableSize];
-	geometryNodes.nodeMaterials = new PrimaryKey[geometryNodes.instancedNodeIDs.tableSize];
+	geometryNodes.nodeGeometries = new PrimaryKey[geometryNodes.geometryNodeTable.tableSize];
+	geometryNodes.nodeMaterials = new PrimaryKey[geometryNodes.geometryNodeTable.tableSize];
 	//store number of materials and create
-	materials.materials.tableSize = binaryDatabase.binaryMaterialTable.header.totalEntries;
-	materials.materials.keys = new UniqueKey[materials.materials.tableSize];
-	materials.materials.values = new Material[materials.materials.tableSize];
+	materials.materialTable.tableSize = binaryDatabase.binaryMaterialTable.header.totalEntries;
+	materials.materialTable.keys = new UniqueKey[materials.materialTable.tableSize];
+	materials.materialTable.values = new Material[materials.materialTable.tableSize];
 	//store number of geometries and create
-	geometryObjects.geometryObjects.tableSize = binaryDatabase.binaryGeometryObjectTable.header.totalEntries;
-	geometryObjects.geometryObjects.keys = new UniqueKey[geometryObjects.geometryObjects.tableSize];
-	geometryObjects.geometryObjects.values = new GraphicID[geometryObjects.geometryObjects.tableSize];
+	geometryObjects.geometryObjectTable.tableSize = binaryDatabase.binaryGeometryObjectTable.header.totalEntries;
+	geometryObjects.geometryObjectTable.keys = new UniqueKey[geometryObjects.geometryObjectTable.tableSize];
+	geometryObjects.geometryObjectTable.values = new GraphicID[geometryObjects.geometryObjectTable.tableSize];
 
 	//load binary data into runtime
 	auto nNodes = binaryDatabase.binaryGeometryNodeTable.header.totalEntries;
@@ -30,12 +30,12 @@ ManifestRuntimeDatabase::ManifestRuntimeDatabase(const ManifestBinaryDatabase& b
 		const auto& node = binaryDatabase.binaryGeometryNodeTable[entry];
 		//add node into runtime
 		auto runtimeID = ss.Crunch();
-		DLOG(36, "Inserting node: " << geometryNodes.instancedNodeIDs.tableEntries << " with key " << node.header.nodeID <<" and value: " << runtimeID);
-		geometryNodes.instancedNodeIDs.keys[geometryNodes.instancedNodeIDs.tableEntries] = node.header.nodeID;
-		geometryNodes.instancedNodeIDs.values[geometryNodes.instancedNodeIDs.tableEntries] = runtimeID;//ss.Crunch();		
+		DLOG(36, "Inserting node: " << geometryNodes.geometryNodeTable.tableEntries << " with key " << node.header.nodeID <<" and value: " << runtimeID);
+		geometryNodes.geometryNodeTable.keys[geometryNodes.geometryNodeTable.tableEntries] = node.header.nodeID;
+		geometryNodes.geometryNodeTable.values[geometryNodes.geometryNodeTable.tableEntries] = runtimeID;//ss.Crunch();		
 		//search for nodes geometry
-		auto goBegin = geometryObjects.geometryObjects.begin<PrimaryKey>();
-		auto goEnd = geometryObjects.geometryObjects.end<PrimaryKey>();
+		auto goBegin = geometryObjects.geometryObjectTable.begin<PrimaryKey>();
+		auto goEnd = geometryObjects.geometryObjectTable.end<PrimaryKey>();
 		auto instance = std::find(goBegin, goEnd, node.header.geometryID);		
 		if (instance == goEnd)
 		{
@@ -44,31 +44,31 @@ ManifestRuntimeDatabase::ManifestRuntimeDatabase(const ManifestBinaryDatabase& b
 			//get node mesh
 			const auto& mesh = binaryDatabase.binaryMeshTable[geometry.header.meshID];
 			//add mesh to geometry runtime	
-			instance = &(geometryObjects.geometryObjects.keys[geometryObjects.geometryObjects.tableEntries] = geometry.header.geometryID);
-			geometryObjects.geometryObjects.values[geometryObjects.geometryObjects.tableEntries] = creationIndexCounter++;//glCreateVertexArray					
-			geometryObjects.geometryObjects.tableEntries++;
+			instance = &(geometryObjects.geometryObjectTable.keys[geometryObjects.geometryObjectTable.tableEntries] = geometry.header.geometryID);
+			geometryObjects.geometryObjectTable.values[geometryObjects.geometryObjectTable.tableEntries] = creationIndexCounter++;//glCreateVertexArray					
+			geometryObjects.geometryObjectTable.tableEntries++;
 		}
 		//refer node to geometry
-		geometryNodes.nodeGeometries[geometryNodes.instancedNodeIDs.tableEntries] = *instance;	
+		geometryNodes.nodeGeometries[geometryNodes.geometryNodeTable.tableEntries] = *instance;	
 		//search for nodes materials
-		auto mtlBegin = materials.materials.begin<PrimaryKey>();
-		auto mtlEnd = materials.materials.end<PrimaryKey>();
+		auto mtlBegin = materials.materialTable.begin<PrimaryKey>();
+		auto mtlEnd = materials.materialTable.end<PrimaryKey>();
 		instance = std::find(mtlBegin, mtlEnd, node.header.materialID);
 		if (instance == mtlEnd)
 		{
 			//get node material		
 			const auto& material = binaryDatabase.binaryMaterialTable[node.header.materialID];
-			instance = &(materials.materials.keys[materials.materials.tableEntries] = material.header.materialID);
+			instance = &(materials.materialTable.keys[materials.materialTable.tableEntries] = material.header.materialID);
 			//add material to material runtime
-			materials.materials.values[materials.materials.tableEntries].materialIDs[0] = material.header.diffuseID == KEY_NOT_PRESENT ? KEY_NOT_PRESENT : creationIndexCounter++;
-			materials.materials.values[materials.materials.tableEntries].materialIDs[1] = material.header.noramlID == KEY_NOT_PRESENT ? KEY_NOT_PRESENT : creationIndexCounter++;
-			materials.materials.values[materials.materials.tableEntries].materialIDs[2] = material.header.parallaxID == KEY_NOT_PRESENT ? KEY_NOT_PRESENT : creationIndexCounter++;
-			materials.materials.tableEntries++;
+			materials.materialTable.values[materials.materialTable.tableEntries].materialIDs[0] = material.header.diffuseID == KEY_NOT_PRESENT ? KEY_NOT_PRESENT : creationIndexCounter++;
+			materials.materialTable.values[materials.materialTable.tableEntries].materialIDs[1] = material.header.noramlID == KEY_NOT_PRESENT ? KEY_NOT_PRESENT : creationIndexCounter++;
+			materials.materialTable.values[materials.materialTable.tableEntries].materialIDs[2] = material.header.parallaxID == KEY_NOT_PRESENT ? KEY_NOT_PRESENT : creationIndexCounter++;
+			materials.materialTable.tableEntries++;
 		}
 		//refer node to material
-		geometryNodes.nodeMaterials[geometryNodes.instancedNodeIDs.tableEntries] = *instance;
+		geometryNodes.nodeMaterials[geometryNodes.geometryNodeTable.tableEntries] = *instance;
 		//account for the new node
-		++geometryNodes.instancedNodeIDs.tableEntries;
+		++geometryNodes.geometryNodeTable.tableEntries;
 	}
 }
 
@@ -117,10 +117,23 @@ XformTable* ManifestRuntimeDatabase::PullStates()
 	return committedSimulation.xformTable;
 }
 
+GeometryNodes* ManifestRuntimeDatabase::PullGeometryNodes()
+{
+	return &geometryNodes;
+};
+GeometryObjects* ManifestRuntimeDatabase::PullGeometryObjects()
+{
+	return &geometryObjects;
+};
+Materials* ManifestRuntimeDatabase::PullMaterials()
+{
+	return &materials;
+};
+
 void Manifest_Persistence::SimThread(ManifestRuntimeDatabase& runtimeDatabase)
 {	
 	DLOG(35, "SimThread ID: " << std::this_thread::get_id());
-	auto nPhysicsObjects = runtimeDatabase.geometryNodes.geometryNodeTable.tableEntries;
+	auto nPhysicsObjects = runtimeDatabase.PullGeometryNodes()->geometryNodeTable.tableEntries;
 	Simulation simulation;	
 	simulation.bodies.bodyID = new UniqueKey[nPhysicsObjects];
 	simulation.bodies.worldSpaces = new Xform[nPhysicsObjects];
@@ -128,7 +141,7 @@ void Manifest_Persistence::SimThread(ManifestRuntimeDatabase& runtimeDatabase)
 	runtimeDatabase.init.test_and_set();
 	runtimeDatabase.init.notify_one();
 	//sleep and predicition
-	auto simInterval = std::chrono::duration<double>{ 1/600.0 };
+	auto simInterval = std::chrono::duration<double>{ 1/60.0 };
 	auto begin = std::chrono::high_resolution_clock::now();	
 	for(;;)
 	{			
@@ -159,7 +172,7 @@ void Manifest_Persistence::RenderThread(ManifestRuntimeDatabase& runtimeDatabase
 		runtimeDatabase.init.wait(set, std::memory_order_relaxed);
 	MFu64 renderFrame = 0;	
 	//represents the handle to the graphic resource which works with the world space data
-	auto nObjects = runtimeDatabase.geometryNodes.geometryNodeTable.tableEntries;
+	auto nObjects = runtimeDatabase.PullGeometryNodes()->geometryNodeTable.tableEntries;
 	Xform* instancedVBOHandle = new Xform[nObjects];
 	//sleep and predicition
 	auto frameInterval = std::chrono::duration<double>{ 1 / 144.0 };
@@ -172,7 +185,7 @@ void Manifest_Persistence::RenderThread(ManifestRuntimeDatabase& runtimeDatabase
 		//get current simulation data - update vbo if new
 		if (currentStates != (stateSnapshot = runtimeDatabase.PullStates()))
 			memcpy(instancedVBOHandle, stateSnapshot->values, sizeof(Xform) * nObjects);		
-		DLOG(35, "Render Frame: " << renderFrame << " simulation data: " << instancedVBOHandle[0].field[13]);
+		//DLOG(35, "Render Frame: " << renderFrame << " simulation data: " << instancedVBOHandle[0].field[13]);
 		//update render frame
 		renderFrame++;
 		//sleep if permissible

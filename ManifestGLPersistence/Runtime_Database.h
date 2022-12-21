@@ -12,20 +12,22 @@ namespace Manifest_Persistence
 {
 	typedef MFu32 GraphicID;	
 
+	typedef Table<PrimaryKey, GraphicID> GeometryObjectTable;
 	struct GeometryObjects
 	{
-		Table<PrimaryKey, GraphicID> geometryObjects;//pairs database mesh IDs to runtime ids
+		GeometryObjectTable geometryObjectTable;//pairs database mesh IDs to runtime ids
 	};
 
 	struct Material
 	{
-		GraphicID materialIDs[3];
+		GraphicID materialIDs[3];//[0]:diff,[1]:nrml,[2]:parallax
 		inline const GraphicID& operator[](const MFint32& index) { return materialIDs[index]; };
 	};
 
+	typedef Table<PrimaryKey, Material> MaterialTable;
 	struct Materials
 	{
-		Table<PrimaryKey, Material> materials;//pairs database mtls to runtime ids
+		MaterialTable materialTable;//pairs database mtls to runtime ids
 	};
 
 	//this reference system may require some "smart" tracking for multithreading/general persistence
@@ -65,9 +67,17 @@ namespace Manifest_Persistence
 	class ManifestRuntimeDatabase
 	{
 		private:	
-			//if present - new snapshot					
-			std::atomic<XformTable*> newStates{ nullptr };
+			//if present - new data to be pulled
+			std::atomic<XformTable*> newStates{ nullptr };		
+			
+			GeometryNodes geometryNodes;
+			GeometryObjects geometryObjects;
+			Materials materials;
+
+			SimulationSnapshot committedSimulation;
+
 			SRSWExchangeLock stateLock;//R-W opperations on states
+			
 		public:
 			ManifestRuntimeDatabase(const ManifestBinaryDatabase& binaryDatabase);	
 
@@ -77,12 +87,13 @@ namespace Manifest_Persistence
 			XformTable* PullStates();
 
 			void PushGeometryNodes();
-			GeometryNodeTable* PullGeometryNodes();
+			GeometryNodes* PullGeometryNodes();
 
-			SimulationSnapshot committedSimulation;
-			GeometryNodes geometryNodes;
-			GeometryObjects geometryObjects;
-			Materials materials;			
+			void PushGeometryObjects();
+			GeometryObjects* PullGeometryObjects();
+
+			void PushMaterials();
+			Materials* PullMaterials();			
 
 			std::atomic_flag init = ATOMIC_FLAG_INIT;			
 	};	

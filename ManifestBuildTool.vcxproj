@@ -137,6 +137,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="EXPERIMENTAL\EXPERIMENTAL_MESSAGING_STRUCTURES.cpp" />
     <ClCompile Include="EXPERIMENTAL\EXPERIMENTAL_RUNTIME_DATA_STRUCTURES.cpp" />
     <ClCompile Include="EXPERIMENTAL\Manifect_Allocator.cpp" />
     <ClCompile Include="EXPERIMENTAL\RNG.cpp" />
@@ -176,6 +177,7 @@
     <ClCompile Include="ManifestGLPersistence\Runtime_Database.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="EXPERIMENTAL\EXPERIMENTAL_MESSAGING_STRUCTURES.h" />
     <ClInclude Include="EXPERIMENTAL\EXPERIMENTAL_RUNTIME_DATA_STRUCTURES.h" />
     <ClInclude Include="EXPERIMENTAL\Manifest_Allocator.h" />
     <ClInclude Include="EXPERIMENTAL\Manifest_Memory.h" />

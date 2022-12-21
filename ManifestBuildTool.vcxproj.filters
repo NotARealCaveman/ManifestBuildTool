@@ -171,6 +171,9 @@
     <ClCompile Include="EXPERIMENTAL\RNG.cpp">
       <Filter>Source Files\EXPERIMENTAL</Filter>
     </ClCompile>
+    <ClCompile Include="EXPERIMENTAL\EXPERIMENTAL_MESSAGING_STRUCTURES.cpp">
+      <Filter>Source Files\EXPERIMENTAL</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ManifestGLParser\OpenDDL\DDL_Buffers.h">
@@ -336,6 +339,9 @@
       <Filter>Header Files\EXPERIMENTAL</Filter>
     </ClInclude>
     <ClInclude Include="EXPERIMENTAL\RNG.h">
+      <Filter>Header Files\EXPERIMENTAL</Filter>
+    </ClInclude>
+    <ClInclude Include="EXPERIMENTAL\EXPERIMENTAL_MESSAGING_STRUCTURES.h">
       <Filter>Header Files\EXPERIMENTAL</Filter>
     </ClInclude>
   </ItemGroup>

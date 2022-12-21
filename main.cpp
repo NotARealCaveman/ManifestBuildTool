@@ -8,6 +8,7 @@
 
 #include <EXPERIMENTAL/Manifest_Allocator.h>
 #include <EXPERIMENTAL/EXPERIMENTAL_RUNTIME_DATA_STRUCTURES.h>
+#include <EXPERIMENTAL/EXPERIMENTAL_MESSAGING_STRUCTURES.h>
 
 #include <thread>
 #include <chrono>
@@ -15,6 +16,7 @@
 using namespace Manifest_Parser;
 using namespace Manifest_Persistence;
 using namespace Manifest_Memory;
+using namespace Manifest_Experimental;
 
 const std::string TEST_PATH{ "C:\\Users\\Droll\\Desktop\\Game\\testing\\" };
 const std::string TEST_GEX{ "Test1.gex" };
@@ -52,20 +54,27 @@ void RuntimeTest()
 
 	std::ifstream bImport{ TEST_PATH + TEST_MDB, std::ios::in | std::ios::binary };	
 	ManifestRuntimeDatabase runtimeDatabase{ ImportBinaryDatabase(bImport) };	
-	for (auto nodeEntry = 0; nodeEntry < runtimeDatabase.geometryNodes.instancedNodeIDs.tableSize; ++nodeEntry)
+
+	auto geometryObjects = runtimeDatabase.PullGeometryObjects();
+	auto geometryNodes = runtimeDatabase.PullGeometryNodes();
+	auto materials = runtimeDatabase.PullMaterials();
+
+	for (auto nodeEntry = 0; nodeEntry < geometryNodes->geometryNodeTable.tableSize; ++nodeEntry)
 	{			
 		//get geometryObject id from the key address offset
-		auto goBegin = runtimeDatabase.geometryObjects.geometryObjects.begin<PrimaryKey>();
-		auto goEnd = runtimeDatabase.geometryObjects.geometryObjects.end<PrimaryKey>();
-		auto goID = std::find(goBegin, goEnd, runtimeDatabase.geometryNodes.nodeGeometries[nodeEntry]);
+		
+		auto goBegin = geometryObjects->geometryObjectTable.begin<PrimaryKey>();
+		auto goEnd = geometryObjects->geometryObjectTable.end<PrimaryKey>();
+		
+		auto goID = std::find(goBegin, goEnd, geometryNodes->nodeGeometries[nodeEntry]);
 		auto index = goID - goBegin;
-		auto VAO = runtimeDatabase.geometryObjects.geometryObjects.values[index];
-		auto mtlBegin = runtimeDatabase.materials.materials.begin<PrimaryKey>();
-		auto mtlEnd = runtimeDatabase.materials.materials.end<PrimaryKey>();
-		auto mtlID = std::find(mtlBegin, mtlEnd, runtimeDatabase.geometryNodes.nodeMaterials[nodeEntry]);
+		auto VAO = geometryObjects->geometryObjectTable.values[index];
+		auto mtlBegin = materials->materialTable.begin<PrimaryKey>();
+		auto mtlEnd = materials->materialTable.end<PrimaryKey>();
+		auto mtlID = std::find(mtlBegin, mtlEnd, geometryNodes->nodeMaterials[nodeEntry]);
 		index = mtlID - mtlBegin;
-		auto MTL = runtimeDatabase.materials.materials.values[index];
-		DLOG(31, "Geometry Node with id: " << runtimeDatabase.geometryNodes.instancedNodeIDs.values[nodeEntry] << " has VAO: " << VAO << " and MTL diffuse: " << MTL[0] <<" normal: " << MTL[1]<< " parallax: " << MTL[2]);
+		auto MTL = materials->materialTable.values[index];
+		DLOG(31, "Geometry Node with id: " << geometryNodes->geometryNodeTable.values[nodeEntry] << " has VAO: " << VAO << " and MTL diffuse: " << MTL[0] <<" normal: " << MTL[1]<< " parallax: " << MTL[2]);
 	}
 } 
 
@@ -169,22 +178,46 @@ void BuildAndExport()
 	}
 }
 
+void ThreadTest()
+{
+	std::ifstream bImport{ TEST_PATH + TEST_MDB, std::ios::in | std::ios::binary };
+	ManifestRuntimeDatabase runtimeDatabase{ ImportBinaryDatabase(bImport) };
+	std::thread rthread{ RenderThread,std::ref(runtimeDatabase) };
+	SimThread(runtimeDatabase);//runs on main thread
+}
+
+void MessageTest()
+{
+	Subscriber subscriber;
+	Distributer distributer;
+	Subscription subscription;
+
+	subscription.distributer = &distributer;
+	distributer.subscribers.emplace_back(&subscriber);
+
+	subscription.PublishMessage(Event{NEW_MESSAGE});
+	distributer.DistributeMessage();
+
+	subscription.PublishMessage(Event{ NEW_MESSAGE });
+	subscription.PublishMessage(Event{ ANOTHER_MESSAGE });
+	distributer.DistributeMessage();
+}
+
 int main()
 {
 	WINDOWS_COLOR_CONSOLE;		
 
-	//runtime DB testing DISABLE
-	{
-		std::ifstream bImport{ TEST_PATH + TEST_MDB, std::ios::in | std::ios::binary };
-		ManifestRuntimeDatabase runtimeDatabase{ ImportBinaryDatabase(bImport) };
-		std::thread rthread{ RenderThread,std::ref(runtimeDatabase) };
-		SimThread(runtimeDatabase);//runs on main thread
-	}
-
+	//db threading
+	//DISABLE
+		MessageTest();
+	DISABLE
+		ThreadTest();
+	//persistence tests
 	DISABLE
 		BuildAndExport();
 	DISABLE
 		ImportAndTest();
+	//final
 	DISABLE
 		RuntimeTest();
 	
