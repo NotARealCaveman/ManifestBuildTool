@@ -74,39 +74,39 @@ ManifestRuntimeDatabase::ManifestRuntimeDatabase(const ManifestBinaryDatabase& b
 	}
 }
 
-void ManifestRuntimeDatabase::PushStates(XformTable* stateSnapshot)
+void ManifestRuntimeDatabase::PushStates(MFu64* stateSnapshot)
 {
-	XformTable* prevStates{ nullptr };
-	XformTable* racerDector{ nullptr };
+	MFu64* prevStates{ nullptr };
+	
 	//atomically check for old sim and store new
 	stateLock.Write(std::function([&]()
 		{			
-			prevStates = newStates.exchange(stateSnapshot, std::memory_order_release); 
+			prevStates = newStates.exchange(stateSnapshot, std::memory_order_relaxed); 
 		}));			
 	if (prevStates)
 	{			
-		delete[] prevStates->keys;
-		delete[] prevStates->values;
+		//delete[] prevStates->keys;
+		//delete[] prevStates->values;
 		delete prevStates;
 		prevStates = nullptr;		
 	}
 }
 
-XformTable* ManifestRuntimeDatabase::PullStates()
+MFu64* ManifestRuntimeDatabase::PullStates()
 {
 	if (!newStates.load(std::memory_order_relaxed))
 		return committedSimulation.xformTable;
 
-	XformTable* prevStates{ committedSimulation.xformTable};	
+	MFu64* prevStates{ committedSimulation.xformTable};
 	//atomically updates simulation and removes flag
 	stateLock.Read(std::function([&]()
 		{	
 			committedSimulation.xformTable =  			
-			newStates.exchange(nullptr, std::memory_order_release);			
+			newStates.exchange(nullptr, std::memory_order_relaxed);
 		}));	
 	//relase old memory 
-	delete[] prevStates->keys;
-	delete[] prevStates->values;
+	//delete[] prevStates->keys;
+	//delete[] prevStates->values;
 	delete prevStates;
 	prevStates = nullptr;
 
@@ -129,19 +129,21 @@ Materials* ManifestRuntimeDatabase::PullMaterials()
 void ManifestRuntimeDatabase::INITIALIZE_FIRST_STORES__BYPASS_PULL_BRANCH()
 {	
 	//store dummy state data
-	committedSimulation.xformTable = new XformTable;
-	committedSimulation.xformTable->keys = new UniqueKey;
-	committedSimulation.xformTable->values = new Xform;
+	committedSimulation.xformTable = new MFu64;
+	//committedSimulation.xformTable = new XformTable;
+	//committedSimulation.xformTable->keys = new UniqueKey;
+	//committedSimulation.xformTable->values = new Xform;
 }
 
-XformTable* Manifest_Persistence::Simulate(const Simulation& simulation, const MFsize nBodies)
+MFu64* Manifest_Persistence::Simulate(const Simulation& simulation, const MFsize nBodies)
 {
-	XformTable* result{ new XformTable };
-	result->tableEntries = result->tableSize = nBodies;
-	result->keys = new UniqueKey[nBodies];
-	result->values = new Xform[nBodies];
-	memcpy(result->values, simulation.bodies.worldSpaces, sizeof(Xform) * nBodies);
-	return result;
+	//XformTable* result{ new XformTable };
+	//result->tableEntries = result->tableSize = nBodies;
+	//result->keys = new UniqueKey[nBodies];
+	//result->values = new Xform[nBodies];
+	//memcpy(result->values, simulation.bodies.worldSpaces, sizeof(Xform) * nBodies);
+	//return result;
+	return new MFu64{simulation.simulationFrame};
 }
 
 void Manifest_Persistence::SimThread(ManifestRuntimeDatabase& runtimeDatabase)
@@ -191,7 +193,7 @@ void Manifest_Persistence::RenderThread(ManifestRuntimeDatabase& runtimeDatabase
 	//sleep and predicition
 	auto frameInterval = std::chrono::duration<double>{ 1 / 144.0 * 0 };
 	auto begin = std::chrono::high_resolution_clock::now();	
-	XformTable* stateSnapshot{nullptr};		
+	MFu64* stateSnapshot{nullptr};		
 	for (;;)
 	{
 		auto prediction = begin + renderFrame * frameInterval;	
@@ -200,9 +202,10 @@ void Manifest_Persistence::RenderThread(ManifestRuntimeDatabase& runtimeDatabase
 		if (stateSnapshot != currentStates)
 		{	
 			stateSnapshot = currentStates;
-			memcpy(instancedVBOHandle, stateSnapshot->values, sizeof(Xform) * nObjects);
+			//memcpy(instancedVBOHandle, stateSnapshot->values, sizeof(Xform) * nObjects);
+			RLOG(35, "Pulled simulation: " << *stateSnapshot);
 		}
-		//DLOG(35, "Render Frame: " << renderFrame << " simulation data: " << instancedVBOHandle[0].field[13]);
+		//DLOG(35, "Render Frame: " << renderFrame << " simulation data: " << instancedVBOHandle[0].field[13]);		
 		//update render frame
 		renderFrame++;
 		//sleep if permissible

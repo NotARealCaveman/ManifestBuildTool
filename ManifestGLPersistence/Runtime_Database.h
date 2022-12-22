@@ -59,9 +59,9 @@ namespace Manifest_Persistence
 
 	struct SimulationSnapshot
 	{
-		XformTable* xformTable{};
+		MFu64* xformTable{};
 	};
-	XformTable* Simulate(const Simulation& simulation, const MFsize nBodies);
+	MFu64* Simulate(const Simulation& simulation, const MFsize nBodies);
 
 
 	enum class DatabaseInitializerTypes
@@ -74,7 +74,7 @@ namespace Manifest_Persistence
 	{
 		private:	
 			//if present - new data to be pulled
-			std::atomic<XformTable*> newStates{ nullptr };		
+			std::atomic<MFu64*> newStates{ nullptr };
 			
 			GeometryNodes geometryNodes;
 			GeometryObjects geometryObjects;
@@ -88,10 +88,9 @@ namespace Manifest_Persistence
 			ManifestRuntimeDatabase(const ManifestBinaryDatabase& binaryDatabase);	
 			void INITIALIZE_FIRST_STORES__BYPASS_PULL_BRANCH();
 			//atomically pushes a new simulation states to database and cleans up unused state memory if needed
-			void PushStates(XformTable* stateSnapshot);
+			void PushStates(MFu64* stateSnapshot);
 			//returns currently committed simulation state - if a new state has been pushed, atomically pulls update and cleans up previous state memory 
-			XformTable* PullStates();
-			inline XformTable*& GetCommitedStates() { DLOG(32, "GCS: " << committedSimulation.xformTable); return committedSimulation.xformTable; };
+			MFu64* PullStates();
 
 			void PushGeometryNodes();
 			GeometryNodes* PullGeometryNodes();
