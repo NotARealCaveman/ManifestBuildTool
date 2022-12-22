@@ -3,7 +3,9 @@
 using namespace Manifest_Persistence;
 
 ManifestRuntimeDatabase::ManifestRuntimeDatabase(const ManifestBinaryDatabase& binaryDatabase)
-{	
+{
+	INITIALIZE_FIRST_STORES__BYPASS_PULL_BRANCH();
+
 	xoshiro256ss_state ss;
 	//store number of nodes and create	
 	geometryNodes.geometryNodeTable.tableSize = binaryDatabase.binaryGeometryNodeTable.header.totalEntries;
@@ -75,44 +77,38 @@ ManifestRuntimeDatabase::ManifestRuntimeDatabase(const ManifestBinaryDatabase& b
 void ManifestRuntimeDatabase::PushStates(XformTable* stateSnapshot)
 {
 	XformTable* prevStates{ nullptr };
+	XformTable* racerDector{ nullptr };
 	//atomically check for old sim and store new
 	stateLock.Write(std::function([&]()
-		{
-			prevStates = newStates.load(std::memory_order_acquire);
-			newStates.store(stateSnapshot, std::memory_order_release);
-		}));
-	//if previous sim found delete - renderer missed sim
+		{			
+			prevStates = newStates.exchange(stateSnapshot, std::memory_order_release); 
+		}));			
 	if (prevStates)
-	{
+	{			
 		delete[] prevStates->keys;
 		delete[] prevStates->values;
 		delete prevStates;
-		prevStates = nullptr;
+		prevStates = nullptr;		
 	}
 }
 
 XformTable* ManifestRuntimeDatabase::PullStates()
 {
-	//return committed if nothing new present
-	if (!newStates.load(std::memory_order_acquire))
+	if (!newStates.load(std::memory_order_relaxed))
 		return committedSimulation.xformTable;
 
-	//new simulation present - store old simulation
-	XformTable* prevStates{ nullptr };
+	XformTable* prevStates{ committedSimulation.xformTable};	
 	//atomically updates simulation and removes flag
 	stateLock.Read(std::function([&]()
-		{
-			prevStates = committedSimulation.xformTable;
-			committedSimulation.xformTable = newStates.load(std::memory_order_acquire);//upate simulation	
-			newStates.store(nullptr, std::memory_order_release);//remove flag
-		}));
-	//relase old memory if applicable 				
-	if (prevStates)
-	{//may explore option that requires sim to render
-		delete[] prevStates->keys;
-		delete[] prevStates->values;
-		delete prevStates;
-	}
+		{	
+			committedSimulation.xformTable =  			
+			newStates.exchange(nullptr, std::memory_order_release);			
+		}));	
+	//relase old memory 
+	delete[] prevStates->keys;
+	delete[] prevStates->values;
+	delete prevStates;
+	prevStates = nullptr;
 
 	return committedSimulation.xformTable;
 }
@@ -130,34 +126,51 @@ Materials* ManifestRuntimeDatabase::PullMaterials()
 	return &materials;
 };
 
+void ManifestRuntimeDatabase::INITIALIZE_FIRST_STORES__BYPASS_PULL_BRANCH()
+{	
+	//store dummy state data
+	committedSimulation.xformTable = new XformTable;
+	committedSimulation.xformTable->keys = new UniqueKey;
+	committedSimulation.xformTable->values = new Xform;
+}
+
+XformTable* Manifest_Persistence::Simulate(const Simulation& simulation, const MFsize nBodies)
+{
+	XformTable* result{ new XformTable };
+	result->tableEntries = result->tableSize = nBodies;
+	result->keys = new UniqueKey[nBodies];
+	result->values = new Xform[nBodies];
+	memcpy(result->values, simulation.bodies.worldSpaces, sizeof(Xform) * nBodies);
+	return result;
+}
+
 void Manifest_Persistence::SimThread(ManifestRuntimeDatabase& runtimeDatabase)
 {	
 	DLOG(35, "SimThread ID: " << std::this_thread::get_id());
 	auto nPhysicsObjects = runtimeDatabase.PullGeometryNodes()->geometryNodeTable.tableEntries;
+	//nPhysicsObjects = 100000;
 	Simulation simulation;	
 	simulation.bodies.bodyID = new UniqueKey[nPhysicsObjects];
 	simulation.bodies.worldSpaces = new Xform[nPhysicsObjects];
 	memset(simulation.bodies.worldSpaces, 0, sizeof(Xform) * nPhysicsObjects);	
+	//send initial push before allowing sim - removes need to check for prev state pointer as one will be gauranteed	
+	runtimeDatabase.PushStates(Simulate(simulation, nPhysicsObjects));
 	runtimeDatabase.init.test_and_set();
 	runtimeDatabase.init.notify_one();
 	//sleep and predicition
-	auto simInterval = std::chrono::duration<double>{ 1/60.0 };
+	auto simInterval = std::chrono::duration<double>{ 1/60.0*0 };
 	auto begin = std::chrono::high_resolution_clock::now();	
 	for(;;)
 	{			
-		auto prediction = begin + simulation.simulationFrame * simInterval;						
+		auto prediction = begin + simulation.simulationFrame * simInterval;
 		for (auto object{ 0 }; object < nPhysicsObjects; ++object)			simulation.bodies.worldSpaces[object].field[13] = simulation.bodies.worldSpaces[object].field[13] + 1;
 		//copy results to snapshot
-		XformTable* stateSnapshot{ new XformTable};	
-		stateSnapshot->tableEntries = stateSnapshot->tableSize = nPhysicsObjects;
-		stateSnapshot->keys = new UniqueKey[nPhysicsObjects];
-		stateSnapshot->values = new Xform[nPhysicsObjects];
-		memcpy(stateSnapshot->values, simulation.bodies.worldSpaces, sizeof(Xform) * nPhysicsObjects);
+		auto stateSnapshot = Simulate(simulation, nPhysicsObjects);
 		//sync end simulation results - handles memory cleanup	
-		runtimeDatabase.PushStates(stateSnapshot);	
+		runtimeDatabase.PushStates(stateSnapshot);
 		//continue sim and push updates
 		//update sim frame - concludes simulation for frame
-		simulation.simulationFrame++;				
+		simulation.simulationFrame++;
 		//sleep if permissible
 		if (prediction > std::chrono::high_resolution_clock::now())
 			std::this_thread::sleep_until(prediction);
@@ -173,19 +186,23 @@ void Manifest_Persistence::RenderThread(ManifestRuntimeDatabase& runtimeDatabase
 	MFu64 renderFrame = 0;	
 	//represents the handle to the graphic resource which works with the world space data
 	auto nObjects = runtimeDatabase.PullGeometryNodes()->geometryNodeTable.tableEntries;
+	//nObjects = 100000;
 	Xform* instancedVBOHandle = new Xform[nObjects];
 	//sleep and predicition
-	auto frameInterval = std::chrono::duration<double>{ 1 / 144.0 };
+	auto frameInterval = std::chrono::duration<double>{ 1 / 144.0 * 0 };
 	auto begin = std::chrono::high_resolution_clock::now();	
-	XformTable* stateSnapshot{nullptr};
+	XformTable* stateSnapshot{nullptr};		
 	for (;;)
 	{
 		auto prediction = begin + renderFrame * frameInterval;	
-		auto currentStates = stateSnapshot;
+		auto currentStates = runtimeDatabase.PullStates();
 		//get current simulation data - update vbo if new
-		if (currentStates != (stateSnapshot = runtimeDatabase.PullStates()))
-			memcpy(instancedVBOHandle, stateSnapshot->values, sizeof(Xform) * nObjects);		
-		DLOG(35, "Render Frame: " << renderFrame << " simulation data: " << instancedVBOHandle[0].field[13]);
+		if (stateSnapshot != currentStates)
+		{	
+			stateSnapshot = currentStates;
+			memcpy(instancedVBOHandle, stateSnapshot->values, sizeof(Xform) * nObjects);
+		}
+		//DLOG(35, "Render Frame: " << renderFrame << " simulation data: " << instancedVBOHandle[0].field[13]);
 		//update render frame
 		renderFrame++;
 		//sleep if permissible

@@ -33,9 +33,9 @@ namespace Manifest_Experimental
 		std::atomic_flag writing = ATOMIC_FLAG_INIT;
 	public:
 		//returns true if a reader is not reading
-		bool Try_Write();
+		inline const bool Try_Write();
 		//returns true if a writer is not writing
-		bool Try_Read();
+		inline const bool Try_Read();
 		//locks for writing, sets writing flag, performs write
 		template<typename Function, typename... Params>
 		void Write(const Function& writeFunc, const Params&... params)

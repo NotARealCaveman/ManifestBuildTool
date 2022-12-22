@@ -59,9 +59,15 @@ namespace Manifest_Persistence
 
 	struct SimulationSnapshot
 	{
-		XformTable* xformTable{nullptr};
+		XformTable* xformTable{};
 	};
+	XformTable* Simulate(const Simulation& simulation, const MFsize nBodies);
 
+
+	enum class DatabaseInitializerTypes
+	{
+		STATE_INITIALIZER
+	};
 
 	//Currently exploring a push/pull paradigm for updating and centralizing shared game state in the runtime database
 	class ManifestRuntimeDatabase
@@ -80,11 +86,12 @@ namespace Manifest_Persistence
 			
 		public:
 			ManifestRuntimeDatabase(const ManifestBinaryDatabase& binaryDatabase);	
-
+			void INITIALIZE_FIRST_STORES__BYPASS_PULL_BRANCH();
 			//atomically pushes a new simulation states to database and cleans up unused state memory if needed
 			void PushStates(XformTable* stateSnapshot);
 			//returns currently committed simulation state - if a new state has been pushed, atomically pulls update and cleans up previous state memory 
 			XformTable* PullStates();
+			inline XformTable*& GetCommitedStates() { DLOG(32, "GCS: " << committedSimulation.xformTable); return committedSimulation.xformTable; };
 
 			void PushGeometryNodes();
 			GeometryNodes* PullGeometryNodes();
@@ -95,7 +102,7 @@ namespace Manifest_Persistence
 			void PushMaterials();
 			Materials* PullMaterials();			
 
-			std::atomic_flag init = ATOMIC_FLAG_INIT;			
+			std::atomic_flag init = ATOMIC_FLAG_INIT;		
 	};	
 
 	void SimThread(ManifestRuntimeDatabase& runtimeDatabase);

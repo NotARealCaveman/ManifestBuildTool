@@ -17,11 +17,11 @@ void ExchangeLock::Unlock()
 };
 
 //RW lock
-bool SRSWExchangeLock::Try_Write()
+const bool SRSWExchangeLock::Try_Write()
 {
 	return reading.test(std::memory_order_relaxed);
 }
-bool SRSWExchangeLock::Try_Read()
+const bool SRSWExchangeLock::Try_Read()
 {
 	return writing.test(std::memory_order_relaxed);
 }

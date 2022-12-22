@@ -183,7 +183,7 @@ void ThreadTest()
 	std::ifstream bImport{ TEST_PATH + TEST_MDB, std::ios::in | std::ios::binary };
 	ManifestRuntimeDatabase runtimeDatabase{ ImportBinaryDatabase(bImport) };
 	std::thread rthread{ RenderThread,std::ref(runtimeDatabase) };
-	SimThread(runtimeDatabase);//runs on main thread
+	SimThread(runtimeDatabase);//runs on main thread	
 }
 
 void MessageTest()
