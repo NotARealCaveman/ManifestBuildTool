@@ -26,5 +26,5 @@ namespace Manifest_Experimental
 	using MFu64 = uint64_t;
 	using MFulong = MFu32;
 	using MFullong = MFu64;
-	using MFsize = MFullong;
+	using MFsize = size_t;
 }

@@ -85,7 +85,7 @@ namespace Manifest_Persistence
 			SRSWExchangeLock stateLock;//R-W opperations on states
 			
 		public:
-			ManifestRuntimeDatabase(const ManifestBinaryDatabase& binaryDatabase);	
+			ManifestRuntimeDatabase(const ManifestBinaryDatabase& binaryDatabase);	 
 			void INITIALIZE_FIRST_STORES__BYPASS_PULL_BRANCH();
 			//atomically pushes a new simulation states to database and cleans up unused state memory if needed
 			void PushStates(MFu64* stateSnapshot);

@@ -81,7 +81,7 @@ void ManifestRuntimeDatabase::PushStates(MFu64* stateSnapshot)
 	//atomically check for old sim and store new
 	stateLock.Write(std::function([&]()
 		{			
-			prevStates = newStates.exchange(stateSnapshot, std::memory_order_relaxed); 
+			prevStates = newStates.exchange(stateSnapshot, std::memory_order_relaxed); //may change to release
 		}));			
 	if (prevStates)
 	{			
@@ -102,7 +102,7 @@ MFu64* ManifestRuntimeDatabase::PullStates()
 	stateLock.Read(std::function([&]()
 		{	
 			committedSimulation.xformTable =  			
-			newStates.exchange(nullptr, std::memory_order_relaxed);
+			newStates.exchange(nullptr, std::memory_order_relaxed);//may change to release
 		}));	
 	//relase old memory 
 	//delete[] prevStates->keys;

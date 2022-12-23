@@ -6,5 +6,6 @@ using namespace Manifest_Experimental;
 
 namespace Manifest_Memory
 {
-	typedef MFu8 Byte;
+	typedef MFu8 Byte;		
+	
 }

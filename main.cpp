@@ -200,14 +200,24 @@ void MessageTest()
 	distributer.DistributeMessages();	
 }
 
+
 int main()
-{
+{	
+	std::vector<int, LinearAllocator<int>> vecMFAlloc;	
+	vecMFAlloc.emplace_back(1);
+
+			
 	WINDOWS_COLOR_CONSOLE;		
+
+	MEMORYSTATUSEX status;
+	status.dwLength = sizeof(status);
+	GlobalMemoryStatusEx(&status);
+	//std::cout<<status.ullTotalPhys << " " << status.ullAvailPhys;
 
 	//db threading
 	DISABLE
 		MessageTest();
-	//DISABLE
+	DISABLE
 		ThreadTest();
 	//persistence tests
 	DISABLE
