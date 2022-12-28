@@ -32,8 +32,8 @@ namespace Manifest_Memory
         constexpr MFAllocator(const MFAllocator <U>&) noexcept {}
         MFAllocator() = default;
 
-        virtual T* allocate(const MFsize& size, const uintptr_t& alignment = alignof(T)) = 0;
-        virtual void deallocate(T* p, std::size_t n) noexcept = 0;
+        virtual T* allocate(const MFsize& allocation, const uintptr_t& alignment = alignof(T)) = 0;
+        virtual void deallocate(T* p, std::size_t allocation) noexcept = 0;
         void report(T* p, std::size_t n, bool alloc = true) const
         {
             std::cout << this << '\n' << (alloc ? "Alloc: " : "Dealloc: ") << sizeof(T) * n << " bytes at " << std::hex << std::showbase << reinterpret_cast<void*>(p) << std::dec << '\n';
@@ -63,73 +63,70 @@ namespace Manifest_Memory
     constexpr MFsize NUMBER_OF_EXECUTIVE_THREADS{ 2 };
     struct ProgramMemory
     {
-        static Byte* threadHeaps[NUMBER_OF_EXECUTIVE_THREADS];
+    private:
+        inline static std::vector<std::thread::id>::const_iterator ThisThread(const std::vector<std::thread::id>::const_iterator& begin, const std::vector<std::thread::id>::const_iterator& end);
+    public:
+        static Byte* threadMainHeaps[NUMBER_OF_EXECUTIVE_THREADS];
         static Freelist* threadFreelists[NUMBER_OF_EXECUTIVE_THREADS];
         static std::vector<std::thread::id> allocationThreads;
-        //lienar allocator - currently testing
-        static Byte* begin[NUMBER_OF_EXECUTIVE_THREADS];
-        static Byte* heap[NUMBER_OF_EXECUTIVE_THREADS];
+        //linear allocator - currently testing
+        static Byte* linearBegin[NUMBER_OF_EXECUTIVE_THREADS];
+        static Byte* linearHeap[NUMBER_OF_EXECUTIVE_THREADS];
         static MFsize usedBytes[NUMBER_OF_EXECUTIVE_THREADS];
         static MFu64 nAllocations[NUMBER_OF_EXECUTIVE_THREADS];
-
-        static Freelist* GetThreadFreelist();
+        
+        static Freelist* GetThreadFreelist(MFu32* threadIndex);
+        static Byte* GetThreadLinearHeap(MFu32* threadIndex);     
     };
 
-    inline std::size_t align_forward_adjustment
-    (const void* const ptr, uintptr_t alignment) noexcept
-    {
-        DLOG(31, "ptr: " << ptr << " alignment: " << alignment);
-        const auto iptr = reinterpret_cast<uintptr_t>(ptr);
-        DLOG(32, "iptr: " << iptr);
-        const auto aligned = (iptr - 1u + alignment) & -*reinterpret_cast<intptr_t*>(&alignment);
-        DLOG(33, "1u+alignemnt: " << 1u + alignment);
-        DLOG(35, "(iptr - 1u + alignment): " << (iptr - 1u + alignment));
-        DLOG(36, "-alignment: " << -*reinterpret_cast<intptr_t*>(&alignment));
-        DLOG(37, "(iptr - 1u + alignment) & -alignment: " << ((iptr - 1u + alignment) & -*reinterpret_cast<intptr_t*>(&alignment)));
-        DLOG(38, "aligned: " << aligned);
-        DLOG(39, "result: " << aligned - iptr);
-
-        return aligned - iptr;
-    }
-
-    inline Byte* ptr_add(const void* const p, const std::uintptr_t& amount) noexcept
-    {
-        DLOG(31, "ptr: " << p << " size: " << amount);
-        DLOG(32, "reinterpret_cast<std::uintptr_t>(p): " << reinterpret_cast<std::uintptr_t>(p));
-        DLOG(33, "reinterpret_cast<std::uintptr_t>(p): " << (reinterpret_cast<std::uintptr_t>(p) + amount));
-        DLOG(34, "reinterpret_cast<void*>(reinterpret_cast<std::uintptr_t>(p) + amount): "
-            << reinterpret_cast<Byte*>
-            (reinterpret_cast<std::uintptr_t>(p) + amount));
-        return reinterpret_cast<Byte*>
-            (reinterpret_cast<std::uintptr_t>(p) + amount);
+    void INIT_MEMORY_RESERVES();
+        
+    //returns the current heap ptr to the aligned boundary
+    //moves the heap forward and places additional tracking information in heap for deallocation
+    inline Byte* AlignedAllocation
+    (const void* const ptr, const MFsize& allocation, const uintptr_t& alignment) noexcept
+    {   
+        uintptr_t alignmentMask = ~(alignment-1);
+        uintptr_t iptr = reinterpret_cast<uintptr_t>(ptr);        
+        //is ptr already alignment to boundary
+        if ((iptr & (alignment - 1)) == 0x00)
+        {
+            DLOG(33, "Ptr already aligned to boundary: " << ptr);
+            return static_cast<Byte*>(const_cast<void*>(ptr));
+        }
+        uintptr_t alignedAllocation = ((uintptr_t)ptr + allocation  + alignment - 1) & alignmentMask;
+        void* alignedPtr = (void*)alignedAllocation;
+        DLOG(32, "Begin: " << ptr<<" Unaligned: " << static_cast<void*>(((Byte*)ptr + allocation)) <<" Aligned: " << alignedPtr << " Padding: " << ((uintptr_t)alignedPtr - (uintptr_t)ptr));
+        return static_cast<Byte*>(alignedPtr);
     }
 
     template<typename T>
     class LinearAllocator : public MFAllocator<T>
     {
-        LinearAllocator()
-        {
-            heap = begin = (Byte*)malloc(1024);
+        public:
+            LinearAllocator() {}
+            template<class U>
+            constexpr LinearAllocator(const LinearAllocator <U>&) noexcept {}
+            T* allocate(const MFsize& allocation, const uintptr_t& alignment = alignof(T)) final
+            {
+                //get thread heap information
+                MFu32 threadIndex;
+                auto heap = ProgramMemory::GetThreadLinearHeap(&threadIndex);
+                auto begin = ProgramMemory::linearBegin[threadIndex];
+                //allocate memory and pad for alignent
+                T* result = reinterpret_cast<T*>(AlignedAllocation(heap, allocation,alignment));
+                
+                return result;
+            };
 
-        }
-        T* allocate(const MFsize& size, const uintptr_t& alignment = alignof(T)) final
-        {
-            MFsize adjustment = align_forward_adjustment(heap, alignment);
-            Byte* alignedAddr = ptr_add(alignedAddr, size);
-            heap = ptr_add(alignedAddr, size);
-            usedBytes = reinterpret_cast<uintptr_t>(heap) - reinterpret_cast<uintptr_t>(begin);
-            ++nAllocations;
-
-            return alignedAddr;
-        };
-
-        void deallocate(T* p, std::size_t n) noexcept final
-        {
-        };
-
-        
-
+            void deallocate(T* p, std::size_t allocation) noexcept final
+            {
+            };
     };
+    template<class T, class U>
+    bool operator==(const LinearAllocator<T>&, const LinearAllocator<U>&) { return true; }
+    template<class T, class U>
+    bool operator!=(const LinearAllocator<T>&, const LinearAllocator<U>&) { return false; }
 
     template<typename T>
     class FreelistAllocator : public MFAllocator<T>
@@ -139,26 +136,28 @@ namespace Manifest_Memory
 
         template<class U>
         constexpr FreelistAllocator(const FreelistAllocator <U>&) noexcept {}
-        T* allocate(const MFsize& size, const MFsize& uintptr_t = alignof(T)) final
+        T* allocate(const MFsize& allocation, const MFsize& uintptr_t = alignof(T)) final
         {
             using ListNode = Freelist::ListNode;
 
-            auto freelist = ProgramMemory::GetThreadFreelist()->root;
-
+            MFu32 threadIndex;
+            auto freelist = ProgramMemory::GetThreadFreelist(threadIndex);
+            
             ListNode* prevFreeNode{ nullptr };
             ListNode* prevBestNode{ nullptr };
             ListNode* bestNode{ nullptr };
+            ListNode* freeNode{ freelist->root };
 
             MFsize bestNodeAdjustment{ 0 };
             MFsize bestNodeTotalSize{ 0 };
 
-            while (freelist)
+            while (freeNode)
             {
 
             }
             return nullptr;
         }
-        void deallocate(T* p, std::size_t n) noexcept final
+        void deallocate(T* p, std::size_t allocation) noexcept final
         {
 
         }
