@@ -203,15 +203,15 @@ void MessageTest()
 
 int main()
 {	
-	//register thread
-	ProgramMemory::allocationThreads.emplace_back(std::this_thread::get_id());
+	//register thread	
+	RegisterProgramExecutiveThread();
 	//create data stores
 	INIT_MEMORY_RESERVES();	
-	std::vector<int, LinearAllocator<int>> vecMFAlloc;
+	std::vector<int, DeferredLinearAllocator<int>> vecMFAlloc;
 	vecMFAlloc.emplace_back(3);
 	for (const auto& i : vecMFAlloc)
 		DLOG(30 + i, &i<<": " << i);
-	DLOG(31, "Total bytes used: " << ProgramMemory::usedBytes[0]);
+	//DLOG(31, "Total bytes used: " << ProgramMemory::usedBytes[0]);
 	std::vector<int> stdInts;
 	stdInts.emplace_back(1);
 	stdInts.emplace_back(2);
@@ -219,6 +219,7 @@ int main()
 	for (const auto& i : stdInts)
 		DLOG(30 + i, &i << ": " << i);
 
+	
 			
 	WINDOWS_COLOR_CONSOLE;		
 	

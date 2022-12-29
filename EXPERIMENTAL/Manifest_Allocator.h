@@ -22,7 +22,6 @@ namespace Manifest_Memory
     //MLCTR V3 - V2 + EXECUTIVE ARENAS<--- U R HERE
     //MLCTR V4 - V3 + BUCKETS
     //MLCTR V5 - V4 + COALSECING CLEAN UP
-
     template<class T>
     struct MFAllocator
     {
@@ -47,8 +46,8 @@ namespace Manifest_Memory
 
     struct AllocationHeader
     {
-        MFsize allocatedBytes;
-        MFsize allocationPadding;
+        MFu32 allocationSize;
+        MFint8 padding;
     };
 
     struct Freelist
@@ -58,41 +57,72 @@ namespace Manifest_Memory
             ListNode* next{ nullptr };
             MFsize freeBytes;
         }*root{ nullptr };
+    };    
+    
+    struct ThreadMemoryHandles
+    {        
+        Byte* heap;//entire thread memory 
+        Freelist freelist;//freelist allocator                
+        //linear allocator 
+        Byte* linearBegin;
+        Byte* linearHeap;
+        Byte* linearEnd;
+        std::vector<void*> deferredAllocations;
+        //heuristics
+        MFsize usedBytes;//thread wide
+        MFu64 nAllocations;//thread wide        
     };
-
-    constexpr MFsize NUMBER_OF_EXECUTIVE_THREADS{ 2 };
-    struct ProgramMemory
-    {
-    private:
-        inline static std::vector<std::thread::id>::const_iterator ThisThread(const std::vector<std::thread::id>::const_iterator& begin, const std::vector<std::thread::id>::const_iterator& end);
-    public:
-        static Byte* threadMainHeaps[NUMBER_OF_EXECUTIVE_THREADS];
-        static Freelist* threadFreelists[NUMBER_OF_EXECUTIVE_THREADS];
-        static std::vector<std::thread::id> allocationThreads;
-        //linear allocator - currently testing
-        static Byte* linearBegin[NUMBER_OF_EXECUTIVE_THREADS];
-        static Byte* linearHeap[NUMBER_OF_EXECUTIVE_THREADS];
-        static MFsize usedBytes[NUMBER_OF_EXECUTIVE_THREADS];
-        static MFu64 nAllocations[NUMBER_OF_EXECUTIVE_THREADS];
-        
-        static Freelist* GetThreadFreelist(MFu32* threadIndex);
-        static Byte* GetThreadLinearHeap(MFu32* threadIndex);     
-    };
+    constexpr MFu32 NUMBER_PROGRAM_EXECUTIVE_THREADS{ 2 };
+    static ThreadMemoryHandles PROGRAM_EXECUTIVE_THREAD_MEMORY_HANDLES[NUMBER_PROGRAM_EXECUTIVE_THREADS];
+    static std::thread::id REGISTERED_PROGRAM_EXECUTIVE_THREAD_IDS[NUMBER_PROGRAM_EXECUTIVE_THREADS];
+    static std::atomic<MFu8> registerLock{ 0 };
+    static MFu8 registeredExecutiveThreads{ 0 };
+    void RegisterProgramExecutiveThread();
 
     void INIT_MEMORY_RESERVES();
         
     //returns the current heap ptr to the aligned boundary
     //moves the heap forward and places additional tracking information in heap for deallocation
     inline Byte* AlignedAllocation
-    (const void* const ptr, const MFsize& allocation, const uintptr_t& alignment) noexcept
-    {   
+    (void** heap, const MFsize& allocation, const uintptr_t& alignment) noexcept
+    {
+        //allocate and pad for allocation header
+        //place allocation header just before requested allocation
+        //   |*----.----*----.----.----...
+        //ptr AllocHeadr Allocation Reqst
+        //padding from allocation header->request :=0
+        //AO(AH) = alignof(AllocationHeader)-1 
+        //AllocationHeader::padding := *heap - (*heap + AO(AH) & ~AO(AH))
+        {
+        auto ptr = *heap;
+        auto iptr = reinterpret_cast<uintptr_t>(ptr);
+        auto headerAlignment = alignof(AllocationHeader) - 1;
+        auto headerPadding = iptr - ((iptr + headerAlignment) & ~headerAlignment);
+        auto header = new((Byte*)(iptr + headerPadding))AllocationHeader;
+        header->allocationSize = allocation;
+        header->padding = headerPadding;
+        DLOG(31, "Header padding: " << header->padding);
+        }
+
+
+        auto ptr = *heap;
         uintptr_t alignmentMask = ~(alignment-1);
         uintptr_t iptr = reinterpret_cast<uintptr_t>(ptr);        
-        //is ptr already alignment to boundary
-        if ((iptr & (alignment - 1)) == 0x00)
-        {
-            DLOG(33, "Ptr already aligned to boundary: " << ptr);
-            return static_cast<Byte*>(const_cast<void*>(ptr));
+        //ptr already alignmed to boundary for Allocation Header
+        if ((iptr & (alignof(AllocationHeader) - 1)) == 0x00)
+        {            
+            DLOG(31, "ptr alligned for allocation header");
+            auto header = new((Byte*)ptr)AllocationHeader;
+            auto* offsetPtr = (Byte*)ptr + sizeof(AllocationHeader);
+            uintptr_t offsetiPtr = reinterpret_cast<uintptr_t>(offsetPtr);
+            //ptr aligned for current allocation
+            if ((offsetiPtr & (alignment - 1)) == 0x00)
+            {
+                header->allocationSize = allocation;
+                header->padding = 0;
+                return offsetPtr;
+            }
+
         }
         uintptr_t alignedAllocation = ((uintptr_t)ptr + allocation  + alignment - 1) & alignmentMask;
         void* alignedPtr = (void*)alignedAllocation;
@@ -101,22 +131,19 @@ namespace Manifest_Memory
     }
 
     template<typename T>
-    class LinearAllocator : public MFAllocator<T>
+    class DeferredLinearAllocator : public MFAllocator<T>
     {
         public:
-            LinearAllocator() {}
+            DeferredLinearAllocator() {}
             template<class U>
-            constexpr LinearAllocator(const LinearAllocator <U>&) noexcept {}
+            constexpr DeferredLinearAllocator(const DeferredLinearAllocator <U>&) noexcept {}
             T* allocate(const MFsize& allocation, const uintptr_t& alignment = alignof(T)) final
             {
                 //get thread heap information
-                MFu32 threadIndex;
-                auto heap = ProgramMemory::GetThreadLinearHeap(&threadIndex);
-                auto begin = ProgramMemory::linearBegin[threadIndex];
-                //allocate memory and pad for alignent
-                T* result = reinterpret_cast<T*>(AlignedAllocation(heap, allocation,alignment));
                 
-                return result;
+                //allocate memory and pad for aligne
+                
+                return new T;
             };
 
             void deallocate(T* p, std::size_t allocation) noexcept final
@@ -124,9 +151,9 @@ namespace Manifest_Memory
             };
     };
     template<class T, class U>
-    bool operator==(const LinearAllocator<T>&, const LinearAllocator<U>&) { return true; }
+    bool operator==(const DeferredLinearAllocator<T>&, const DeferredLinearAllocator<U>&) { return true; }
     template<class T, class U>
-    bool operator!=(const LinearAllocator<T>&, const LinearAllocator<U>&) { return false; }
+    bool operator!=(const DeferredLinearAllocator<T>&, const DeferredLinearAllocator<U>&) { return false; }
 
     template<typename T>
     class FreelistAllocator : public MFAllocator<T>
@@ -137,24 +164,7 @@ namespace Manifest_Memory
         template<class U>
         constexpr FreelistAllocator(const FreelistAllocator <U>&) noexcept {}
         T* allocate(const MFsize& allocation, const MFsize& uintptr_t = alignof(T)) final
-        {
-            using ListNode = Freelist::ListNode;
-
-            MFu32 threadIndex;
-            auto freelist = ProgramMemory::GetThreadFreelist(threadIndex);
-            
-            ListNode* prevFreeNode{ nullptr };
-            ListNode* prevBestNode{ nullptr };
-            ListNode* bestNode{ nullptr };
-            ListNode* freeNode{ freelist->root };
-
-            MFsize bestNodeAdjustment{ 0 };
-            MFsize bestNodeTotalSize{ 0 };
-
-            while (freeNode)
-            {
-
-            }
+        {            
             return nullptr;
         }
         void deallocate(T* p, std::size_t allocation) noexcept final
