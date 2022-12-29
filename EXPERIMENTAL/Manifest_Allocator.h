@@ -27,9 +27,10 @@ namespace Manifest_Memory
     {
         using value_type = T;
 
+        MFAllocator() = default;        
         template<class U>
-        constexpr MFAllocator(const MFAllocator <U>&) noexcept {}
-        MFAllocator() = default;
+        constexpr MFAllocator(const MFAllocator <U>&) noexcept {};
+        
 
         virtual T* allocate(const MFsize& allocation, const uintptr_t& alignment = alignof(T)) = 0;
         virtual void deallocate(T* p, std::size_t allocation) noexcept = 0;
@@ -61,13 +62,13 @@ namespace Manifest_Memory
     
     struct ThreadMemoryHandles
     {        
-        Byte* heap;//entire thread memory 
+        Byte* threadHeap;//entire thread memory 
         Freelist freelist;//freelist allocator                
         //linear allocator 
         Byte* linearBegin;
         Byte* linearHeap;
         Byte* linearEnd;
-        std::vector<void*> deferredAllocations;
+        std::vector<void*> deferredLinearDeallocations;
         //heuristics
         MFsize usedBytes;//thread wide
         MFu64 nAllocations;//thread wide        
@@ -77,57 +78,24 @@ namespace Manifest_Memory
     static std::thread::id REGISTERED_PROGRAM_EXECUTIVE_THREAD_IDS[NUMBER_PROGRAM_EXECUTIVE_THREADS];
     static std::atomic<MFu8> registerLock{ 0 };
     static MFu8 registeredExecutiveThreads{ 0 };
+    //stores the calling threads id for later use when requesting reserved memory handles for the threads
     void RegisterProgramExecutiveThread();
+    //checks calling thread id against registered thread ids and returns allocated memory handles reserved for thread
+    ThreadMemoryHandles* GetThreadMemoryHandles();
 
     void INIT_MEMORY_RESERVES();
         
-    //returns the current heap ptr to the aligned boundary
-    //moves the heap forward and places additional tracking information in heap for deallocation
+    //returns aligned pointer to the requested alignment boundary
     inline Byte* AlignedAllocation
-    (void** heap, const MFsize& allocation, const uintptr_t& alignment) noexcept
-    {
-        //allocate and pad for allocation header
-        //place allocation header just before requested allocation
-        //   |*----.----*----.----.----...
-        //ptr AllocHeadr Allocation Reqst
-        //padding from allocation header->request :=0
-        //AO(AH) = alignof(AllocationHeader)-1 
-        //AllocationHeader::padding := *heap - (*heap + AO(AH) & ~AO(AH))
-        {
-        auto ptr = *heap;
-        auto iptr = reinterpret_cast<uintptr_t>(ptr);
-        auto headerAlignment = alignof(AllocationHeader) - 1;
-        auto headerPadding = iptr - ((iptr + headerAlignment) & ~headerAlignment);
-        auto header = new((Byte*)(iptr + headerPadding))AllocationHeader;
-        header->allocationSize = allocation;
-        header->padding = headerPadding;
-        DLOG(31, "Header padding: " << header->padding);
-        }
+    (void* heap, const MFsize& allocation, const uintptr_t& alignment) noexcept
+    {        
+        auto iptr = reinterpret_cast<uintptr_t>(heap);
+        if ((iptr & (alignment - 1)) == 0x00)
+            return (Byte*)heap;//ptr is already aligned to boundary
 
-
-        auto ptr = *heap;
-        uintptr_t alignmentMask = ~(alignment-1);
-        uintptr_t iptr = reinterpret_cast<uintptr_t>(ptr);        
-        //ptr already alignmed to boundary for Allocation Header
-        if ((iptr & (alignof(AllocationHeader) - 1)) == 0x00)
-        {            
-            DLOG(31, "ptr alligned for allocation header");
-            auto header = new((Byte*)ptr)AllocationHeader;
-            auto* offsetPtr = (Byte*)ptr + sizeof(AllocationHeader);
-            uintptr_t offsetiPtr = reinterpret_cast<uintptr_t>(offsetPtr);
-            //ptr aligned for current allocation
-            if ((offsetiPtr & (alignment - 1)) == 0x00)
-            {
-                header->allocationSize = allocation;
-                header->padding = 0;
-                return offsetPtr;
-            }
-
-        }
-        uintptr_t alignedAllocation = ((uintptr_t)ptr + allocation  + alignment - 1) & alignmentMask;
-        void* alignedPtr = (void*)alignedAllocation;
-        DLOG(32, "Begin: " << ptr<<" Unaligned: " << static_cast<void*>(((Byte*)ptr + allocation)) <<" Aligned: " << alignedPtr << " Padding: " << ((uintptr_t)alignedPtr - (uintptr_t)ptr));
-        return static_cast<Byte*>(alignedPtr);
+        auto alignmentMask = ~(alignment - 1);
+        uintptr_t alignedPtr = (iptr + allocation + alignment - 1) & alignmentMask;
+        return (Byte*)alignedPtr;
     }
 
     template<typename T>
@@ -140,14 +108,29 @@ namespace Manifest_Memory
             T* allocate(const MFsize& allocation, const uintptr_t& alignment = alignof(T)) final
             {
                 //get thread heap information
+                auto memoryHandles = GetThreadMemoryHandles();
+                //get current heap for allocation
+                auto heap = memoryHandles->linearHeap;
+                DLOG(31, "Sending heap: " << (void*)heap << " for alignment");
+                auto allocationBytes = sizeof(T) * allocation;
+                auto alignedHeap = AlignedAllocation(heap, allocationBytes, alignment);
+                if (alignedHeap == heap)
+                    DLOG(32, "Heap was aligned to boundary");
+                else
+                    DLOG(33, "Heap aligned to " << (void*)alignedHeap);
+                //move heap forward
+                memoryHandles->linearHeap = alignedHeap + allocationBytes;
+                DLOG(34, "Moving heap from: " << (void*)heap << " to: " << (void*)memoryHandles->linearHeap);
+                DLOG(35, "Aligned Padding: " << ((uintptr_t)alignedHeap-(uintptr_t)heap) << " Allocated Bytes: " << allocationBytes <<" Allocated Objects: " << allocation);
                 
-                //allocate memory and pad for aligne
-                
-                return new T;
+                return new(alignedHeap)T;
             };
-
+            
             void deallocate(T* p, std::size_t allocation) noexcept final
             {
+                auto memoryHandles = GetThreadMemoryHandles();
+                memoryHandles->deferredLinearDeallocations.emplace_back(p);
+                DLOG(36, "Deferring deallocation of: " << (void*)p << " Current deferred deallocations: " << memoryHandles->deferredLinearDeallocations.size());
             };
     };
     template<class T, class U>

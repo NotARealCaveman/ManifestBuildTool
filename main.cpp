@@ -200,6 +200,7 @@ void MessageTest()
 	distributer.DistributeMessages();	
 }
 
+#include <list>
 
 int main()
 {	
@@ -207,17 +208,15 @@ int main()
 	RegisterProgramExecutiveThread();
 	//create data stores
 	INIT_MEMORY_RESERVES();	
-	std::vector<int, DeferredLinearAllocator<int>> vecMFAlloc;
-	vecMFAlloc.emplace_back(3);
-	for (const auto& i : vecMFAlloc)
-		DLOG(30 + i, &i<<": " << i);
-	//DLOG(31, "Total bytes used: " << ProgramMemory::usedBytes[0]);
-	std::vector<int> stdInts;
-	stdInts.emplace_back(1);
-	stdInts.emplace_back(2);
-	stdInts.emplace_back(3);
-	for (const auto& i : stdInts)
-		DLOG(30 + i, &i << ": " << i);
+
+	{
+		std::vector<int, DeferredLinearAllocator<int>> vecMFAlloc(3);
+		vecMFAlloc.emplace_back(1);
+		vecMFAlloc.emplace_back(2);
+		vecMFAlloc.emplace_back(3);
+		for (const auto& i : vecMFAlloc)
+			DLOG(31 + i, &i << ": " << i);
+	}
 
 	
 			
