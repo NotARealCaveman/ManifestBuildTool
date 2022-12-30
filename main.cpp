@@ -201,6 +201,13 @@ void MessageTest()
 }
 
 #include <list>
+#include <unordered_map>
+#include <utility>
+
+
+template<typename Key, typename T, typename Alloc, typename Hash = std::hash<Key>, typename KeyEqual = std::equal_to<Key>>
+using unordered_map = std::unordered_map<Key, T,std::hash<Key>,KeyEqual,Alloc>;
+
 
 int main()
 {	
@@ -210,12 +217,29 @@ int main()
 	INIT_MEMORY_RESERVES();	
 
 	{
+		std::list<int, DeferredLinearAllocator<int>> listMFAlloc;
 		std::vector<int, DeferredLinearAllocator<int>> vecMFAlloc(3);
+	unordered_map<int,int,DeferredLinearAllocator<std::pair<const int,int>>> umMFAlloc;
 		vecMFAlloc.emplace_back(1);
+		umMFAlloc.insert({ 0,1 });
 		vecMFAlloc.emplace_back(2);
-		vecMFAlloc.emplace_back(3);
+		umMFAlloc.insert({ 1,2 });
+		listMFAlloc.push_back(1);
+		umMFAlloc.insert({ 2,3 });
+		listMFAlloc.push_back(2);		
+		umMFAlloc.insert({ 3,4 });
+		vecMFAlloc.emplace_back(3);		
+		umMFAlloc.insert({ 4,5 });
+		listMFAlloc.push_back(3);
+		umMFAlloc.insert({ 5,6 });
 		for (const auto& i : vecMFAlloc)
+			DLOG(31 + i, &i << ": " << i);	
+		DLOG(37, "lisst");
+		for (const auto& i : listMFAlloc)
 			DLOG(31 + i, &i << ": " << i);
+		DLOG(37, "hash map");
+		for (const auto& [key,value] : umMFAlloc)
+			DLOG(31 + key, &key << " Key: " << key <<"\t"<<&value<<" Value: " << value);
 	}
 
 	

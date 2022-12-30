@@ -123,7 +123,7 @@ namespace Manifest_Memory
                 DLOG(34, "Moving heap from: " << (void*)heap << " to: " << (void*)memoryHandles->linearHeap);
                 DLOG(35, "Aligned Padding: " << ((uintptr_t)alignedHeap-(uintptr_t)heap) << " Allocated Bytes: " << allocationBytes <<" Allocated Objects: " << allocation);
                 
-                return new(alignedHeap)T;
+                return reinterpret_cast<T*>(alignedHeap);
             };
             
             void deallocate(T* p, std::size_t allocation) noexcept final
