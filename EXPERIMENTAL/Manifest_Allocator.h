@@ -43,27 +43,11 @@ namespace Manifest_Memory
     bool operator==(const MFAllocator<T>&, const MFAllocator<U>&) { return true; }
     template<class T, class U>
     bool operator!=(const MFAllocator<T>&, const MFAllocator<U>&) { return false; }
-
-
-    struct AllocationHeader
-    {
-        MFu32 allocationSize;
-        MFint8 padding;
-    };
-
-    struct Freelist
-    {
-        struct ListNode
-        {
-            ListNode* next{ nullptr };
-            MFsize freeBytes;
-        }*root{ nullptr };
-    };    
+    
     
     struct ThreadMemoryHandles
     {        
-        Byte* threadHeap;//entire thread memory 
-        Freelist freelist;//freelist allocator                
+        Byte* threadHeap;//entire thread memory         
         //linear allocator 
         Byte* linearBegin;
         Byte* linearHeap;
@@ -85,18 +69,24 @@ namespace Manifest_Memory
 
     void INIT_MEMORY_RESERVES();
         
+    template<typename T,typename Alloc,typename... Args>
+    inline T* New(const MFsize& count, Args&&... args)
+    {        
+        return new(Alloc{}.allocate(count))T{std::forward<Args>(args)... };
+    }
+        
     //returns aligned pointer to the requested alignment boundary
     inline Byte* AlignedAllocation
-    (void* heap, const MFsize& allocation, const uintptr_t& alignment) noexcept
+    (void* heap, const uintptr_t& alignment) noexcept
     {        
         auto iptr = reinterpret_cast<uintptr_t>(heap);
         if ((iptr & (alignment - 1)) == 0x00)
             return (Byte*)heap;//ptr is already aligned to boundary
 
         auto alignmentMask = ~(alignment - 1);
-        uintptr_t alignedPtr = (iptr + allocation + alignment - 1) & alignmentMask;
+        uintptr_t alignedPtr = (iptr + alignment - 1) & alignmentMask;
         return (Byte*)alignedPtr;
-    }
+    }    
 
     template<typename T>
     class DeferredLinearAllocator : public MFAllocator<T>
@@ -111,17 +101,17 @@ namespace Manifest_Memory
                 auto memoryHandles = GetThreadMemoryHandles();
                 //get current heap for allocation
                 auto heap = memoryHandles->linearHeap;
-                DLOG(31, "Sending heap: " << (void*)heap << " for alignment");
-                auto allocationBytes = sizeof(T) * allocation;
-                auto alignedHeap = AlignedAllocation(heap, allocationBytes, alignment);
+                DLOG(31, "Sending heap: " << (void*)heap << " for alignment");                
+                auto alignedHeap = AlignedAllocation(heap, alignment);
                 if (alignedHeap == heap)
                     DLOG(32, "Heap was aligned to boundary");
                 else
                     DLOG(33, "Heap aligned to " << (void*)alignedHeap);
                 //move heap forward
+                auto allocationBytes = sizeof(T) * allocation;
                 memoryHandles->linearHeap = alignedHeap + allocationBytes;
                 DLOG(34, "Moving heap from: " << (void*)heap << " to: " << (void*)memoryHandles->linearHeap);
-                DLOG(35, "Aligned Padding: " << ((uintptr_t)alignedHeap-(uintptr_t)heap) << " Allocated Bytes: " << allocationBytes <<" Allocated Objects: " << allocation);
+                DLOG(35, "Aligned Padding: " << ((uintptr_t)alignedHeap-(uintptr_t)heap) << " Allocated Bytes: " << allocationBytes <<" Allocated Objects: " << allocation <<" Alignment: " << alignment);
                 
                 return reinterpret_cast<T*>(alignedHeap);
             };
@@ -137,27 +127,4 @@ namespace Manifest_Memory
     bool operator==(const DeferredLinearAllocator<T>&, const DeferredLinearAllocator<U>&) { return true; }
     template<class T, class U>
     bool operator!=(const DeferredLinearAllocator<T>&, const DeferredLinearAllocator<U>&) { return false; }
-
-    template<typename T>
-    class FreelistAllocator : public MFAllocator<T>
-    {
-    public:
-        FreelistAllocator() = default;
-
-        template<class U>
-        constexpr FreelistAllocator(const FreelistAllocator <U>&) noexcept {}
-        T* allocate(const MFsize& allocation, const MFsize& uintptr_t = alignof(T)) final
-        {            
-            return nullptr;
-        }
-        void deallocate(T* p, std::size_t allocation) noexcept final
-        {
-
-        }
-    };
-
-    template<class T, class U>
-    bool operator==(const FreelistAllocator<T>&, const FreelistAllocator<U>&) { return true; }
-    template<class T, class U>
-    bool operator!=(const FreelistAllocator<T>&, const FreelistAllocator<U>&) { return false; }
 }
