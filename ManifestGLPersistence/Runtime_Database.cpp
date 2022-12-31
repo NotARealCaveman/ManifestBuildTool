@@ -87,7 +87,8 @@ void ManifestRuntimeDatabase::PushStates(MFu64* stateSnapshot)
 	{			
 		//delete[] prevStates->keys;
 		//delete[] prevStates->values;
-		delete prevStates;
+		//delete prevStates;
+		Delete<MFu64, DeferredLinearAllocator<MFu64>>(prevStates);
 		prevStates = nullptr;		
 	}
 }
@@ -107,7 +108,8 @@ MFu64* ManifestRuntimeDatabase::PullStates()
 	//relase old memory 
 	//delete[] prevStates->keys;
 	//delete[] prevStates->values;
-	delete prevStates;
+	//delete prevStates;
+	Delete<MFu64, DeferredLinearAllocator<MFu64>>(prevStates);
 	prevStates = nullptr;
 
 	return committedSimulation.xformTable;
@@ -129,7 +131,8 @@ Materials* ManifestRuntimeDatabase::PullMaterials()
 void ManifestRuntimeDatabase::INITIALIZE_FIRST_STORES__BYPASS_PULL_BRANCH()
 {	
 	//store dummy state data
-	committedSimulation.xformTable = new MFu64;
+	//committedSimulation.xformTable = new MFu64;
+	committedSimulation.xformTable = New<MFu64, DeferredLinearAllocator<MFu64>>(1);
 	//committedSimulation.xformTable = new XformTable;
 	//committedSimulation.xformTable->keys = new UniqueKey;
 	//committedSimulation.xformTable->values = new Xform;
@@ -137,13 +140,15 @@ void ManifestRuntimeDatabase::INITIALIZE_FIRST_STORES__BYPASS_PULL_BRANCH()
 
 MFu64* Manifest_Persistence::Simulate(const Simulation& simulation, const MFsize nBodies)
 {
+	for (auto object{ 0 }; object < nBodies; ++object)			++simulation.bodies.worldSpaces[object].field[13];
 	//XformTable* result{ new XformTable };
 	//result->tableEntries = result->tableSize = nBodies;
 	//result->keys = new UniqueKey[nBodies];
 	//result->values = new Xform[nBodies];
 	//memcpy(result->values, simulation.bodies.worldSpaces, sizeof(Xform) * nBodies);
 	//return result;
-	return new MFu64{simulation.simulationFrame};
+	return New<MFu64, DeferredLinearAllocator<MFu64>>(1,simulation.simulationFrame);
+	//return new MFu64{simulation.simulationFrame};
 }
 
 void Manifest_Persistence::SimThread(ManifestRuntimeDatabase& runtimeDatabase)
@@ -160,12 +165,11 @@ void Manifest_Persistence::SimThread(ManifestRuntimeDatabase& runtimeDatabase)
 	runtimeDatabase.init.test_and_set();
 	runtimeDatabase.init.notify_one();
 	//sleep and predicition
-	auto simInterval = std::chrono::duration<double>{ 1/60.0*0 };
+	auto simInterval = std::chrono::duration<double>{ 1/1.0 };
 	auto begin = std::chrono::high_resolution_clock::now();	
 	for(;;)
 	{			
-		auto prediction = begin + simulation.simulationFrame * simInterval;
-		for (auto object{ 0 }; object < nPhysicsObjects; ++object)			simulation.bodies.worldSpaces[object].field[13] = simulation.bodies.worldSpaces[object].field[13] + 1;
+		auto prediction = begin + simulation.simulationFrame * simInterval;		
 		//copy results to snapshot
 		auto stateSnapshot = Simulate(simulation, nPhysicsObjects);
 		//sync end simulation results - handles memory cleanup	
@@ -191,7 +195,7 @@ void Manifest_Persistence::RenderThread(ManifestRuntimeDatabase& runtimeDatabase
 	//nObjects = 100000;
 	Xform* instancedVBOHandle = new Xform[nObjects];
 	//sleep and predicition
-	auto frameInterval = std::chrono::duration<double>{ 1 / 144.0 * 0 };
+	auto frameInterval = std::chrono::duration<double>{ 1 / 2.0 };
 	auto begin = std::chrono::high_resolution_clock::now();	
 	MFu64* stateSnapshot{nullptr};		
 	for (;;)

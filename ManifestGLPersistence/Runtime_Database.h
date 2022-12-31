@@ -7,6 +7,10 @@
 
 #include<EXPERIMENTAL/EXPERIMENTAL_RUNTIME_DATA_STRUCTURES.h>
 #include <EXPERIMENTAL/RNG.h>
+#include <EXPERIMENTAL/Manifest_Allocator.h>
+
+using namespace Manifest_Memory;
+using namespace Manifest_Experimental;
 
 namespace Manifest_Persistence
 {

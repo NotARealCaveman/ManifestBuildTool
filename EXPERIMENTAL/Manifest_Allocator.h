@@ -74,9 +74,15 @@ namespace Manifest_Memory
     {        
         return new(Alloc{}.allocate(count))T{std::forward<Args>(args)... };
     }
+
+    template<typename T,typename Alloc>
+    inline void Delete(T* p, const MFsize& size = {})
+    {
+        Alloc{}.deallocate(p,size);
+    }
         
     //returns aligned pointer to the requested alignment boundary
-    inline Byte* AlignedAllocation
+    inline Byte* AlignAllocation
     (void* heap, const uintptr_t& alignment) noexcept
     {        
         auto iptr = reinterpret_cast<uintptr_t>(heap);
@@ -102,7 +108,7 @@ namespace Manifest_Memory
                 //get current heap for allocation
                 auto heap = memoryHandles->linearHeap;
                 DLOG(31, "Sending heap: " << (void*)heap << " for alignment");                
-                auto alignedHeap = AlignedAllocation(heap, alignment);
+                auto alignedHeap = AlignAllocation(heap, alignment);
                 if (alignedHeap == heap)
                     DLOG(32, "Heap was aligned to boundary");
                 else
@@ -116,7 +122,7 @@ namespace Manifest_Memory
                 return reinterpret_cast<T*>(alignedHeap);
             };
             
-            void deallocate(T* p, std::size_t allocation) noexcept final
+            void deallocate(T* p,[[maybe_unused]] std::size_t allocation) noexcept final
             {
                 auto memoryHandles = GetThreadMemoryHandles();
                 memoryHandles->deferredLinearDeallocations.emplace_back(p);

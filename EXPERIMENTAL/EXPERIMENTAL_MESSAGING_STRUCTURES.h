@@ -7,6 +7,11 @@
 //will be implementing an Publisher-Subscriber pattern to handle cross framework messaging
 namespace Manifest_Experimental
 {
+	class FileSystemActions
+	{
+
+	};
+
 
 	typedef MFu32 Message;	
 	constexpr Message NEW_MESSAGE{ 1 };

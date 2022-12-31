@@ -182,7 +182,7 @@ void ThreadTest()
 {
 	std::ifstream bImport{ TEST_PATH + TEST_MDB, std::ios::in | std::ios::binary };
 	ManifestRuntimeDatabase runtimeDatabase{ ImportBinaryDatabase(bImport) };
-	std::thread rthread{ RenderThread,std::ref(runtimeDatabase) };
+	//std::thread rthread{ RenderThread,std::ref(runtimeDatabase) };
 	SimThread(runtimeDatabase);//runs on main thread	
 }
 
@@ -203,29 +203,58 @@ void MessageTest()
 #include <list>
 #include <unordered_map>
 #include <utility>
+#include <functional>
 
 
 template<typename Key, typename T, typename Alloc, typename Hash = std::hash<Key>, typename KeyEqual = std::equal_to<Key>>
 using unordered_map = std::unordered_map<Key, T,std::hash<Key>,KeyEqual,Alloc>;
 
+template<typename R, typename... Args>
+struct Trigger
+{
+	private:
+		const std::function<R(Args...)> action;
+	public:
+		Trigger() = delete;
+		Trigger(const std::function<R(Args...)>& function)
+			: action{ function }
+		{}			
+		void TriggerEvent(Args&&... args) const
+		{
+			action(args...);
+		};	
+};
+
+constexpr int TestAction()
+{	
+	return 5;
+}
+
+const int TestAction2(const int& result)
+{
+	return result;
+}
 
 int main()
 {	
+	
+	Trigger<int> TestTrigger{ TestAction };	
+	TestTrigger.TriggerEvent();
+	Trigger<int,int> TestTrigger2{ TestAction2 };
+	TestTrigger2.TriggerEvent(426);
+
 	//register thread	
 	RegisterProgramExecutiveThread();
 	//create data stores
 	INIT_MEMORY_RESERVES();	
-	struct Struct
-	{
-		long long x;
-		long long y;
-		long long z;
-	};
-	{	
+
+	/* {
 		int* iptr = New<int, DeferredLinearAllocator<int>>(1, 32);		
 		Struct* sptr = New<Struct, DeferredLinearAllocator<Struct>>(1, 4, 5, 6);
 		DLOG(35, "sptr.x: " << sptr->x << " .y: " << sptr->y << " .z: " << sptr->z);
 		DLOG(35, "iptr: " <<*iptr);
+		Delete<int,DeferredLinearAllocator<int>>(iptr);
+		Delete<Struct,DeferredLinearAllocator<Struct>>(sptr);
 
 		std::list<int, DeferredLinearAllocator<int>> listMFAlloc;
 		std::vector<int, DeferredLinearAllocator<int>> vecMFAlloc(3);
@@ -270,7 +299,7 @@ int main()
 		DLOG(35, "stl hash map2");
 		for (const auto& [key, value] : umSTLAlloc)
 			DLOG(31 + key, &key << " Key: " << key << "\t" << &value << " Value: " << value);
-	}
+	}*/
 
 	
 			
@@ -283,7 +312,7 @@ int main()
 	//db threading
 	DISABLE
 		MessageTest();
-	DISABLE
+	//DISABLE
 		ThreadTest();
 	//persistence tests
 	DISABLE
