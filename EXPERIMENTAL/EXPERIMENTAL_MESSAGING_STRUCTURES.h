@@ -1,5 +1,8 @@
 #pragma once
 #include <vector>
+#include <utility>
+#include <functional>
+
 
 #include <ManifestGLPersistence/DatabaseTypes.h>
 #include <ManifestGLUtility/DebugLogger.h>
@@ -7,43 +10,43 @@
 //will be implementing an Publisher-Subscriber pattern to handle cross framework messaging
 namespace Manifest_Experimental
 {
-	class FileSystemActions
-	{
 
+	template<typename... Args>
+	struct Trigger
+	{
+	private:
+		Trigger() = delete;
+		const std::function<void(Args...)> action;
+	public:
+		Trigger(const std::function<void(Args...)>& function)
+			: action{ function } {};
+		void operator()(Args&&... args) const
+		{
+			action(args...);
+		};
 	};
 
+	//forward declared for ease of readability - allows event spaces to be defined with their observation groups	
+	template<typename ObservableGroup>
+	struct ObservableGroupTriggers;
 
-	typedef MFu32 Message;	
-	constexpr Message NEW_MESSAGE{ 1 };
-		
-
-	struct Subscriber
+	struct ObersvableFileSystem 
 	{
-		void ReceiveMessage(const Message& message);
-		virtual void ProcessMessage(const Message& message)=0;
-	};
-	struct ISub :public Subscriber
-	{
-		void ProcessMessage(const Message& message) { };
-	};
-
-	struct Distributer
-	{
-		void DistributeMessages();
-
-		std::vector<Message> messages;
-		std::vector<Subscriber*> subscribers;
-	};
-
-	struct Publisher
-	{
-		void PublishMessage(const Message& message);
-
-		Distributer* distributer;
+		static void OnLoad(const int& loadEvent);		
 	};	
+	typedef
+		ObservableGroupTriggers<ObersvableFileSystem> FileSystemTriggers;
+	
+	//predefined trigger types that may be implemented by observable groups
+	typedef Trigger<const int&> LoadTrigger;
+	typedef Trigger<const int&> StoreTrigger;
 
-	struct PhysicsSubscriber : public Subscriber
+	template<typename ObservableGroup>
+	struct ObservableGroupTriggers
 	{
-		void ProcessMessage(const Message& message) { };
-	};
+		static const LoadTrigger loadTrigger;
+	};	
+	//hook up obersvable group actions to their triggers
+	template<typename ObservableGroup>
+	const LoadTrigger ObservableGroupTriggers< ObservableGroup>::loadTrigger{ ObservableGroup::OnLoad };
 }

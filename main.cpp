@@ -188,60 +188,27 @@ void ThreadTest()
 
 void MessageTest()
 {
-	ISub subscriber;
-	Distributer distributer;
-	Publisher publisher;
-
-	publisher.distributer = &distributer;
-	distributer.subscribers.emplace_back(&subscriber);
-
-	publisher.PublishMessage(Message{NEW_MESSAGE});
-	publisher.PublishMessage(Message{ NEW_MESSAGE });
-	distributer.DistributeMessages();	
 }
 
 #include <list>
 #include <unordered_map>
-#include <utility>
-#include <functional>
 
 
 template<typename Key, typename T, typename Alloc, typename Hash = std::hash<Key>, typename KeyEqual = std::equal_to<Key>>
 using unordered_map = std::unordered_map<Key, T,std::hash<Key>,KeyEqual,Alloc>;
 
-template<typename R, typename... Args>
-struct Trigger
-{
-	private:
-		const std::function<R(Args...)> action;
-	public:
-		Trigger() = delete;
-		Trigger(const std::function<R(Args...)>& function)
-			: action{ function }
-		{}			
-		void TriggerEvent(Args&&... args) const
-		{
-			action(args...);
-		};	
-};
-
-constexpr int TestAction()
+void TestLoadTrigger()
 {	
-	return 5;
-}
-
-const int TestAction2(const int& result)
-{
-	return result;
+	std::vector<int> pointlessLoadVector;
+	for (int i = 0; i < 10; ++i)
+		pointlessLoadVector.emplace_back(i);
+	int loadEvent = 69;	
+	FileSystemTriggers::loadTrigger(loadEvent);
 }
 
 int main()
 {	
-	
-	Trigger<int> TestTrigger{ TestAction };	
-	TestTrigger.TriggerEvent();
-	Trigger<int,int> TestTrigger2{ TestAction2 };
-	TestTrigger2.TriggerEvent(426);
+	TestLoadTrigger();
 
 	//register thread	
 	RegisterProgramExecutiveThread();
