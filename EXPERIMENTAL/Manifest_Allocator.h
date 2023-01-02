@@ -6,9 +6,8 @@
 #include <limits>
 #include <thread>
 
+
 #include <cstdlib>
-#include <new>
-#include <limits>
 #include <iostream>
 
 #include "Manifest_Memory.h"
@@ -129,7 +128,9 @@ namespace Manifest_Memory
     template<typename T>
     using ScratchPadVector = std::vector<T, ScratchPad<T>>;
     template<typename Key, typename T, typename Hash = std::hash<Key>, typename KeyEqual = std::equal_to<Key>>
-    using ScratchPadUMap = std::unordered_map<Key, T, std::hash<Key>, KeyEqual, ScratchPad<std::pair<const Key,T>>>;
+    using ScratchPadUMap = std::unordered_map<Key, T, std::hash<Key>, KeyEqual, ScratchPad<std::pair<const Key,T>>>;    
+
+    using ScratchPadString = std::basic_string<char, std::char_traits<char>, ScratchPad<char>>;
 
     template<class T, class U>
     bool operator==(const ScratchPad<T>&, const ScratchPad<U>&) { return true; }

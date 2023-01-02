@@ -59,7 +59,7 @@ ForeignKey Manifest_Persistence::TableEntry(const DDL_Structure& structure, cons
 				break;
 			case GEX_BufferTypes::GEX_Transform:	
 			{
-				entry.transform = new MDB_Transform;				
+				entry.transform = New<MDB_Transform,ScratchPad< MDB_Transform>>(1);
 				auto transform{ HeapData<GEX_Transform>(substructure).field.data.typeHeap };
 				memcpy(entry.transform->field, transform, sizeof(float) * 16);
 				break;

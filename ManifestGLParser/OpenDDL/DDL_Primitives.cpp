@@ -2,7 +2,7 @@
 
 using namespace Manifest_Parser;
 
-DDL_Structure DDL_String::Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap)
+DDL_Structure DDL_String::Build(const ScratchPadString& partitionedStructure, DDL_ReferenceMap& referenceMap)
 {	
 	DDL_Structure result;
 	ParseStructureHeader(partitionedStructure, result);

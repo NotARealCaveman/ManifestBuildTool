@@ -7,7 +7,7 @@ const std::map<std::string, DDL_BufferType> GEX_Metric::PropertyList::typeProper
 	{ "key", PropertyList::KEY},
 };
 
-DDL_Structure GEX_Metric::Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap)
+DDL_Structure GEX_Metric::Build(const ScratchPadString& partitionedStructure, DDL_ReferenceMap& referenceMap)
 {	
 	DDL_Structure result;
 	for (const DDL_Property& property : PartitionStructureProperties(ParseStructureHeader(partitionedStructure, result)))

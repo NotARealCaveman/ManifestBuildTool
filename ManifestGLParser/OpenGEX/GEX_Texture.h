@@ -14,12 +14,12 @@ namespace Manifest_Parser
 			static constexpr int MAX{ MIN + 1 };
 			static const std::map<std::string, uint32_t> typeProperties;
 		};
-		DDL_Structure Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap) final;
+		DDL_Structure Build(const ScratchPadString& partitionedStructure, DDL_ReferenceMap& referenceMap) final;
 
 		//substructures
 		float distribution;
 		//properties
-		std::string attrib;
+		ScratchPadString attrib;
 		uint32_t min;
 		uint32_t max;
 	};
@@ -36,22 +36,22 @@ namespace Manifest_Parser
 			static constexpr int BORDER{ ZADDRESS +1 };
 			static const std::map<std::string, uint32_t> typeProperties;
 		};
-		DDL_Structure Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap)final;
+		DDL_Structure Build(const ScratchPadString& partitionedStructure, DDL_ReferenceMap& referenceMap)final;
 
 		//substructures
-		std::string fileName;
+		ScratchPadString fileName;
 		GEX_Transform* transform;
 		GEX_Translation* translation;
 		GEX_Rotation* rotation;
 		GEX_Scale scale;
 		//properties
-		std::string attrib;
+		ScratchPadString attrib;
 		//specifies which texture coordinate set belonging to a mesh should be used to access the texture
 		uint32_t texcoord = 0;
-		std::string swizzle = "i";
-		std::string x_address = "repeat";
-		std::string y_address = "repeat";
-		std::string z_address = "repeat";
-		std::string border = "zero";
+		ScratchPadString swizzle = "i";
+		ScratchPadString x_address = "repeat";
+		ScratchPadString y_address = "repeat";
+		ScratchPadString z_address = "repeat";
+		ScratchPadString border = "zero";
 	};
 }

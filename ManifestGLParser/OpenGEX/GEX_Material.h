@@ -15,14 +15,14 @@ namespace Manifest_Parser
 			static constexpr uint32_t TWOSIDED{ 0 };
 			static const std::map<std::string, uint32_t> typeProperties;
 		};
-		DDL_Structure Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap) final;
+		DDL_Structure Build(const ScratchPadString& partitionedStructure, DDL_ReferenceMap& referenceMap) final;
 
 		//substructures
 		GEX_Name name;
-		std::vector<GEX_Color> colors;
-		std::vector<GEX_Param> parameters;
-		std::vector<GEX_Spectrum> spectrums;
-		std::vector<GEX_Texture> textures;
+		ScratchPadVector<GEX_Color> colors;
+		ScratchPadVector<GEX_Param> parameters;
+		ScratchPadVector<GEX_Spectrum> spectrums;
+		ScratchPadVector<GEX_Texture> textures;
 		//properties
 		bool two_sided = false;
 	};
@@ -33,7 +33,7 @@ namespace Manifest_Parser
 			static constexpr uint32_t INDEX{ 0 };
 			static const std::map<std::string, uint32_t> typeProperties;		
 		};
-		DDL_Structure Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap) final;
+		DDL_Structure Build(const ScratchPadString& partitionedStructure, DDL_ReferenceMap& referenceMap) final;
 
 		//substructures
 		GEX_Material* ref;

@@ -2,7 +2,7 @@
 
 using namespace Manifest_Parser;
 
-std::string Manifest_Parser::FilterWhiteSpace(const std::string& unfiltered)
+ScratchPadString Manifest_Parser::FilterWhiteSpace(const ScratchPadString& unfiltered)
 {
 	auto result = unfiltered;
 	result.erase(std::remove(result.begin(), result.end(), ' '), result.end());
@@ -10,9 +10,9 @@ std::string Manifest_Parser::FilterWhiteSpace(const std::string& unfiltered)
 	return result;
 }
 
-std::string Manifest_Parser::FilterComments(const std::string& unfiltered)
+ScratchPadString Manifest_Parser::FilterComments(const ScratchPadString& unfiltered)
 {
-	std::string result, streamData;
+	ScratchPadString result, streamData;
 	std::stringstream streamFilter{ unfiltered };
 	bool mlc = false;//multi-line comment
 	//remove all multiline commens
@@ -33,7 +33,7 @@ std::string Manifest_Parser::FilterComments(const std::string& unfiltered)
 	}	
 	//remove all single line comments
 	streamData.clear();	
-	std::string temp{ "" };
+	ScratchPadString temp{ "" };
 	std::swap(result, temp);	
 	streamFilter = std::stringstream{ temp };
 	while (std::getline(streamFilter, streamData))
@@ -47,17 +47,17 @@ std::string Manifest_Parser::FilterComments(const std::string& unfiltered)
 	return result;
 }
 
-std::string Manifest_Parser::FilterNewLines(const std::string& unfiltered)
+ScratchPadString Manifest_Parser::FilterNewLines(const ScratchPadString& unfiltered)
 {
 	
-	std::string result = unfiltered;
+	ScratchPadString result = unfiltered;
 	result.erase(std::remove(result.begin(), result.end(), '\n'), result.end());
 	return result;
 }
 //remove all comments->newlines->white spaces			
-std::string Manifest_Parser::FilterFile(const std::string& unfiltered, const uint8_t& filterFlags)
+ScratchPadString Manifest_Parser::FilterFile(const ScratchPadString& unfiltered, const uint8_t& filterFlags)
 {
-	std::string filtered = unfiltered;
+	ScratchPadString filtered = unfiltered;
 	if (filterFlags & COMMENT_FILTER)
 		filtered = FilterComments(filtered);
 	if (filterFlags & NEWLINE_FILTER)

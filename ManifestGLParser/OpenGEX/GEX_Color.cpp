@@ -6,7 +6,7 @@ const std::map<std::string, DDL_BufferType> GEX_Color::PropertyList::typePropert
 	{ "attrib", PropertyList::ATTRIB},	
 };
 
-DDL_Structure GEX_Color::Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap)
+DDL_Structure GEX_Color::Build(const ScratchPadString& partitionedStructure, DDL_ReferenceMap& referenceMap)
 {
 	DDL_Structure result;
 	for (const DDL_Property& property : PartitionStructureProperties(ParseStructureHeader(partitionedStructure, result)))	

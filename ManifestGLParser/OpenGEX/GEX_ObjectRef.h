@@ -16,7 +16,7 @@ namespace Manifest_Parser
 
 	struct GEX_ObjectRef : public DDL_Reference
 	{
-		DDL_Structure Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap) final;
+		DDL_Structure Build(const ScratchPadString& partitionedStructure, DDL_ReferenceMap& referenceMap) final;
 
 		//substructures
 		GEX_ObjectType type;

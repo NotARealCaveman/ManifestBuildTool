@@ -2,28 +2,28 @@
 
 using namespace Manifest_Parser;
 
-const std::map<std::string, DDL_BufferType> GEX_VertexArray::PropertyList::typeProperties
+const std::map<const char*, DDL_BufferType> GEX_VertexArray::PropertyList::typeProperties
 {
 	{ "attrib", PropertyList::ATTRIB},
 	{ "index",PropertyList::INDEX},
 	{ "morph",PropertyList::MORPH},
 };
 
-DDL_Structure GEX_VertexArray::Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap)
+DDL_Structure GEX_VertexArray::Build(const ScratchPadString& partitionedStructure, DDL_ReferenceMap& referenceMap)
 {	
 	DDL_Structure result;
 	for (const DDL_Property& property : PartitionStructureProperties(ParseStructureHeader(partitionedStructure, result)))
-		switch (PropertyList::typeProperties.find(property.key)->second)
+		switch (PropertyList::typeProperties.find(property.key.c_str())->second)
 		{
 		case PropertyList::ATTRIB:
 			attrib = property.value;
 			bufferIndex = GetBufferIndex(attrib);
 			break;
 		case PropertyList::INDEX:
-			index = std::stoi(property.value);
+			index = std::stoi(property.value.c_str());
 			break;
 		case PropertyList::MORPH:
-			morph = std::stoi(property.value);
+			morph = std::stoi(property.value.c_str());
 			break;
 		DEFAULT_BREAK
 		}	
@@ -34,7 +34,7 @@ DDL_Structure GEX_VertexArray::Build(const std::string& partitionedStructure, DD
 	return result;
 }
 
-uint8_t Manifest_Parser::GetBufferIndex(const std::string& bufferAttrib)
+uint8_t Manifest_Parser::GetBufferIndex(const ScratchPadString& bufferAttrib)
 {	
 	auto temp = bufferAttrib;
 	temp.erase(std::remove(temp.begin(), temp.end(), '"'),temp.end());
@@ -58,7 +58,7 @@ const std::map<std::string, DDL_BufferType> GEX_IndexArray::PropertyList::typePr
 	{ "front",PropertyList::FRONT},
 };
 
-DDL_Structure GEX_IndexArray::Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap)
+DDL_Structure GEX_IndexArray::Build(const ScratchPadString& partitionedStructure, DDL_ReferenceMap& referenceMap)
 {	
 	DDL_Structure result;
 	for (const DDL_Property& property : PartitionStructureProperties(ParseStructureHeader(partitionedStructure, result)))
@@ -91,7 +91,7 @@ DDL_Structure GEX_IndexArray::Build(const std::string& partitionedStructure, DDL
 	{ "primitive",PropertyList::PRIMTIIVE },
 };
 
-DDL_Structure GEX_Mesh::Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap)
+DDL_Structure GEX_Mesh::Build(const ScratchPadString& partitionedStructure, DDL_ReferenceMap& referenceMap)
 {
 	vertexArrays.reserve(VECTOR_RESERVATION_SIZE);
 	indexArrays.reserve(VECTOR_RESERVATION_SIZE);

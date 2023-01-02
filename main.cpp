@@ -138,46 +138,61 @@ void BuildAndExport()
 	Initialize_GEXTypes();
 	Initialize_GEXGenerators();	
 	DDL_File fileObject;
+	
 	//performs load and filter and begins parse - writes to scratch pad allocator - must unwind when finished with parsed data
-	ParseDDLFile(TEST_PATH + TEST_GEX, fileObject);
-	//prints primary and substructure information per top level sturcture
-	for (const auto& primary : fileObject.primaryStructures)
+	auto nLoops =1;
+	std::chrono::duration<double, std::milli> total{ 0 };
+	for (int loop = 0; loop < nLoops; ++loop)
 	{
-		PrintInfo(primary);
-		DLOG(31, "");
-	}
-
-	auto gn = fileObject.primaryStructures[3];
-	const GEX_GeometryNode& node = *reinterpret_cast<GEX_GeometryNode*>(gn.typeHeap);
-	const GEX_Transform& transform = node.transforms[0];
-	const DDL_Float& data = transform.field;
-	const DDL_Buffer& buffer = data.data;
-	for (auto col = 0; col < 4; ++col)
-	{
-		for (auto row = 0; row < 4; ++row)
+		auto begin = std::chrono::system_clock::now();
+		ParseDDLFile(TEST_PATH + TEST_GEX, fileObject);
+		//prints primary and substructure information per top level sturcture
+		
+		/*
+		for (const auto& primary : fileObject.primaryStructures)
 		{
-			auto offset = row * 4 + col;
-			auto field = reinterpret_cast<float*>(buffer.typeHeap);
-			std::cout << field[offset]<<"  ";
+			PrintInfo(primary);
+			DLOG(31, "");
 		}
-		std::cout << std::endl;
+		*/
+
+		auto gn = fileObject.primaryStructures[3];
+		const GEX_GeometryNode& node = *reinterpret_cast<GEX_GeometryNode*>(gn.typeHeap);
+		const GEX_Transform& transform = node.transforms[0];
+		const DDL_Float& data = transform.field;
+		const DDL_Buffer& buffer = data.data;
+		for (auto col = 0; col < 4; ++col)
+		{
+			for (auto row = 0; row < 4; ++row)
+			{
+				auto offset = row * 4 + col;
+				auto field = reinterpret_cast<float*>(buffer.typeHeap);
+				std::cout << field[offset]<<"  ";
+			}
+			std::cout << std::endl;
+		}
+
+		//NEXT TIME
+		//build offline database
+		ManifestDatabaseBuilder databaseBuilder;
+		BuildOfflineDatabase(fileObject, databaseBuilder);
+		//export conversion
+
+		//export
+		std::ofstream bExport{ TEST_PATH + TEST_MDB, std::ios::out | std::ios::binary };
+		if (bExport.is_open())
+		{
+			ExportBinaryDatabase(databaseBuilder, bExport);
+			bExport.close();
+		}
+		//finished with all allocations - unwind to beginninig
+		ScratchPad<Byte>{}.Unwind();
+		auto end = std::chrono::system_clock::now();
+		auto dtms = std::chrono::duration<double, std::milli>(end - begin);
+		total += dtms;
+		//RLOG(34, "Entire creation process: " << dtms);
 	}
-
-	//NEXT TIME
-	//build offline database
-	ManifestDatabaseBuilder databaseBuilder;
-	BuildOfflineDatabase(fileObject, databaseBuilder);	
-	//export conversion
-
-	//export
-	std::ofstream bExport{ TEST_PATH + TEST_MDB, std::ios::out | std::ios::binary };
-	if (bExport.is_open())
-	{
-		ExportBinaryDatabase(databaseBuilder, bExport);
-		bExport.close();
-	}	
-	//finished with all allocations - unwind to beginninig
-	ScratchPad<Byte>{}.Unwind();
+	RLOG(35, "Average creation process: " << total / nLoops);
 }
 
 void ThreadTest()
@@ -212,8 +227,7 @@ void TestLoadTrigger()
 
 int main()
 {
-	WINDOWS_COLOR_CONSOLE;
-
+	WINDOWS_COLOR_CONSOLE;	
 
 	TestLoadTrigger();
 
@@ -221,7 +235,8 @@ int main()
 	RegisterProgramExecutiveThread();
 	//create data stores
 	INIT_MEMORY_RESERVES();	
-			
+	
+	
 	MEMORYSTATUSEX status;
 	status.dwLength = sizeof(status);
 	GlobalMemoryStatusEx(&status);

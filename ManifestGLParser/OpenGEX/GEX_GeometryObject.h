@@ -18,13 +18,13 @@ namespace Manifest_Parser
 			static constexpr int MOTIONBLUR{ SHADOW + 1 };
 			static const std::map<std::string, uint32_t> typeProperties;
 		};
-		DDL_Structure Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap) final;
+		DDL_Structure Build(const ScratchPadString& partitionedStructure, DDL_ReferenceMap& referenceMap) final;
 
 		//substructures
 		GEX_ObjectRef objectRef;
 		GEX_MaterialRef materialRef;
-		std::vector<GEX_MaterialRef> materialRefs;//see comment
-		std::vector<GEX_MorphWeight> morphWeights;				
+		ScratchPadVector<GEX_MaterialRef> materialRefs;//see comment
+		ScratchPadVector<GEX_MorphWeight> morphWeights;
 		//properties - see GEX_GeometryObject
 		bool* visible=nullptr;
 		bool* shadow=nullptr;
@@ -40,7 +40,7 @@ namespace Manifest_Parser
 			static constexpr int MOTIONBLUR{ SHADOW + 1 };
 			static const std::map<std::string, uint32_t> typeProperties;
 		};
-		DDL_Structure Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap) final;
+		DDL_Structure Build(const ScratchPadString& partitionedStructure, DDL_ReferenceMap& referenceMap) final;
 
 		//substructures
 		GEX_Mesh mesh;

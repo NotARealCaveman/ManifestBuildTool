@@ -8,7 +8,7 @@ const std::map<std::string, DDL_BufferType> GEX_Param::PropertyList::typePropert
 };
 
 
-DDL_Structure GEX_Param::Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap)
+DDL_Structure GEX_Param::Build(const ScratchPadString& partitionedStructure, DDL_ReferenceMap& referenceMap)
 {
 	DDL_Structure result;
 	for (const DDL_Property& property : PartitionStructureProperties(ParseStructureHeader(partitionedStructure, result)))	

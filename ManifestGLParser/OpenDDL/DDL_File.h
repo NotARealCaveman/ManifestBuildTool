@@ -9,7 +9,7 @@ namespace Manifest_Parser
 	struct DDL_File
 	{		
 		DDL_ReferenceMap referenceMap;		
-		std::vector<DDL_Structure> primaryStructures;		
+		ScratchPadVector<DDL_Structure> primaryStructures;		
 		uint64_t fileId;				
 	};	
 }

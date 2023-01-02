@@ -12,7 +12,7 @@ namespace Manifest_Parser
 	template<typename T, DDL_BufferType bufferType>
 	struct Primitive : public RegisteredBuilder
 	{
-		DDL_Structure Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap) final
+		DDL_Structure Build(const ScratchPadString& partitionedStructure, DDL_ReferenceMap& referenceMap) final
 		{			
 			DDL_Structure result;
 			ParseStructureHeader(partitionedStructure, result);
@@ -52,8 +52,8 @@ namespace Manifest_Parser
 
 	struct DDL_String : public RegisteredBuilder
 	{
-		DDL_Structure Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap) final;
+		DDL_Structure Build(const ScratchPadString& partitionedStructure, DDL_ReferenceMap& referenceMap) final;
 
-		std::string data;
+		ScratchPadString data;
 	};
 }

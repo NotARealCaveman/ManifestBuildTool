@@ -8,7 +8,7 @@ const std::map<std::string, DDL_BufferType> GEX_Material::PropertyList::typeProp
 	{ "two_sided", PropertyList::TWOSIDED},	
 };
 
-DDL_Structure GEX_Material::Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap)
+DDL_Structure GEX_Material::Build(const ScratchPadString& partitionedStructure, DDL_ReferenceMap& referenceMap)
 {
 	colors.reserve(VECTOR_RESERVATION_SIZE);
 	parameters.reserve(VECTOR_RESERVATION_SIZE);
@@ -55,7 +55,7 @@ const std::map<std::string, DDL_BufferType> GEX_MaterialRef::PropertyList::typeP
 	{ "index", PropertyList::INDEX},
 };
 
-DDL_Structure GEX_MaterialRef::Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap)
+DDL_Structure GEX_MaterialRef::Build(const ScratchPadString& partitionedStructure, DDL_ReferenceMap& referenceMap)
 {
 	ReserveReferenceContainers(*this);
 

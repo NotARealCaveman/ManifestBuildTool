@@ -9,7 +9,7 @@ const std::map<std::string, DDL_BufferType> GEX_Spectrum::PropertyList::typeProp
 	{ "max", PropertyList::MAX}
 };
 
-DDL_Structure GEX_Spectrum::Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap)
+DDL_Structure GEX_Spectrum::Build(const ScratchPadString& partitionedStructure, DDL_ReferenceMap& referenceMap)
 {
 	DDL_Structure result;
 	for (const DDL_Property& property : PartitionStructureProperties(ParseStructureHeader(partitionedStructure, result)))	
@@ -41,7 +41,7 @@ const std::map<std::string, DDL_BufferType> GEX_Texture::PropertyList::typePrope
 	{"border",BORDER}
 };
 
-DDL_Structure GEX_Texture::Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap)
+DDL_Structure GEX_Texture::Build(const ScratchPadString& partitionedStructure, DDL_ReferenceMap& referenceMap)
 {
 	DDL_Structure result;
 	for (const DDL_Property& property : PartitionStructureProperties(ParseStructureHeader(partitionedStructure, result)))
