@@ -83,9 +83,9 @@ std::string Manifest_Parser::PartitionDDLStructures(const std::string& filteredF
 }
 
 //performs the structuer partition on an entire file or previously partitioned structure
-std::vector<std::string> Manifest_Parser::PartitionDDLFile(const std::string& filteredFile)
+ScratchPadVector<std::string> Manifest_Parser::PartitionDDLFile(const std::string& filteredFile)
 {
-	std::vector<std::string> result;//list of top level structures to be generated	
+	ScratchPadVector<std::string> result;//list of top level structures to be generated	
 	std::string file = filteredFile;
 	size_t offset = 0;
 	for (; *file.begin() != static_cast<char>(0); file = file.substr(offset))
@@ -94,12 +94,12 @@ std::vector<std::string> Manifest_Parser::PartitionDDLFile(const std::string& fi
 	return  result;
 }
 
-std::vector<std::string> Manifest_Parser::PartitionDDLSubStructures(const std::string& partitionedStructure)
+ScratchPadVector<std::string> Manifest_Parser::PartitionDDLSubStructures(const std::string& partitionedStructure)
 {
 	auto begin = partitionedStructure.find_first_of('{') + 1;
 	auto end = partitionedStructure.find_last_of('}');
 	auto payload = partitionedStructure.substr(begin, end - begin);
-	std::vector<std::string> result;	
+	ScratchPadVector<std::string> result;
 	for(size_t offset = 0; !payload.empty(); payload = payload.substr(offset))
 		result.emplace_back(PartitionDDLStructures(payload, offset));
 

@@ -1,17 +1,21 @@
 ﻿#pragma once 
-#include <map>
 #include <string>
 #include <vector>
 
 #include <ManifestGLPersistence/DatabaseTypes.h>
+#include <EXPERIMENTAL/Manifest_Allocator.h>
+
+using namespace Manifest_Memory;
 
 namespace Manifest_Persistence
 {	
+
 	template<typename MDB_TableType>
 	struct DatabaseBuildTable
 	{
-		std::map<std::string,PrimaryKey> mappedEntryKeys;
-		std::vector<MDB_TableType> entries;
+		//std::map<std::string,PrimaryKey> mappedEntryKeys;
+		ScratchPadUMap<std::string, PrimaryKey> mappedEntryKeys;
+		ScratchPadVector<MDB_TableType> entries;
 		PrimaryKey nextTableIndex = 0;
 	};
 

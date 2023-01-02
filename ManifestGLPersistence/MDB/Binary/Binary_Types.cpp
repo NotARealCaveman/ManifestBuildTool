@@ -22,7 +22,8 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_GeometryNode& geometryNode, c
 	binaryGeometryNode.header.materialID = *materialRefBuildTable.entries[geometryNode.materialRefID].materialIDs;
 	if (geometryNode.transform != BUFFER_NOT_PRESENT)
 	{		
-		binaryGeometryNode.payload = new MFfloat[TransformSize];
+		//binaryGeometryNode.payload = new MFfloat[TransformSize];
+		binaryGeometryNode.payload = New<MFfloat,ScratchPad< MFfloat>>(TransformSize);
 		memcpy(binaryGeometryNode.payload, geometryNode.transform, binaryGeometryNode.header.payloadSize = sizeof(MFfloat) * TransformSize);
 	}	
 	DLOG(32, "Converting mdb_gn with nID, gID, mtlID: " << geometryNode.nodeID <<" " << binaryGeometryNode.header.geometryID << " " << binaryGeometryNode.header.materialID);
@@ -83,7 +84,7 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_Texture& texture, Binary_Text
 	baseTexture.height = GetCompositeBow(texture.textureDimensions, TEXTURE_DIMENSION_BOW_BITOFFSET);
 	//store texture payload information
 	binaryTexture.header.payloadSize = GetCompositeWard(texture.textureInfo, TEXTURE_INFO_BOW_BITOFFSET);
-	binaryTexture.payload = new float[binaryTexture.header.payloadSize];	
+	binaryTexture.payload = New<MFfloat,ScratchPad<MFfloat>>(binaryTexture.header.payloadSize);	
 	memcpy(binaryTexture.payload, texture.channelData, (binaryTexture.header.payloadSize*=sizeof(float)));
 
 	DLOG(34, "Converting mdb_texture with tID: " << texture.textureID);
@@ -98,7 +99,7 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_Mesh& mesh, const VertexBuild
 	///store vertex information
 	//vertices
 	const MDB_VertexArray* vertices = nullptr;
-	std::vector<float> tempVertices;
+	ScratchPadVector<float> tempVertices;
 	if (vertexTableIndices.vertexID != KEY_NOT_PRESENT)
 	{
 		vertices = &vertexBuildTables.vertexTable.entries[vertexTableIndices.vertexID];
@@ -110,7 +111,7 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_Mesh& mesh, const VertexBuild
 	}
 	//uvs
 	const MDB_VertexArray* uvs = nullptr;
-	std::vector<float> tempUVs;
+	ScratchPadVector<float> tempUVs;
 	if (vertexTableIndices.uvID != KEY_NOT_PRESENT)
 	{
 		uvs = &vertexBuildTables.uvTable.entries[vertexTableIndices.uvID];
@@ -122,7 +123,7 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_Mesh& mesh, const VertexBuild
 	}
 	//normals
 	const MDB_VertexArray* normals = nullptr;
-	std::vector<float> tempNormals;
+	ScratchPadVector<float> tempNormals;
 	if (vertexTableIndices.normalID != KEY_NOT_PRESENT)
 	{
 		normals = &vertexBuildTables.normalTable.entries[vertexTableIndices.normalID];
@@ -134,7 +135,7 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_Mesh& mesh, const VertexBuild
 	}
 	//tangents
 	const MDB_VertexArray* tangents = nullptr;
-	std::vector<float> tempTangents;
+	ScratchPadVector<float> tempTangents;
 	if (vertexTableIndices.tangentID != KEY_NOT_PRESENT)
 	{
 		tangents = &vertexBuildTables.tangentTable.entries[vertexTableIndices.tangentID];
@@ -146,7 +147,7 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_Mesh& mesh, const VertexBuild
 	}
 	//bitangents	
 	const MDB_VertexArray* bitangents = nullptr;
-	std::vector<float> tempBitangents;
+	ScratchPadVector<float> tempBitangents;
 	if (vertexTableIndices.bitangentID != KEY_NOT_PRESENT)
 	{
 		bitangents = &vertexBuildTables.bitangentTable.entries[vertexTableIndices.bitangentID];
@@ -160,7 +161,8 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_Mesh& mesh, const VertexBuild
 	const MDB_IndexArray& indices = indexTable.entries[mesh.indexArrayID];
 	auto nIndices = indices.elements;
 	binaryMesh.header.payloadSize += nIndices;
-	binaryMesh.payload = new float[binaryMesh.header.payloadSize];//reserves enough memory for each float	
+	//binaryMesh.payload = new float[binaryMesh.header.payloadSize];//reserves enough memory for each float	
+	binaryMesh.payload = New<MFfloat, ScratchPad<MFfloat>>(binaryMesh.header.payloadSize);
 	//interleave buffer data
 	for (auto bufferIndex = 0; bufferIndex < vertices->elements / 3; ++bufferIndex)
 	{

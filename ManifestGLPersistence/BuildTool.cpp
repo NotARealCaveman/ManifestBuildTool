@@ -4,9 +4,9 @@ using namespace Manifest_Persistence;
 
 void Manifest_Persistence::BuildOfflineDatabase(const DDL_File& file, ManifestDatabaseBuilder& database)
 {		
-	std::vector<DDL_Structure> geometryObjects;
-	std::vector<DDL_Structure> materials;
-	std::vector<DDL_Structure> geometryNodes;
+	ScratchPadVector<DDL_Structure>geometryObjects;
+	ScratchPadVector<DDL_Structure> materials;
+	ScratchPadVector<DDL_Structure> geometryNodes;
 	for (const auto& structure : file.primaryStructures)
 	{
 		auto identifier = structure.identifier;

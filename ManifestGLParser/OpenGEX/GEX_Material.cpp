@@ -25,9 +25,7 @@ DDL_Structure GEX_Material::Build(const std::string& partitionedStructure, DDL_R
 		default:
 			break;
 		}
-
-	std::vector<std::string> subStructures = PartitionDDLSubStructures(partitionedStructure);
-	for (const auto& subStructure : subStructures)
+	for (const auto& subStructure : PartitionDDLSubStructures(partitionedStructure))
 		switch (ExtractStructureType(subStructure))
 		{
 			case GEX_BufferTypes::GEX_Name:

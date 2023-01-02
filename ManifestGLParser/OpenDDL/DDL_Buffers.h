@@ -65,7 +65,7 @@ namespace Manifest_Parser
 
 	//fills a sub buffer array with the per substructure extracted from payload information
 	template<typename T>
-	void ExtractSubBuffer(const std::vector<std::string> & subBufferData,const size_t& subBufferElementCount, const DDL_Buffer& buffer)
+	void ExtractSubBuffer(const ScratchPadVector<std::string> & subBufferData,const size_t& subBufferElementCount, const DDL_Buffer& buffer)
 	{
 		uint32_t subBuffer = 0;
 		for (const auto& bufferData : subBufferData)
@@ -86,7 +86,7 @@ namespace Manifest_Parser
 	template<typename T>
 	void BuildSubBuffer(const std::string& partitionedStructure, DDL_Buffer& buffer)
 	{
-		std::vector<std::string> subBufferData = PartitionDDLSubStructures(partitionedStructure);
+		ScratchPadVector<std::string> subBufferData = PartitionDDLSubStructures(partitionedStructure);
 		size_t subBufferElementCount = PrepareSubBuffer<T>(partitionedStructure, subBufferData.size(), buffer);
 		ExtractSubBuffer<T>(subBufferData, subBufferElementCount, buffer);
 	}

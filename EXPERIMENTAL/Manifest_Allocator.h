@@ -1,6 +1,7 @@
 #pragma once
 #include <utility>
 #include <vector>
+#include <unordered_map>
 #include <map>
 #include <limits>
 #include <thread>
@@ -16,6 +17,12 @@
 
 namespace Manifest_Memory
 {
+    constexpr MFsize _BYTE = 1;
+    constexpr MFsize SCALE = 1024;
+    constexpr MFsize KIBIBYTE = _BYTE * SCALE;
+    constexpr MFsize MEBIBYTE = KIBIBYTE * SCALE;
+    constexpr MFsize GIBIBYTE = MEBIBYTE * SCALE;
+
     template<class T>
     class MFAllocator
     {
@@ -61,7 +68,7 @@ namespace Manifest_Memory
     template<typename T,typename Alloc,typename... Args>
     inline T* New(const MFsize& count, Args&&... args)
     {        
-        return new(Alloc{}.allocate(count))T{std::forward<Args>(args)... };
+        return new(Alloc{}.allocate(count))T[count]{std::forward<Args>(args)...};
     }
 
     template<typename T,typename Alloc>
@@ -96,12 +103,18 @@ namespace Manifest_Memory
                 //get thread heap information
                 auto memoryHandles = GetThreadMemoryHandles();
                 //get current heap for allocation
-                auto heap = memoryHandles->scratchPadHeap;       
-                auto alignedHeap = AlignAllocation(heap, alignment);                
+                auto heap = memoryHandles->scratchPadHeap;      
+                DLOG(31, "Sending: " << (void*)heap << " for alignment. allocation request: " << sizeof(T) * allocation <<" with alignment: " << alignment);
+                auto alignedHeap = AlignAllocation(heap, alignment); 
+                if((void*)alignedHeap == heap)
+                    DLOG(32, "Heap already aligned for boundary");
+                else
+                    DLOG(33, "Heap aligned to " <<(void*)alignedHeap);
                 //move heap forward
                 auto allocationBytes = sizeof(T) * allocation;
-                memoryHandles->scratchPadHeap = alignedHeap + allocationBytes;
-
+                DLOG(34, "Moving heap from: " << (void*)heap << " to: " << (void*)(alignedHeap + allocationBytes));
+                memoryHandles->scratchPadHeap = alignedHeap + allocationBytes;                
+                DLOG(35, "Total bytes allocated: " << (uintptr_t)(memoryHandles->scratchPadHeap - memoryHandles->scratchPadBegin) << " Total bytes free: " << (uintptr_t)(memoryHandles->scratchPadEnd - memoryHandles->scratchPadHeap));
                 return reinterpret_cast<T*>(alignedHeap);
             };            
             //unused - when finished with scratch pad unwind is manually called. allows stl contianers to still be used
@@ -109,9 +122,15 @@ namespace Manifest_Memory
             void Unwind()
             {
                 auto memoryHandles = GetThreadMemoryHandles();
+                DLOG(36, "Unwinding: " << (uintptr_t)(memoryHandles->scratchPadHeap - memoryHandles->scratchPadBegin) <<" Bytes");
                 memoryHandles->scratchPadHeap = memoryHandles->scratchPadBegin;
             }
     };
+    template<typename T>
+    using ScratchPadVector = std::vector<T, ScratchPad<T>>;
+    template<typename Key, typename T, typename Hash = std::hash<Key>, typename KeyEqual = std::equal_to<Key>>
+    using ScratchPadUMap = std::unordered_map<Key, T, std::hash<Key>, KeyEqual, ScratchPad<std::pair<const Key,T>>>;
+
     template<class T, class U>
     bool operator==(const ScratchPad<T>&, const ScratchPad<U>&) { return true; }
     template<class T, class U>

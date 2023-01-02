@@ -166,9 +166,7 @@ void BuildAndExport()
 	//NEXT TIME
 	//build offline database
 	ManifestDatabaseBuilder databaseBuilder;
-	BuildOfflineDatabase(fileObject, databaseBuilder);
-	//finished with all allocations - unwind to beginninig
-	ScratchPad<Byte>{}.Unwind();
+	BuildOfflineDatabase(fileObject, databaseBuilder);	
 	//export conversion
 
 	//export
@@ -178,6 +176,8 @@ void BuildAndExport()
 		ExportBinaryDatabase(databaseBuilder, bExport);
 		bExport.close();
 	}	
+	//finished with all allocations - unwind to beginninig
+	ScratchPad<Byte>{}.Unwind();
 }
 
 void ThreadTest()
@@ -199,7 +199,7 @@ void MessageTest()
 
 
 template<typename Key, typename T, typename Alloc, typename Hash = std::hash<Key>, typename KeyEqual = std::equal_to<Key>>
-using unordered_map = std::unordered_map<Key, T,std::hash<Key>,KeyEqual,Alloc>;
+using umap = std::unordered_map<Key, T,std::hash<Key>,KeyEqual,Alloc>;
 
 void TestLoadTrigger()
 {	
@@ -211,70 +211,17 @@ void TestLoadTrigger()
 }
 
 int main()
-{		
+{
+	WINDOWS_COLOR_CONSOLE;
+
+
 	TestLoadTrigger();
 
 	//register thread	
 	RegisterProgramExecutiveThread();
 	//create data stores
 	INIT_MEMORY_RESERVES();	
-	/* {
-		int* iptr = New<int, DeferredLinearAllocator<int>>(1, 32);		
-		Struct* sptr = New<Struct, DeferredLinearAllocator<Struct>>(1, 4, 5, 6);
-		DLOG(35, "sptr.x: " << sptr->x << " .y: " << sptr->y << " .z: " << sptr->z);
-		DLOG(35, "iptr: " <<*iptr);
-		Delete<int,DeferredLinearAllocator<int>>(iptr);
-		Delete<Struct,DeferredLinearAllocator<Struct>>(sptr);
-
-		std::list<int, DeferredLinearAllocator<int>> listMFAlloc;
-		std::vector<int, DeferredLinearAllocator<int>> vecMFAlloc(3);
-	unordered_map<int,int,DeferredLinearAllocator<std::pair<const int,int>>> umMFAlloc;
-		vecMFAlloc.emplace_back(1);
-		umMFAlloc.insert({ 0,1 });
-		vecMFAlloc.emplace_back(2);
-		umMFAlloc.insert({ 1,2 });
-		listMFAlloc.push_back(1);
-		umMFAlloc.insert({ 2,3 });
-		listMFAlloc.push_back(2);		
-		umMFAlloc.insert({ 3,4 });
-		vecMFAlloc.emplace_back(3);		
-		umMFAlloc.insert({ 4,5 });
-		listMFAlloc.push_back(3);
-		umMFAlloc.insert({ 5,6 });
-		for (const auto& i : vecMFAlloc)
-			DLOG(31 + i, &i << ": " << i);	
-		DLOG(37, "lisst");
-		for (const auto& i : listMFAlloc)
-			DLOG(31 + i, &i << ": " << i);
-		DLOG(37, "hash map");
-		for (const auto& [key,value] : umMFAlloc)
-			DLOG(31 + key, &key << " Key: " << key <<"\t"<<&value<<" Value: " << value);
-		umMFAlloc[2] = 0;
-		umMFAlloc[1] = 0;
-		umMFAlloc.insert_or_assign(0, 0);
-		DLOG(37, "hash map2");
-		for (const auto& [key, value] : umMFAlloc)
-			DLOG(31 + key, &key << " Key: " << key << "\t" << &value << " Value: " << value);
-
-		DLOG(35, "stl hash map2");
-		std::unordered_map<int, int> umSTLAlloc;
-		umSTLAlloc.insert({ 0,1 });
-		umSTLAlloc.insert({ 1,2 });
-		umSTLAlloc.insert({ 2,3 });
-		for (const auto& [key, value] : umSTLAlloc)
-			DLOG(31 + key, &key << " Key: " << key << "\t" << &value << " Value: " << value);
-		umSTLAlloc[2] = 0;
-		umSTLAlloc[1] = 0;
-		umSTLAlloc.insert_or_assign( 0,0 );
-		DLOG(35, "stl hash map2");
-		for (const auto& [key, value] : umSTLAlloc)
-			DLOG(31 + key, &key << " Key: " << key << "\t" << &value << " Value: " << value);
-	}*/
-
-	
 			
-	WINDOWS_COLOR_CONSOLE;		
-	
 	MEMORYSTATUSEX status;
 	status.dwLength = sizeof(status);
 	GlobalMemoryStatusEx(&status);

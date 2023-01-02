@@ -56,7 +56,8 @@ namespace Manifest_Persistence
 	BinaryTable<Binary_TableType> BinaryTableConversion(const MDB_Table& mdb_Table, const Args&... args)
 	{
 		BinaryTable<Binary_TableType> result;
-		result.entries = new Binary_TableType[result.header.totalEntries = mdb_Table.entries.size()];
+		//result.entries = new Binary_TableType[result.header.totalEntries = mdb_Table.entries.size()];
+		result.entries = New<Binary_TableType,ScratchPad< Binary_TableType>>(result.header.totalEntries = mdb_Table.entries.size());
 		for (auto entry = 0; entry < result.header.totalEntries; ++entry)
 			result.header.dynamicTableSize += Convert_MDB(mdb_Table.entries[entry], args..., result.entries[entry]);
 		return result;

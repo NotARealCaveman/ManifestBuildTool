@@ -22,12 +22,12 @@ namespace Manifest_Parser
 
 		//substructures
 		GEX_Name name;
-		std::vector<GEX_Transform> transforms;
-		std::vector<GEX_Animation*> animations;
-		std::vector<GEX_BoneNode*> boneNode;
-		std::vector<GEX_GeometryNode*> geometryNode;
-		std::vector<GEX_CameraNode*> cameraNode;
-		std::vector<GEX_LightNode*> lightNode;
+		ScratchPadVector<GEX_Transform> transforms;
+		ScratchPadVector<GEX_Animation*> animations;
+		ScratchPadVector<GEX_BoneNode*> boneNode;
+		ScratchPadVector<GEX_GeometryNode*> geometryNode;
+		ScratchPadVector<GEX_CameraNode*> cameraNode;
+		ScratchPadVector<GEX_LightNode*> lightNode;
 	};
 
 	void ReserveNodeContainers(GEX_Node& node);
