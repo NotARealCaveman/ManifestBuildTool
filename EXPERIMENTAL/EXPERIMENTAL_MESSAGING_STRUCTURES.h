@@ -25,8 +25,24 @@ namespace Manifest_Experimental
 			action(args...);
 		};
 	};
+	
+	struct Message
+	{
+		//message types will map to 
+		enum class MessageType
+		{
+			LOAD
+		}messageType;
 
-	//forward declared for ease of readability - allows event spaces to be defined with their observation groups	
+	};
+
+	struct Event
+	{
+		//event types should match each of the triggers available
+
+	};
+	
+	//forward declared for ease of readability - allows event spaces to be defined with their observation groups		
 	template<typename ObservableGroup>
 	struct ObservableGroupTriggers;
 
@@ -38,15 +54,14 @@ namespace Manifest_Experimental
 		ObservableGroupTriggers<ObersvableFileSystem> FileSystemTriggers;
 	
 	//predefined trigger types that may be implemented by observable groups
-	typedef Trigger<const int&> LoadTrigger;
-	typedef Trigger<const int&> StoreTrigger;
+	typedef Trigger<const int&> LoadTrigger;	
 
 	template<typename ObservableGroup>
 	struct ObservableGroupTriggers
 	{
-		static const LoadTrigger loadTrigger;
+		static const LoadTrigger loadTrigger;		
 	};	
 	//hook up obersvable group actions to their triggers
 	template<typename ObservableGroup>
-	const LoadTrigger ObservableGroupTriggers< ObservableGroup>::loadTrigger{ ObservableGroup::OnLoad };
+	const LoadTrigger ObservableGroupTriggers< ObservableGroup>::loadTrigger{ ObservableGroup::OnLoad };	
 }

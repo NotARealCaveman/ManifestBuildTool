@@ -57,7 +57,8 @@ namespace Manifest_Parser
 		auto endSubBuffer = partitionedStructure.find_first_of(']');						
 		buffer.subBufferElements = std::stoi(partitionedStructure.substr(beginSubBuffer + 1, endSubBuffer - beginSubBuffer - 1));
 		buffer.subBufferCount = bufferCount;
-		buffer.typeHeap = new T[buffer.subBufferCount * buffer.subBufferElements];
+		//buffer.typeHeap = new T[buffer.subBufferCount * buffer.subBufferElements];
+		buffer.typeHeap = New<T,ScratchPad<T>>(buffer.subBufferCount * buffer.subBufferElements);
 
 		return buffer.subBufferElements;
 	}

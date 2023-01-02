@@ -12,32 +12,22 @@
 
 #include "Manifest_Memory.h"
 #include <ManifestGLUtility/DebugLogger.h>
+#include <EXPERIMENTAL/EXPERIMENTAL_RUNTIME_DATA_STRUCTURES.h>
 
 namespace Manifest_Memory
 {
-    //MANIFST ALLOCATOR WILL ULTIMATELY BE A COLAESCING BUCKET BASED ARENA ALLOCATOR
-    //MLCTR V1 - SIMPLE BUMP ALLOCATOR 
-    //MLCTR V2 - V1 + HOT RELEASE(EX:CLOSE FILE - UNWIND BUFFER AND MARK FREE)
-    //MLCTR V3 rev 1 - async dealloc/conc alloc + v3
-    //MLCTR V3 - V2 + EXECUTIVE ARENAS<--- U R HERE
-    //MLCTR V4 - V3 + BUCKETS
-    //MLCTR V5 - V4 + COALSECING CLEAN UP
     template<class T>
-    struct MFAllocator
+    class MFAllocator
     {
+    public:
         using value_type = T;
 
         MFAllocator() = default;        
         template<class U>
         constexpr MFAllocator(const MFAllocator <U>&) noexcept {};
         
-
-        virtual T* allocate(const MFsize& allocation, const uintptr_t& alignment = alignof(T)) = 0;
-        virtual void deallocate(T* p, std::size_t allocation) noexcept = 0;
-        void report(T* p, std::size_t n, bool alloc = true) const
-        {
-            std::cout << this << '\n' << (alloc ? "Alloc: " : "Dealloc: ") << sizeof(T) * n << " bytes at " << std::hex << std::showbase << reinterpret_cast<void*>(p) << std::dec << '\n';
-        }
+        virtual T* allocate(const MFsize& allocation, const uintptr_t& alignment = alignof(T)) = 0;        
+        virtual void deallocate(T* p, std::size_t allocation) noexcept = 0;  
     };
     template<class T, class U>
     bool operator==(const MFAllocator<T>&, const MFAllocator<U>&) { return true; }
@@ -48,11 +38,10 @@ namespace Manifest_Memory
     struct ThreadMemoryHandles
     {        
         Byte* threadHeap;//entire thread memory         
-        //linear allocator 
-        Byte* linearBegin;
-        Byte* linearHeap;
-        Byte* linearEnd;
-        std::vector<void*> deferredLinearDeallocations;
+        //thread specific scratch pad allocator
+        Byte* scratchPadBegin;
+        Byte* scratchPadHeap;
+        Byte* scratchPadEnd;        
         //heuristics
         MFsize usedBytes;//thread wide
         MFu64 nAllocations;//thread wide        
@@ -64,8 +53,8 @@ namespace Manifest_Memory
     static MFu8 registeredExecutiveThreads{ 0 };
     //stores the calling threads id for later use when requesting reserved memory handles for the threads
     void RegisterProgramExecutiveThread();
-    //checks calling thread id against registered thread ids and returns allocated memory handles reserved for thread
-    ThreadMemoryHandles* GetThreadMemoryHandles();
+    //checks argument thread id against registered thread ids and returns allocated memory handles reserved for thread
+    ThreadMemoryHandles* GetThreadMemoryHandles(const std::thread::id& registeredThread = std::this_thread::get_id());
 
     void INIT_MEMORY_RESERVES();
         
@@ -94,43 +83,37 @@ namespace Manifest_Memory
         return (Byte*)alignedPtr;
     }    
 
+    //scratch pad allocator - only accessable by the executive thread
     template<typename T>
-    class DeferredLinearAllocator : public MFAllocator<T>
+    class ScratchPad : public MFAllocator<T>
     {
         public:
-            DeferredLinearAllocator() {}
+            ScratchPad() {}
             template<class U>
-            constexpr DeferredLinearAllocator(const DeferredLinearAllocator <U>&) noexcept {}
+            constexpr ScratchPad(const ScratchPad <U>&) noexcept {}
             T* allocate(const MFsize& allocation, const uintptr_t& alignment = alignof(T)) final
             {
                 //get thread heap information
                 auto memoryHandles = GetThreadMemoryHandles();
                 //get current heap for allocation
-                auto heap = memoryHandles->linearHeap;
-                DLOG(31, "Sending heap: " << (void*)heap << " for alignment");                
-                auto alignedHeap = AlignAllocation(heap, alignment);
-                if (alignedHeap == heap)
-                    DLOG(32, "Heap was aligned to boundary");
-                else
-                    DLOG(33, "Heap aligned to " << (void*)alignedHeap);
+                auto heap = memoryHandles->scratchPadHeap;       
+                auto alignedHeap = AlignAllocation(heap, alignment);                
                 //move heap forward
                 auto allocationBytes = sizeof(T) * allocation;
-                memoryHandles->linearHeap = alignedHeap + allocationBytes;
-                DLOG(34, "Moving heap from: " << (void*)heap << " to: " << (void*)memoryHandles->linearHeap);
-                DLOG(35, "Aligned Padding: " << ((uintptr_t)alignedHeap-(uintptr_t)heap) << " Allocated Bytes: " << allocationBytes <<" Allocated Objects: " << allocation <<" Alignment: " << alignment);
-                
+                memoryHandles->scratchPadHeap = alignedHeap + allocationBytes;
+
                 return reinterpret_cast<T*>(alignedHeap);
-            };
-            
-            void deallocate(T* p,[[maybe_unused]] std::size_t allocation) noexcept final
+            };            
+            //unused - when finished with scratch pad unwind is manually called. allows stl contianers to still be used
+            void deallocate(T* p,[[maybe_unused]] std::size_t allocation) noexcept final {};            
+            void Unwind()
             {
                 auto memoryHandles = GetThreadMemoryHandles();
-                memoryHandles->deferredLinearDeallocations.emplace_back(p);
-                DLOG(36, "Deferring deallocation of: " << (void*)p << " Current deferred deallocations: " << memoryHandles->deferredLinearDeallocations.size());
-            };
+                memoryHandles->scratchPadHeap = memoryHandles->scratchPadBegin;
+            }
     };
     template<class T, class U>
-    bool operator==(const DeferredLinearAllocator<T>&, const DeferredLinearAllocator<U>&) { return true; }
+    bool operator==(const ScratchPad<T>&, const ScratchPad<U>&) { return true; }
     template<class T, class U>
-    bool operator!=(const DeferredLinearAllocator<T>&, const DeferredLinearAllocator<U>&) { return false; }
+    bool operator!=(const ScratchPad<T>&, const ScratchPad<U>&) { return false; }
 }

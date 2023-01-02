@@ -72,7 +72,8 @@ void Manifest_Parser::FormatTransform(const size_t& transformType, float** unfor
 		DEFAULT_BREAK
 	}	
 	auto temp = *unformattedData;//temp takes reference of old memory
-	*unformattedData = new float[TransformSize];//pointer to old memory is given allocation for formatted data
+	//*unformattedData = new float[TransformSize];//pointer to old memory is given allocation for formatted data
+	*unformattedData = New<float,ScratchPad<float>>(TransformSize);
 	memcpy(*unformattedData, formattedData, sizeof(float) * TransformSize);//copy formatted data into previously unformatted data	
 	//delete[] temp;//clean up old memory from caller - scratch pad
 }

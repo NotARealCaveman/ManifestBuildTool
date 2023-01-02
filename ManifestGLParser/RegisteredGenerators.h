@@ -3,6 +3,9 @@
 #include <map>
 
 #include "ManifestGLParser/RegisteredBuilders.h"
+#include <EXPERIMENTAL/Manifest_Allocator.h>
+
+using namespace Manifest_Memory;
 
 namespace Manifest_Parser
 {	
@@ -18,11 +21,7 @@ namespace Manifest_Parser
 	{//generates a new type T in the type heap and invokes the builder callback		
 		DDL_Structure GenerateType(const std::string& structure, DDL_ReferenceMap& referenceMap)
 		{
-			T* typeHeap;
-			DDL_Structure result{((typeHeap = new T)->*&RegisteredBuilder::Build)(structure,referenceMap)};
-			result.typeHeap = typeHeap;
-
-			return result;
+			return DDL_Structure{ ((New<T, ScratchPad<T>>(1))->* & RegisteredBuilder::Build)(structure, referenceMap) };;
 		};
 	};	
 

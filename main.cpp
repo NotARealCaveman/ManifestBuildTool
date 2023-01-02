@@ -19,8 +19,8 @@ using namespace Manifest_Memory;
 using namespace Manifest_Experimental;
 
 const std::string TEST_PATH{ "C:\\Users\\Droll\\Desktop\\Game\\testing\\" };
-const std::string TEST_GEX{ "Test1.gex" };
-const std::string TEST_MDB{ "Test1.mdb" };
+const std::string TEST_GEX{ "Test2.gex" };
+const std::string TEST_MDB{ "Test2.mdb" };
 
 void RuntimeTest()
 {
@@ -138,7 +138,7 @@ void BuildAndExport()
 	Initialize_GEXTypes();
 	Initialize_GEXGenerators();	
 	DDL_File fileObject;
-	//performs load and filter and begins parse
+	//performs load and filter and begins parse - writes to scratch pad allocator - must unwind when finished with parsed data
 	ParseDDLFile(TEST_PATH + TEST_GEX, fileObject);
 	//prints primary and substructure information per top level sturcture
 	for (const auto& primary : fileObject.primaryStructures)
@@ -167,6 +167,8 @@ void BuildAndExport()
 	//build offline database
 	ManifestDatabaseBuilder databaseBuilder;
 	BuildOfflineDatabase(fileObject, databaseBuilder);
+	//finished with all allocations - unwind to beginninig
+	ScratchPad<Byte>{}.Unwind();
 	//export conversion
 
 	//export
@@ -175,14 +177,16 @@ void BuildAndExport()
 	{
 		ExportBinaryDatabase(databaseBuilder, bExport);
 		bExport.close();
-	}
+	}	
 }
 
 void ThreadTest()
 {
 	std::ifstream bImport{ TEST_PATH + TEST_MDB, std::ios::in | std::ios::binary };
 	ManifestRuntimeDatabase runtimeDatabase{ ImportBinaryDatabase(bImport) };
-	//std::thread rthread{ RenderThread,std::ref(runtimeDatabase) };
+	std::thread rthread{ RenderThread,std::ref(runtimeDatabase) };
+	runtimeDatabase.simThreadId = std::this_thread::get_id();
+	runtimeDatabase.renderThreadId = rthread.get_id();
 	SimThread(runtimeDatabase);//runs on main thread	
 }
 
@@ -203,18 +207,17 @@ void TestLoadTrigger()
 	for (int i = 0; i < 10; ++i)
 		pointlessLoadVector.emplace_back(i);
 	int loadEvent = 69;	
-	FileSystemTriggers::loadTrigger(loadEvent);
+	FileSystemTriggers::loadTrigger(loadEvent);	
 }
 
 int main()
-{	
+{		
 	TestLoadTrigger();
 
 	//register thread	
 	RegisterProgramExecutiveThread();
 	//create data stores
 	INIT_MEMORY_RESERVES();	
-
 	/* {
 		int* iptr = New<int, DeferredLinearAllocator<int>>(1, 32);		
 		Struct* sptr = New<Struct, DeferredLinearAllocator<Struct>>(1, 4, 5, 6);
@@ -279,10 +282,10 @@ int main()
 	//db threading
 	DISABLE
 		MessageTest();
-	//DISABLE
+	DISABLE
 		ThreadTest();
 	//persistence tests
-	DISABLE
+	//DISABLE
 		BuildAndExport();
 	DISABLE
 		ImportAndTest();

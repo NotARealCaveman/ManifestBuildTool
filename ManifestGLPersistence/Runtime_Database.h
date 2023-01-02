@@ -87,7 +87,7 @@ namespace Manifest_Persistence
 			SimulationSnapshot committedSimulation;
 
 			SRSWExchangeLock stateLock;//R-W opperations on states
-			
+
 		public:
 			ManifestRuntimeDatabase(const ManifestBinaryDatabase& binaryDatabase);	 
 			void INITIALIZE_FIRST_STORES__BYPASS_PULL_BRANCH();
@@ -106,6 +106,9 @@ namespace Manifest_Persistence
 			Materials* PullMaterials();			
 
 			std::atomic_flag init = ATOMIC_FLAG_INIT;		
+
+			std::thread::id simThreadId;
+			std::thread::id renderThreadId;
 	};	
 
 	void SimThread(ManifestRuntimeDatabase& runtimeDatabase);
