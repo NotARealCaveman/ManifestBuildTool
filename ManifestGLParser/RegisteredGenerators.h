@@ -20,13 +20,14 @@ namespace Manifest_Parser
 	struct Generator : public RegisteredGenerator
 	{//generates a new type T in the type heap and invokes the builder callback		
 		DDL_Structure* GenerateType(const std::string& structure, DDL_ReferenceMap& referenceMap)
-		{				
-			T * newT = New<T, ScratchPad<T>>(1);
+		{						
 			DISABLE
 			{
+				T* newT = New<T, ScratchPad<T>>(1);
 			auto result = newT->Build(structure, referenceMap);
+			return result;
 			}
-			return nullptr;
+			
 			return (New<T, ScratchPad<T>>(1)->*&RegisteredBuilder::Build)(structure, referenceMap);
 		};
 	};	

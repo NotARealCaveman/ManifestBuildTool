@@ -13,7 +13,7 @@ DDL_Structure* GEX_Spectrum::Build(const std::string& partitionedStructure, DDL_
 {
 	auto result = New<DDL_Structure, ScratchPad<DDL_Structure>>(1);
 	for (const DDL_Property& property : PartitionStructureProperties(ParseStructureHeader(partitionedStructure, *result)))	
-		switch (PropertyList::typeProperties.find(property.key)->second)
+		switch (PropertyList::typeProperties.find(property.key.c_str())->second)
 		{
 			case PropertyList::ATTRIB:
 				break;
@@ -45,13 +45,13 @@ DDL_Structure* GEX_Texture::Build(const std::string& partitionedStructure, DDL_R
 {
 	auto result = New<DDL_Structure, ScratchPad<DDL_Structure>>(1);
 	for (const DDL_Property& property : PartitionStructureProperties(ParseStructureHeader(partitionedStructure, *result)))
-		switch (PropertyList::typeProperties.find(property.key)->second)
+		switch (PropertyList::typeProperties.find(property.key.c_str())->second)
 		{
 			case PropertyList::ATTRIB:
 				attrib = property.value;
 				break;
 			case PropertyList::TEXCOORD:
-				texcoord = std::stoi(property.value);
+				texcoord = std::stoi(property.value.c_str());
 				break;
 			case PropertyList::SWIZZLE:
 				swizzle = property.value;

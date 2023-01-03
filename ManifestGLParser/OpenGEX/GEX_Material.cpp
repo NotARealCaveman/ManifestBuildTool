@@ -17,7 +17,7 @@ DDL_Structure* GEX_Material::Build(const std::string& partitionedStructure, DDL_
 
 	auto result = New<DDL_Structure, ScratchPad<DDL_Structure>>(1);
 	for (const DDL_Property& property : PartitionStructureProperties(ParseStructureHeader(partitionedStructure, *result)))
-		switch (PropertyList::typeProperties.find(property.key)->second)
+		switch (PropertyList::typeProperties.find(property.key.c_str())->second)
 		{
 		case PropertyList::TWOSIDED:
 			std::stringstream{ property.value } >> std::boolalpha >> two_sided;
@@ -61,10 +61,10 @@ DDL_Structure* GEX_MaterialRef::Build(const std::string& partitionedStructure, D
 
 	auto result = New<DDL_Structure, ScratchPad<DDL_Structure>>(1);
 	for (const DDL_Property& property : PartitionStructureProperties(ParseStructureHeader(partitionedStructure, *result)))
-		switch (PropertyList::typeProperties.find(property.key)->second)
+		switch (PropertyList::typeProperties.find(property.key.c_str())->second)
 		{
 			case PropertyList::INDEX:
-				index = std::stoi(property.value);
+				index = std::stoi(property.value.c_str());
 				break;
 			default:
 				break;

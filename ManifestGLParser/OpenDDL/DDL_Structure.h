@@ -37,9 +37,9 @@ namespace Manifest_Parser
 	
 	struct DDL_Property
 	{
-		std::string key;
-		std::string value;
+		ScratchPadString key;
+		ScratchPadString value;
 	};
 	typedef ScratchPadVector<DDL_Property> PropertyList;
-	typedef ScratchPadVector<std::string> ReferenceList;
+	typedef ScratchPadVector<ScratchPadString> ReferenceList;
 }

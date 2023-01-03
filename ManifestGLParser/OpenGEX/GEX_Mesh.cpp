@@ -13,17 +13,17 @@ DDL_Structure* GEX_VertexArray::Build(const std::string& partitionedStructure, D
 {	
 	auto result = New<DDL_Structure, ScratchPad<DDL_Structure>>(1);
 	for (const DDL_Property& property : PartitionStructureProperties(ParseStructureHeader(partitionedStructure, *result)))
-		switch (PropertyList::typeProperties.find(property.key)->second)
+		switch (PropertyList::typeProperties.find(property.key.c_str())->second)
 		{
 		case PropertyList::ATTRIB:
 			attrib = property.value;
 			bufferIndex = GetBufferIndex(attrib);
 			break;
 		case PropertyList::INDEX:
-			index = std::stoi(property.value);
+			index = std::stoi(property.value.c_str());
 			break;
 		case PropertyList::MORPH:
-			morph = std::stoi(property.value);
+			morph = std::stoi(property.value.c_str());
 			break;
 		DEFAULT_BREAK
 		}	
@@ -62,10 +62,10 @@ DDL_Structure* GEX_IndexArray::Build(const std::string& partitionedStructure, DD
 {	
 	auto result = New<DDL_Structure, ScratchPad<DDL_Structure>>(1);
 	for (const DDL_Property& property : PartitionStructureProperties(ParseStructureHeader(partitionedStructure, *result)))
-		switch (PropertyList::typeProperties.find(property.key)->second)
+		switch (PropertyList::typeProperties.find(property.key.c_str())->second)
 		{
 			case PropertyList::MATERIAL:
-				material = std::stoi(property.value);
+				material = std::stoi(property.value.c_str());
 				break;
 			case PropertyList::RESTART:
 			{
@@ -98,10 +98,10 @@ DDL_Structure* GEX_Mesh::Build(const std::string& partitionedStructure, DDL_Refe
 
 	auto result = New<DDL_Structure, ScratchPad<DDL_Structure>>(1);
 	for (const DDL_Property& property : PartitionStructureProperties(ParseStructureHeader(partitionedStructure, *result)))
-		switch (PropertyList::typeProperties.find(property.key)->second)
+		switch (PropertyList::typeProperties.find(property.key.c_str())->second)
 		{
 			case PropertyList::LOD:
-				lod = std::stoi(property.value);
+				lod = std::stoi(property.value.c_str());
 				break;
 			case PropertyList::PRIMTIIVE:
 				primitive = property.value;

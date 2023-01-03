@@ -62,6 +62,7 @@ namespace Manifest_Parser
 	{
 		DDL_Structure* Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap) final;
 
-		std::string data;
+		//std::string data;
+		ScratchPadString data;
 	};
 }

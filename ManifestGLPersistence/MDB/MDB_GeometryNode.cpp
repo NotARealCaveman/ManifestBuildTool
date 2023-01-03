@@ -12,7 +12,7 @@ ForeignKey Manifest_Persistence::TableEntry(const DDL_Structure& structure, cons
 	entry.geometryIDs = new ForeignKey[entry.numReferences];	
 	for (auto objectIndex = 0; objectIndex < entry.numReferences; ++objectIndex)
 	{
-		auto objectRef = geometryObjectBuildTable.mappedEntryKeys.find(ref.referenceNames[objectIndex]);
+		auto objectRef = geometryObjectBuildTable.mappedEntryKeys.find(ref.referenceNames[objectIndex].c_str());
 		if (objectRef != geometryObjectBuildTable.mappedEntryKeys.end())
 			entry.geometryIDs[objectIndex] = objectRef->second;
 		else
@@ -32,7 +32,7 @@ ForeignKey Manifest_Persistence::TableEntry(const DDL_Structure& structure, cons
 	entry.materialIDs = new ForeignKey[entry.numReferences];
 	for (auto objectIndex = 0; objectIndex < entry.numReferences; ++objectIndex)
 	{
-		auto objectRef = materialBuildTable.mappedEntryKeys.find(ref.referenceNames[objectIndex]);
+		auto objectRef = materialBuildTable.mappedEntryKeys.find(ref.referenceNames[objectIndex].c_str());
 		if (objectRef != materialBuildTable.mappedEntryKeys.end())
 			*(entry.materialIDs + objectIndex) = objectRef->second;
 		else

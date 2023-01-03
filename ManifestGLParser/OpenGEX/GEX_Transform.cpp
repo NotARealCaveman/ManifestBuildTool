@@ -13,7 +13,7 @@ DDL_Structure* GEX_Transform::Build(const std::string& partitionedStructure, DDL
 {			
 	auto result = New<DDL_Structure, ScratchPad<DDL_Structure>>(1);
 	for (const DDL_Property& property : PartitionStructureProperties(ParseStructureHeader(partitionedStructure, *result)))
-		switch (PropertyList::typeProperties.find(property.key)->second)
+		switch (PropertyList::typeProperties.find(property.key.c_str())->second)
 		{
 			case PropertyList::OBJECT:
 				std::stringstream{ property.value } >> std::boolalpha >> object;

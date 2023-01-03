@@ -26,7 +26,7 @@ namespace Manifest_Parser
 		DDL_Float field;
 		//properties
 		bool object = false;		
-		std::string kind;
+		ScratchPadString kind;
 	};
 	//checks current trasnform type if not a 4x4 allocates new memory and builds proper 4x4 matrix in GEX_Transform::field - the old field memory is released by the function and the newly allocated memory is pointed to by GEX_Transform::field
 	void FormatTransform(const size_t& transformType, float** unformattedData);

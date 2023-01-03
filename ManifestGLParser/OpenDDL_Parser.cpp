@@ -26,7 +26,7 @@ PropertyList Manifest_Parser::PartitionStructureProperties(const std::string& pr
 	while(temp[next] != ')')
 	{
 		auto equator = temp.find_first_of('=');		
-		result.emplace_back(DDL_Property{ temp.substr(next, equator-next),temp.substr(equator + 1, end-(equator + 1)) });
+		result.emplace_back(DDL_Property{ temp.substr(next, equator-next).c_str(),temp.substr(equator + 1, end - (equator + 1)).c_str() });
 		temp = temp.substr(end);
 		next = temp.find_first_not_of(',');
 		end = temp.find_first_of(",)",next);
@@ -130,7 +130,7 @@ void Manifest_Parser::ParseDDLFile(const std::vector<std::string>& fileContents,
 		auto registeredGenerator = RegisteredGenerator::registeredGenerators.find(identifier);
 		auto generator = registeredGenerator->second;
 		//DISABLE
-		if (registeredGenerator->first == "Metric")
+		if (registeredGenerator->first == "GeometryObject")
 		{
 			//DLOG(31, registeredGenerator->first);			
 			DDL_Structure* primaryStructure = nullptr;

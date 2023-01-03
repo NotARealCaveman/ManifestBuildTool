@@ -12,7 +12,7 @@ DDL_Structure* GEX_Param::Build(const std::string& partitionedStructure, DDL_Ref
 {
 	auto result = New<DDL_Structure, ScratchPad<DDL_Structure>>(1);
 	for (const DDL_Property& property : PartitionStructureProperties(ParseStructureHeader(partitionedStructure, *result)))	
-		switch (PropertyList::typeProperties.find(property.key)->second)
+		switch (PropertyList::typeProperties.find(property.key.c_str())->second)
 		{
 			case PropertyList::ATTRIB:
 				attrib = property.value;

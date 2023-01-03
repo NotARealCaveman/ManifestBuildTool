@@ -6,6 +6,7 @@ DDL_Structure* GEX_Node::Build(const std::string& subStructure, DDL_ReferenceMap
 {
 	auto result = New<DDL_Structure, ScratchPad<DDL_Structure>>(1);
 	ParseStructureHeader(subStructure, *result);
+	
 	switch (ExtractStructureType(subStructure))
 	{
 		case GEX_BufferTypes::GEX_Name:

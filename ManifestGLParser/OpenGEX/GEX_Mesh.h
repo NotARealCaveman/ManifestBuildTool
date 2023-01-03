@@ -64,6 +64,6 @@ namespace Manifest_Parser
 		GEX_Skin* skin;
 		//properties
 		uint32_t lod = 0;//starting from 0, specifies a progressively lower resolution mesh
-		std::string primitive = "triangles";//specifies how the vertices are to be drawn
+		ScratchPadString primitive = "triangles";//specifies how the vertices are to be drawn
 	};
 }

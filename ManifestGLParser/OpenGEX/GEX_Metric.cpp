@@ -12,17 +12,15 @@ DDL_Structure* GEX_Metric::Build(const std::string& partitionedStructure, DDL_Re
 
 	auto result = New<DDL_Structure, ScratchPad<DDL_Structure>>(1);
 
-	DISABLE
-	{
+	
 	for (const DDL_Property& property : PartitionStructureProperties(ParseStructureHeader(partitionedStructure, *result)))
-		switch (PropertyList::typeProperties.find(property.key)->second)
+		switch (PropertyList::typeProperties.find(property.key.c_str())->second)
 		{
 			case PropertyList::KEY:
 				key = property.value;
 				break;
 			DEFAULT_BREAK;
 		}
-
 	for (const auto& subStructure : PartitionDDLSubStructures(partitionedStructure))
 		switch (metricType = ExtractStructureType(subStructure))
 		{
@@ -41,8 +39,7 @@ DDL_Structure* GEX_Metric::Build(const std::string& partitionedStructure, DDL_Re
 			DEFAULT_BREAK
 		}
 	result->typeHeap = static_cast<void*>(this);
-	MapStructureName(*result, referenceMap);
-	}
+	MapStructureName(*result, referenceMap);	
 
 	return result;
 }
