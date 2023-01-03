@@ -10,7 +10,7 @@ namespace Manifest_Parser
 	struct GEX_BoneRefArray
 	{
 		//substructures
-		std::vector<GEX_BoneNode*> boneNodeRefs;
+		ScratchPadVector<GEX_BoneNode*> boneNodeRefs;
 	};
 
 }

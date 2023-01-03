@@ -8,6 +8,6 @@ namespace Manifest_Parser
 	{
 		//substructures
 		GEX_BoneRefArray boneRefArray;
-		std::vector<GEX_Transform> boneBindPoses;
+		ScratchPadVector<GEX_Transform> boneBindPoses;
 	};
 }

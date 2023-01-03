@@ -19,8 +19,8 @@ using namespace Manifest_Memory;
 using namespace Manifest_Experimental;
 
 const std::string TEST_PATH{ "C:\\Users\\Droll\\Desktop\\Game\\testing\\" };
-const std::string TEST_GEX{ "Test2.gex" };
-const std::string TEST_MDB{ "Test2.mdb" };
+const std::string TEST_GEX{ "Test1.gex" };
+const std::string TEST_MDB{ "Test1.mdb" };
 
 void RuntimeTest()
 {
@@ -82,7 +82,7 @@ void PrintInfo(const DDL_Structure& structure)
 {
 	DLOG(33, "Structure " << structure.name << " with type: " << structure.identifier << " contains: " << structure.subSutructres.size() << " substructures");
 	for (const auto& substructure : structure.subSutructres)
-		PrintInfo(substructure);
+		PrintInfo(*substructure);
 };
 	
 void ImportAndTest()
@@ -131,51 +131,86 @@ void BuildAndExport()
 	auto file = LoadFileContents(TEST_PATH + TEST_GEX);
 	DLOG(31, file);
 	auto filtered = FilterFile(file);
-	DLOG(32, filtered);
-
+	DLOG(32, filtered);	
 	//begin actual parse
 	//ddl start up
 	Initialize_GEXTypes();
 	Initialize_GEXGenerators();	
-	DDL_File fileObject;
-	//performs load and filter and begins parse - writes to scratch pad allocator - must unwind when finished with parsed data
-	ParseDDLFile(TEST_PATH + TEST_GEX, fileObject);
-	//prints primary and substructure information per top level sturcture
-	for (const auto& primary : fileObject.primaryStructures)
-	{
-		PrintInfo(primary);
-		DLOG(31, "");
-	}
-
-	auto gn = fileObject.primaryStructures[3];
-	const GEX_GeometryNode& node = *reinterpret_cast<GEX_GeometryNode*>(gn.typeHeap);
-	const GEX_Transform& transform = node.transforms[0];
-	const DDL_Float& data = transform.field;
-	const DDL_Buffer& buffer = data.data;
-	for (auto col = 0; col < 4; ++col)
-	{
-		for (auto row = 0; row < 4; ++row)
+	auto nLoops = 25000000;	
+	for (auto loop = 0; loop < nLoops; ++loop)
+	{			
 		{
-			auto offset = row * 4 + col;
-			auto field = reinterpret_cast<float*>(buffer.typeHeap);
-			std::cout << field[offset]<<"  ";
+			auto fileContents = PartitionDDLFile(filtered);
+			DDL_File fileObject;
+			//performs load and filter and begins parse - writes to scratch pad allocator - must unwind when finished with parsed data
+			//ParseDDLFile(fileContents, fileObject);
+			//prints primary and substructure information per top level sturcture
+
+			//build offline database			
+			//ManifestDatabaseBuilder databaseBuilder;
+			//BuildOfflineDatabase(fileObject, databaseBuilder);		
+			/*
+			fileObject.primaryStructures.clear();
+			fileObject.referenceMap.referenceMap.clear();
+			fileObject.referenceMap.unnamedStructureCount = 0;
+			databaseBuilder.geometryNodeBuildTable.entries.clear();
+			databaseBuilder.geometryNodeBuildTable.mappedEntryKeys.clear();
+			databaseBuilder.geometryNodeBuildTable.nextTableIndex = 0;
+			databaseBuilder.geometryObjectBuildTable.entries.clear();
+			databaseBuilder.geometryObjectBuildTable.mappedEntryKeys.clear();
+			databaseBuilder.geometryObjectBuildTable.nextTableIndex = 0;
+			databaseBuilder.indexBuildTable.entries.clear();
+			databaseBuilder.indexBuildTable.mappedEntryKeys.clear();
+			databaseBuilder.indexBuildTable.nextTableIndex = 0;
+			databaseBuilder.materialBuildTable.entries.clear();
+			databaseBuilder.materialBuildTable.mappedEntryKeys.clear();
+			databaseBuilder.materialBuildTable.nextTableIndex = 0;
+			databaseBuilder.materialRefBuildTable.entries.clear();
+			databaseBuilder.materialRefBuildTable.mappedEntryKeys.clear();
+			databaseBuilder.materialRefBuildTable.nextTableIndex = 0;
+			databaseBuilder.meshBuildTable.entries.clear();
+			databaseBuilder.meshBuildTable.mappedEntryKeys.clear();
+			databaseBuilder.meshBuildTable.nextTableIndex = 0;
+			databaseBuilder.objectRefBuildTable.entries.clear();
+			databaseBuilder.objectRefBuildTable.mappedEntryKeys.clear();
+			databaseBuilder.objectRefBuildTable.nextTableIndex = 0;
+			databaseBuilder.textureBuildTable.entries.clear();
+			databaseBuilder.textureBuildTable.mappedEntryKeys.clear();
+			databaseBuilder.textureBuildTable.nextTableIndex = 0;
+
+			databaseBuilder.vertexBuildTables.bitangentTable.entries.clear();
+			databaseBuilder.vertexBuildTables.bitangentTable.mappedEntryKeys.clear
+	();
+			databaseBuilder.vertexBuildTables.bitangentTable.nextTableIndex = 0;
+			databaseBuilder.vertexBuildTables.normalTable.entries.clear();
+			databaseBuilder.vertexBuildTables.normalTable.mappedEntryKeys.clear
+			();
+			databaseBuilder.vertexBuildTables.normalTable.nextTableIndex = 0;
+			databaseBuilder.vertexBuildTables.tangentTable.entries.clear();
+			databaseBuilder.vertexBuildTables.tangentTable.mappedEntryKeys.clear
+			();
+			databaseBuilder.vertexBuildTables.tangentTable.nextTableIndex = 0;
+			databaseBuilder.vertexBuildTables.uvTable.entries.clear();
+			databaseBuilder.vertexBuildTables.uvTable.mappedEntryKeys.clear
+			();
+			databaseBuilder.vertexBuildTables.uvTable.nextTableIndex = 0;
+			databaseBuilder.vertexBuildTables.vertexTable.entries.clear();
+			databaseBuilder.vertexBuildTables.vertexTable.mappedEntryKeys.clear
+			();
+			databaseBuilder.vertexBuildTables.vertexTable.nextTableIndex = 0;
+			*/
 		}
-		std::cout << std::endl;
-	}
-
-	//NEXT TIME
-	//build offline database
-	ManifestDatabaseBuilder databaseBuilder;
-	BuildOfflineDatabase(fileObject, databaseBuilder);	
+		ScratchPad<Byte>{}.Unwind();
+	}	
 	//export conversion
-
 	//export
 	std::ofstream bExport{ TEST_PATH + TEST_MDB, std::ios::out | std::ios::binary };
 	if (bExport.is_open())
 	{
-		ExportBinaryDatabase(databaseBuilder, bExport);
+		//ExportBinaryDatabase(databaseBuilder, bExport);
 		bExport.close();
 	}	
+	
 	//finished with all allocations - unwind to beginninig
 	ScratchPad<Byte>{}.Unwind();
 }

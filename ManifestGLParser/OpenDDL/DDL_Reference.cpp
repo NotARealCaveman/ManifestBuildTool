@@ -2,13 +2,13 @@
 
 using namespace Manifest_Parser;
 
-DDL_Structure DDL_Reference::Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap)
+DDL_Structure* DDL_Reference::Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap)
 {
-	DDL_Structure result;
-	ParseStructureHeader(partitionedStructure, result);
+	auto result = New<DDL_Structure, ScratchPad<DDL_Structure>>(1);
+	ParseStructureHeader(partitionedStructure, *result);
 	referenceNames = PartitionStructureReferences(partitionedStructure);	
-	result.typeHeap = static_cast<void*>(&referenceNames);
-	MapStructureName(result, referenceMap);
+	result->typeHeap = static_cast<void*>(&referenceNames);
+	MapStructureName(*result, referenceMap);
 
 	return result;
 }

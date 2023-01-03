@@ -3,18 +3,22 @@
 #include <map>
 #include <string>
 
+#include <EXPERIMENTAL/Manifest_Allocator.h>
+
+using namespace Manifest_Memory;
+
 namespace Manifest_Parser
 {		
 	constexpr uint32_t  VECTOR_RESERVATION_SIZE = 64;//to change
 
-	typedef std::string DDL_Identifier;
-	typedef std::string DDL_Name;
+	typedef ScratchPadString DDL_Identifier;
+	typedef ScratchPadString DDL_Name;
 
 	struct DDL_Structure
 	{
 		DDL_Identifier identifier;
 		DDL_Name name;		
-		std::vector<DDL_Structure> subSutructres;
+		ScratchPadVector<DDL_Structure*> subSutructres;
 		void* typeHeap;
 	};		
 	template<typename Type>
@@ -25,7 +29,8 @@ namespace Manifest_Parser
 
 	struct DDL_ReferenceMap
 	{		
-		std::map<DDL_Name,const DDL_Structure> referenceMap;
+		//std::map<DDL_Name,const DDL_Structure> referenceMap;
+		ScratchPadUMap<DDL_Name, const DDL_Structure> referenceMap;
 		uint32_t unnamedStructureCount{ 0 };
 	};
 	void MapStructureName(DDL_Structure& structure, DDL_ReferenceMap& referenceMap);
@@ -35,6 +40,6 @@ namespace Manifest_Parser
 		std::string key;
 		std::string value;
 	};
-	typedef std::vector<DDL_Property> PropertyList;
-	typedef std::vector<std::string> ReferenceList;
+	typedef ScratchPadVector<DDL_Property> PropertyList;
+	typedef ScratchPadVector<std::string> ReferenceList;
 }

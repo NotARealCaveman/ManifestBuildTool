@@ -6,7 +6,7 @@ ForeignKey Manifest_Persistence::TableEntry(const DDL_Structure& structure, Vert
 {	
 	MDB_VertexArray& entry = vertexArrayBuildTable.entries.emplace_back();
 	entry.vertexArrayID = vertexArrayBuildTable.nextTableIndex++;
-	vertexArrayBuildTable.mappedEntryKeys.insert({ structure.name,entry.vertexArrayID });
+	vertexArrayBuildTable.mappedEntryKeys.insert({ structure.name.c_str(),entry.vertexArrayID });
 	const DDL_Buffer& bufferData{ HeapData<GEX_VertexArray>(structure).vertexArray.data };
 	entry.elements = bufferData.subBufferCount * bufferData.subBufferElements;
 	entry.vertexData = new float[entry.elements];

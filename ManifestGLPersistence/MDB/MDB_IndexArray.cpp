@@ -6,7 +6,7 @@ ForeignKey Manifest_Persistence::TableEntry(const DDL_Structure& structure, Inde
 {	
 	MDB_IndexArray& entry = indexBuildTable.entries.emplace_back();
 	entry.indexArrayID = indexBuildTable.nextTableIndex++;
-	indexBuildTable.mappedEntryKeys.insert({ structure.name,entry.indexArrayID });
+	indexBuildTable.mappedEntryKeys.insert({ structure.name.c_str(),entry.indexArrayID });
 	const DDL_Buffer& bufferData{ HeapData<GEX_VertexArray>(structure).vertexArray.data };
 	entry.elements = bufferData.subBufferCount * bufferData.subBufferElements;
 	entry.indexData = new uint32_t[entry.elements];

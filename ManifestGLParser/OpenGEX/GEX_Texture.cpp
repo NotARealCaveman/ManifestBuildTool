@@ -9,10 +9,10 @@ const std::map<std::string, DDL_BufferType> GEX_Spectrum::PropertyList::typeProp
 	{ "max", PropertyList::MAX}
 };
 
-DDL_Structure GEX_Spectrum::Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap)
+DDL_Structure* GEX_Spectrum::Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap)
 {
-	DDL_Structure result;
-	for (const DDL_Property& property : PartitionStructureProperties(ParseStructureHeader(partitionedStructure, result)))	
+	auto result = New<DDL_Structure, ScratchPad<DDL_Structure>>(1);
+	for (const DDL_Property& property : PartitionStructureProperties(ParseStructureHeader(partitionedStructure, *result)))	
 		switch (PropertyList::typeProperties.find(property.key)->second)
 		{
 			case PropertyList::ATTRIB:
@@ -23,8 +23,8 @@ DDL_Structure GEX_Spectrum::Build(const std::string& partitionedStructure, DDL_R
 				break;
 			DEFAULT_BREAK
 		}
-	result.typeHeap = static_cast<void*>(this);
-	MapStructureName(result, referenceMap);	
+	result->typeHeap = static_cast<void*>(this);
+	MapStructureName(*result, referenceMap);	
 
 	return result;
 }
@@ -41,10 +41,10 @@ const std::map<std::string, DDL_BufferType> GEX_Texture::PropertyList::typePrope
 	{"border",BORDER}
 };
 
-DDL_Structure GEX_Texture::Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap)
+DDL_Structure* GEX_Texture::Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap)
 {
-	DDL_Structure result;
-	for (const DDL_Property& property : PartitionStructureProperties(ParseStructureHeader(partitionedStructure, result)))
+	auto result = New<DDL_Structure, ScratchPad<DDL_Structure>>(1);
+	for (const DDL_Property& property : PartitionStructureProperties(ParseStructureHeader(partitionedStructure, *result)))
 		switch (PropertyList::typeProperties.find(property.key)->second)
 		{
 			case PropertyList::ATTRIB:
@@ -71,8 +71,8 @@ DDL_Structure GEX_Texture::Build(const std::string& partitionedStructure, DDL_Re
 			DEFAULT_BREAK
 		}
 	//parse substructures...
-	result.typeHeap = static_cast<void*>(this);
-	MapStructureName(result, referenceMap);
+	result->typeHeap = static_cast<void*>(this);
+	MapStructureName(*result, referenceMap);
 
 	return result;
 }

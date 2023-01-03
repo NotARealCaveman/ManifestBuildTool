@@ -16,7 +16,7 @@ namespace Manifest_Parser
 			static constexpr int MORPH{ INDEX + 1 };
 			static const std::map<std::string, uint32_t> typeProperties;
 		};
-		DDL_Structure Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap) final;
+		DDL_Structure* Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap) final;
 		//substructures
 		DDL_Float vertexArray;
 		//properties
@@ -37,7 +37,7 @@ namespace Manifest_Parser
 			static constexpr int FRONT{ RESTART + 1 };
 			static const std::map<std::string, uint32_t> typeProperties;
 		};
-		DDL_Structure Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap) final;
+		DDL_Structure* Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap) final;
 
 		//substructures
 		DDL_Int32 indexArray;
@@ -56,11 +56,11 @@ namespace Manifest_Parser
 			static constexpr int PRIMTIIVE{ LOD + 1 };
 			static const std::map<std::string, uint32_t> typeProperties;
 		};				
-		DDL_Structure Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap) final;
+		DDL_Structure* Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap) final;
 
 		//substructures
-		std::vector<GEX_VertexArray> vertexArrays;//see comment
-		std::vector<GEX_IndexArray> indexArrays;//see comment
+		ScratchPadVector<GEX_VertexArray> vertexArrays;//see comment
+		ScratchPadVector<GEX_IndexArray> indexArrays;//see comment
 		GEX_Skin* skin;
 		//properties
 		uint32_t lod = 0;//starting from 0, specifies a progressively lower resolution mesh

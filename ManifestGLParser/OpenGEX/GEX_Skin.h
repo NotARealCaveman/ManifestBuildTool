@@ -13,7 +13,7 @@ namespace Manifest_Parser
 
 	struct GEX_Skin : public RegisteredBuilder
 	{
-		DDL_Structure Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap) final;
+		DDL_Structure* Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap) final;
 
 		//substructures
 		GEX_Transform* meshBindPose;

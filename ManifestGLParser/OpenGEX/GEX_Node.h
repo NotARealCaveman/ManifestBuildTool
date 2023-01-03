@@ -18,7 +18,7 @@ namespace Manifest_Parser
 	struct GEX_Node : public RegisteredBuilder
 	{
 		//GEX_Node build DOES NOT further partition - it takes in only substructures
-		virtual DDL_Structure Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap);
+		virtual DDL_Structure* Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap);
 
 		//substructures
 		GEX_Name name;

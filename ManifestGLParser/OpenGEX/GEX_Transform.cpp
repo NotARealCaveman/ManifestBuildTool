@@ -9,10 +9,10 @@ const std::map<std::string, DDL_BufferType> GEX_Transform::PropertyList::typePro
 };
 
 
-DDL_Structure GEX_Transform::Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap)
+DDL_Structure* GEX_Transform::Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap)
 {			
-	DDL_Structure result;
-	for (const DDL_Property& property : PartitionStructureProperties(ParseStructureHeader(partitionedStructure, result)))
+	auto result = New<DDL_Structure, ScratchPad<DDL_Structure>>(1);
+	for (const DDL_Property& property : PartitionStructureProperties(ParseStructureHeader(partitionedStructure, *result)))
 		switch (PropertyList::typeProperties.find(property.key)->second)
 		{
 			case PropertyList::OBJECT:
@@ -23,12 +23,12 @@ DDL_Structure GEX_Transform::Build(const std::string& partitionedStructure, DDL_
 				break;
 			DEFAULT_BREAK
 		}	
-	result.subSutructres.emplace_back(field.Build(PartitionDDLSubStructures(partitionedStructure)[0], referenceMap));//should only have 	1	
+	result->subSutructres.emplace_back(field.Build(PartitionDDLSubStructures(partitionedStructure)[0], referenceMap));//should only have 	1	
 	FormatTransform(field.data.subBufferElements, reinterpret_cast<float**>(&field.data.typeHeap));
 	field.data.subBufferElements = TransformSize;
 	//tbd - multiple transforms
-	result.typeHeap = static_cast<void*>(this);
-	MapStructureName(result, referenceMap);
+	result->typeHeap = static_cast<void*>(this);
+	MapStructureName(*result, referenceMap);
 	return result; 
 }
 

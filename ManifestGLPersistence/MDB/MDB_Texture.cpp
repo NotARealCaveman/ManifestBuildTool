@@ -15,9 +15,9 @@ void Manifest_Persistence::TableEntry(const DDL_Structure& structure, const Fore
 {	
 	MDB_Texture& entry = textureBuildTable.entries.emplace_back();
 	entry.textureID = textureBuildTable.nextTableIndex++;
-	textureBuildTable.mappedEntryKeys.insert({ structure.name,entry.textureID });
+	textureBuildTable.mappedEntryKeys.insert({ structure.name.c_str(),entry.textureID });
 	entry.materialID = materialID;
-	switch (DDL_BufferTypes::DDL_BufferTypeMap.find(structure.identifier)->second)
+	switch (DDL_BufferTypes::DDL_BufferTypeMap.find(structure.identifier.c_str())->second)
 	{
 		case GEX_BufferTypes::GEX_Color:
 		{			
