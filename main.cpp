@@ -132,6 +132,7 @@ void BuildAndExport()
 	DLOG(31, file);
 	auto filtered = FilterFile(file);
 	DLOG(32, filtered);	
+	auto fileContents = PartitionDDLFile(filtered);
 	//begin actual parse
 	//ddl start up
 	Initialize_GEXTypes();
@@ -139,11 +140,10 @@ void BuildAndExport()
 	auto nLoops = 25000000;	
 	for (auto loop = 0; loop < nLoops; ++loop)
 	{			
-		{
-			auto fileContents = PartitionDDLFile(filtered);
+		{			
 			DDL_File fileObject;
 			//performs load and filter and begins parse - writes to scratch pad allocator - must unwind when finished with parsed data
-			//ParseDDLFile(fileContents, fileObject);
+			ParseDDLFile(fileContents, fileObject);
 			//prints primary and substructure information per top level sturcture
 
 			//build offline database			

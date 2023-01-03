@@ -22,7 +22,7 @@ namespace Manifest_Parser
 		std::variant<DDL_Float, DDL_String> metric;
 		DDL_BufferType metricType;
 		//properties
-		std::string key;			
+		ScratchPadString key;			
 	};
 	
 	

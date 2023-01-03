@@ -83,9 +83,9 @@ std::string Manifest_Parser::PartitionDDLStructures(const std::string& filteredF
 }
 
 //performs the structuer partition on an entire file or previously partitioned structure
-ScratchPadVector<ScratchPadString> Manifest_Parser::PartitionDDLFile(const std::string& filteredFile)
+std::vector<std::string> Manifest_Parser::PartitionDDLFile(const std::string& filteredFile)
 {
-	ScratchPadVector<ScratchPadString> result;//list of top level structures to be generated	
+	std::vector<std::string> result;//list of top level structures to be generated	
 	std::string file = filteredFile;
 	size_t offset = 0;
 	for (; *file.begin() != static_cast<char>(0); file = file.substr(offset))
@@ -122,20 +122,21 @@ const std::string Manifest_Parser::LoadFileContents(const std::string& fileName)
 	return result;
 }
 
-void Manifest_Parser::ParseDDLFile(const ScratchPadVector<ScratchPadString>& fileContents, DDL_File& fileObject)
-{	
-	
-	DISABLE
+void Manifest_Parser::ParseDDLFile(const std::vector<std::string>& fileContents, DDL_File& fileObject)
+{		
 	for (const auto& structure : fileContents)
 	{
 		auto identifier = structure.substr(0, structure.find_first_of("$%({"));
-		auto registeredGenerator = RegisteredGenerator::registeredGenerators.find(identifier.c_str());
+		auto registeredGenerator = RegisteredGenerator::registeredGenerators.find(identifier);
 		auto generator = registeredGenerator->second;
-		
+		//DISABLE
 		if (registeredGenerator->first == "Metric")
 		{
 			//DLOG(31, registeredGenerator->first);			
-			fileObject.primaryStructures.push_back(generator->GenerateType(structure.c_str(), fileObject.referenceMap));			
+			DDL_Structure* primaryStructure = nullptr;
+			//DISABLE
+			primaryStructure = generator->GenerateType(structure, fileObject.referenceMap);			
+			fileObject.primaryStructures.push_back(primaryStructure);
 		}
 	}
 }

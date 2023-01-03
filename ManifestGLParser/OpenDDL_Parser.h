@@ -23,9 +23,9 @@ namespace Manifest_Parser
 	//split ddl structures into separate objects - works by counting scope depth
 	std::string PartitionDDLStructures(const std::string& filteredFile, size_t& filterOffset);
 	//partition all structure in a file 
-	ScratchPadVector<ScratchPadString> PartitionDDLFile(const std::string& filteredFile);
+	std::vector<std::string> PartitionDDLFile(const std::string& filteredFile);
 	//partition a previously partitioned structure into its substructures
 	ScratchPadVector<std::string> PartitionDDLSubStructures(const std::string& partitionedStructure);
 	const std::string LoadFileContents(const std::string& fileName);
-	void ParseDDLFile(const ScratchPadVector<ScratchPadString>& fileContents, DDL_File& file);
+	void ParseDDLFile(const std::vector<std::string>& fileContents, DDL_File& file);
 }

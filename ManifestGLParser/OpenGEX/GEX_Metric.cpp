@@ -8,8 +8,8 @@ const std::map<std::string, DDL_BufferType> GEX_Metric::PropertyList::typeProper
 };
 
 DDL_Structure* GEX_Metric::Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap)
-{	
-	return nullptr;
+{		
+
 	auto result = New<DDL_Structure, ScratchPad<DDL_Structure>>(1);
 
 	DISABLE
