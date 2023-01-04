@@ -17,7 +17,7 @@ DDL_Structure* GEX_VertexArray::Build(const std::string& partitionedStructure, D
 		{
 		case PropertyList::ATTRIB:
 			attrib = property.value;
-			bufferIndex = GetBufferIndex(attrib);
+			bufferIndex = GetBufferIndex(attrib.c_str());
 			break;
 		case PropertyList::INDEX:
 			index = std::stoi(property.value.c_str());
@@ -27,7 +27,7 @@ DDL_Structure* GEX_VertexArray::Build(const std::string& partitionedStructure, D
 			break;
 		DEFAULT_BREAK
 		}	
-	result->subSutructres.emplace_back(vertexArray.Build(PartitionDDLSubStructures(partitionedStructure)[0], referenceMap));//should only have 1
+	result->subSutructres.emplace_back(vertexArray.Build(PartitionDDLSubStructuresV2({ partitionedStructure.c_str() })[0].c_str(), referenceMap));//should only have 1
 	result->typeHeap = static_cast<void*>(this);
 	MapStructureName(*result, referenceMap);
 
@@ -59,26 +59,26 @@ const std::map<std::string, DDL_BufferType> GEX_IndexArray::PropertyList::typePr
 };
 
 DDL_Structure* GEX_IndexArray::Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap)
-{	
+{
 	auto result = New<DDL_Structure, ScratchPad<DDL_Structure>>(1);
 	for (const DDL_Property& property : PartitionStructureProperties(ParseStructureHeader(partitionedStructure, *result)))
 		switch (PropertyList::typeProperties.find(property.key.c_str())->second)
 		{
-			case PropertyList::MATERIAL:
-				material = std::stoi(property.value.c_str());
-				break;
-			case PropertyList::RESTART:
-			{
-				char* end;
-				restart = std::strtoull(property.value.c_str(), &end, 10);
-				break;
-			}
-			case PropertyList::FRONT:
-				front = property.value;
-				break;
+		case PropertyList::MATERIAL:
+			material = std::stoi(property.value.c_str());
+			break;
+		case PropertyList::RESTART:
+		{
+			char* end;
+			restart = std::strtoull(property.value.c_str(), &end, 10);
+			break;
+		}
+		case PropertyList::FRONT:
+			front = property.value;
+			break;
 			DEFAULT_BREAK
-		}	
-	result->subSutructres.emplace_back(indexArray.Build(PartitionDDLSubStructures(partitionedStructure)[0], referenceMap));//should only have 1
+		}
+	result->subSutructres.emplace_back(indexArray.Build(PartitionDDLSubStructuresV2({partitionedStructure.c_str()})[0].c_str(), referenceMap));//should only have 1
 	result->typeHeap = static_cast<void*>(this);
 	MapStructureName(*result, referenceMap);
 
@@ -96,7 +96,7 @@ DDL_Structure* GEX_Mesh::Build(const std::string& partitionedStructure, DDL_Refe
 	vertexArrays.reserve(VECTOR_RESERVATION_SIZE);
 	indexArrays.reserve(VECTOR_RESERVATION_SIZE);
 
-	auto result = New<DDL_Structure, ScratchPad<DDL_Structure>>(1);
+	auto result = New<DDL_Structure, ScratchPad<DDL_Structure>>(1);	
 	for (const DDL_Property& property : PartitionStructureProperties(ParseStructureHeader(partitionedStructure, *result)))
 		switch (PropertyList::typeProperties.find(property.key.c_str())->second)
 		{
@@ -107,10 +107,12 @@ DDL_Structure* GEX_Mesh::Build(const std::string& partitionedStructure, DDL_Refe
 				primitive = property.value;
 				break;
 			DEFAULT_BREAK
-		}		
-	for (const auto& subStructure : PartitionDDLSubStructures(partitionedStructure))	
-		switch (ExtractStructureType(subStructure))
-		{
+		}			
+	for (const auto& subStructure : PartitionDDLSubStructuresV2({ partitionedStructure.c_str()}))
+		return result;
+	auto subStructure = "subStructure";
+	switch (ExtractStructureType(subStructure))
+		{			
 			case GEX_BufferTypes::GEX_VertexArray:				
 				vertexArrays.emplace_back();
 				result->subSutructres.emplace_back(vertexArrays.back().Build(subStructure, referenceMap));

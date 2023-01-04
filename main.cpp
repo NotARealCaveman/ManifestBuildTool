@@ -137,7 +137,8 @@ void BuildAndExport()
 	//ddl start up
 	Initialize_GEXTypes();
 	Initialize_GEXGenerators();	
-	auto nLoops = 25000000;	
+	auto nLoops = 100000;	
+	auto begin = std::chrono::high_resolution_clock::now();
 	for (auto loop = 0; loop < nLoops; ++loop)
 	{			
 		{			
@@ -202,6 +203,8 @@ void BuildAndExport()
 		}
 		ScratchPad<Byte>{}.Unwind();
 	}	
+	auto end = std::chrono::high_resolution_clock::now();
+	LOG(36, "Total loops: " << nLoops << " avg time/loop: " << (end - begin) / nLoops);
 	//export conversion
 	//export
 	std::ofstream bExport{ TEST_PATH + TEST_MDB, std::ios::out | std::ios::binary };

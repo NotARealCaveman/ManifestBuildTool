@@ -62,32 +62,34 @@ const std::map<std::string, DDL_BufferType> GEX_GeometryObject::PropertyList::ty
 
 DDL_Structure* GEX_GeometryObject::Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap)
 {
-	auto result = New<DDL_Structure, ScratchPad<DDL_Structure>>(1);	
+	auto result = New<DDL_Structure, ScratchPad<DDL_Structure>>(1);
 	for (const DDL_Property& property : PartitionStructureProperties(ParseStructureHeader(partitionedStructure, *result)))
 		switch (PropertyList::typeProperties.find(property.key.c_str())->second)
-		{			
-			case PropertyList::VISIBLE:			
-				std::stringstream{ property.value } >> std::boolalpha >> visible;
-				break;			
-			case PropertyList::SHADOW:
-				std::stringstream{ property.value } >> std::boolalpha >> shadow;
-				break;			
-			case PropertyList::MOTIONBLUR:
-				std::stringstream{ property.value } >> std::boolalpha >> motion_blur;
-				break;			
+		{
+		case PropertyList::VISIBLE:
+			std::stringstream{ property.value } >> std::boolalpha >> visible;
+			break;
+		case PropertyList::SHADOW:
+			std::stringstream{ property.value } >> std::boolalpha >> shadow;
+			break;
+		case PropertyList::MOTIONBLUR:
+			std::stringstream{ property.value } >> std::boolalpha >> motion_blur;
+			break;
 			DEFAULT_BREAK
 		}		
-	for (const auto& subStructure : PartitionDDLSubStructures(partitionedStructure))
-		switch (ExtractStructureType(subStructure))
+	for (const auto& subStructure : PartitionDDLSubStructuresV2(ScratchPadString{ partitionedStructure.c_str() }))
+		switch (ExtractStructureType(subStructure.c_str()))
 		{
-			case GEX_BufferTypes::GEX_Mesh:
-				result->subSutructres.emplace_back(mesh.Build(subStructure, referenceMap));
-				break;
-			case GEX_BufferTypes::GEX_Morph:
-				result->subSutructres.emplace_back(morph.Build(subStructure, referenceMap));
-				break;
+		case GEX_BufferTypes::GEX_Mesh:
+			result->subSutructres.emplace_back(mesh.Build(subStructure.c_str(), referenceMap));
+			break;
+		case GEX_BufferTypes::GEX_Morph:
+			result->subSutructres.emplace_back(morph.Build(subStructure.c_str(), referenceMap));
+			break;
 			DEFAULT_BREAK
-		}	
+		}
+		
+
 	result->typeHeap = static_cast<void*>(this);
 	MapStructureName(*result, referenceMap);
 

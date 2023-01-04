@@ -20,7 +20,7 @@ namespace Manifest_Parser
 		//substructures
 		DDL_Float vertexArray;
 		//properties
-		std::string attrib;
+		ScratchPadString attrib;
 		uint32_t index = 0;
 		uint32_t morph = 0;
 		//database extension
@@ -44,7 +44,7 @@ namespace Manifest_Parser
 		//properties
 		uint32_t material = 0;
 		uint64_t restart;
-		std::string front = "ccw";
+		ScratchPadString front = "ccw";
 	};
 
 	/*The Mesh structure contains data for a single geometric mesh, and a GeometryObject structure contains one mesh for each level of detail. A mesh may also contain a single Skin structure that holds the skeleton and bone influence data needed for skinning.*/	

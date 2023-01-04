@@ -6,11 +6,11 @@ DDL_Structure* GEX_Name::Build(const std::string& partitionedStructure, DDL_Refe
 {	
 	auto result = New<DDL_Structure, ScratchPad<DDL_Structure>>(1);
 	ParseStructureHeader(partitionedStructure, *result);
-	for (const auto& subStructure : PartitionDDLSubStructures(partitionedStructure))	
-		switch (ExtractStructureType(subStructure))
+	for (const auto& subStructure : PartitionDDLSubStructuresV2({ partitionedStructure.c_str() }))
+		switch (ExtractStructureType(subStructure.c_str()))
 		{
 			case DDL_BufferTypes::DDL_string:
-				result->subSutructres.emplace_back(name.Build(subStructure, referenceMap));
+				result->subSutructres.emplace_back(name.Build(subStructure.c_str(), referenceMap));
 				break;
 			DEFAULT_BREAK
 		}

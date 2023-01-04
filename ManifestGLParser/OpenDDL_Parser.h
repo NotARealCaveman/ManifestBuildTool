@@ -28,4 +28,8 @@ namespace Manifest_Parser
 	ScratchPadVector<std::string> PartitionDDLSubStructures(const std::string& partitionedStructure);
 	const std::string LoadFileContents(const std::string& fileName);
 	void ParseDDLFile(const std::vector<std::string>& fileContents, DDL_File& file);
+
+	//testing allocations
+	ScratchPadString PartitionDDLStructuresV2(const ScratchPadString& filteredFile, size_t& filterOffset);
+	ScratchPadVector<ScratchPadString> PartitionDDLSubStructuresV2(const ScratchPadString& partitionedStructure);
 }

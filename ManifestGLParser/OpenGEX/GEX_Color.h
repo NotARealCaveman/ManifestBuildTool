@@ -25,6 +25,6 @@ namespace Manifest_Parser
 		GEX_ColorType colorType;
 		DDL_Float channel;//[4]
 		//properties
-		std::string attrib;
+		ScratchPadString attrib;
 	};
 }

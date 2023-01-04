@@ -25,23 +25,23 @@ DDL_Structure* GEX_Material::Build(const std::string& partitionedStructure, DDL_
 		default:
 			break;
 		}
-	for (const auto& subStructure : PartitionDDLSubStructures(partitionedStructure))
-		switch (ExtractStructureType(subStructure))
+	for (const auto& subStructure : PartitionDDLSubStructuresV2({ partitionedStructure.c_str() }))		
+		switch (ExtractStructureType(subStructure.c_str()))
 		{
 			case GEX_BufferTypes::GEX_Name:
-				result->subSutructres.emplace_back(name.Build(subStructure, referenceMap));
+				result->subSutructres.emplace_back(name.Build(subStructure.c_str(), referenceMap));
 				break;
 			case GEX_BufferTypes::GEX_Color:
-				result->subSutructres.emplace_back(colors.emplace_back().Build(subStructure, referenceMap));
+				result->subSutructres.emplace_back(colors.emplace_back().Build(subStructure.c_str(), referenceMap));
 				break;
 			case GEX_BufferTypes::GEX_Param:
-				result->subSutructres.emplace_back(parameters.emplace_back().Build(subStructure, referenceMap));
+				result->subSutructres.emplace_back(parameters.emplace_back().Build(subStructure.c_str(), referenceMap));
 				break;
 			case GEX_BufferTypes::GEX_Spectrum:
-				result->subSutructres.emplace_back(spectrums.emplace_back().Build(subStructure, referenceMap));
+				result->subSutructres.emplace_back(spectrums.emplace_back().Build(subStructure.c_str(), referenceMap));
 				break;
 			case GEX_BufferTypes::GEX_Texture:
-				result->subSutructres.emplace_back(textures.emplace_back().Build(subStructure, referenceMap));
+				result->subSutructres.emplace_back(textures.emplace_back().Build(subStructure.c_str(), referenceMap));
 				break;
 		}
 	result->typeHeap = static_cast<void*>(this);
