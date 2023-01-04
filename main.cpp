@@ -152,8 +152,7 @@ void BuildAndExport()
 			
 			ManifestDatabaseBuilder databaseBuilder;
 			BuildOfflineDatabase(fileObject, databaseBuilder);		
-			std::ofstream bExport{ TEST_PATH + TEST_MDB, std::ios::out | std::ios::binary };
-			DISABLE
+			std::ofstream bExport{ TEST_PATH + TEST_MDB, std::ios::out | std::ios::binary };			
 			if (bExport.is_open())
 			{
 				ExportBinaryDatabase(databaseBuilder, bExport);
