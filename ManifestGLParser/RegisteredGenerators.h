@@ -11,7 +11,7 @@ namespace Manifest_Parser
 {	
 	struct RegisteredGenerator
 	{
-		virtual DDL_Structure GenerateType(const ScratchPadString& structure, DDL_ReferenceMap& referenceMap) = 0;
+		virtual DDL_Structure* GenerateType(const std::string& structure, DDL_ReferenceMap& referenceMap) = 0;
 
 		static std::map<std::string, RegisteredGenerator*> registeredGenerators;
 	};
@@ -19,11 +19,16 @@ namespace Manifest_Parser
 	template<typename T>
 	struct Generator : public RegisteredGenerator
 	{//generates a new type T in the type heap and invokes the builder callback		
-		DDL_Structure GenerateType(const ScratchPadString& structure, DDL_ReferenceMap& referenceMap)
-		{
-			if (structure == "GeometryObject$geometry3")
-				DLOG(32, "here");
-			return DDL_Structure{ ((New<T, ScratchPad<T>>(1))->* & RegisteredBuilder::Build)(structure, referenceMap) };;
+		DDL_Structure* GenerateType(const std::string& structure, DDL_ReferenceMap& referenceMap)
+		{						
+			DISABLE
+			{
+				T* newT = New<T, ScratchPad<T>>(1);
+			auto result = newT->Build(structure, referenceMap);
+			return result;
+			}
+			
+			return (New<T, ScratchPad<T>>(1)->*&RegisteredBuilder::Build)(structure, referenceMap);
 		};
 	};	
 

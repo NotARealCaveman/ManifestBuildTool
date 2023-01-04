@@ -6,13 +6,13 @@ ForeignKey Manifest_Persistence::TableEntry(const DDL_Structure& structure, Mate
 {	
 	MDB_Material& entry = materialBuildTable.entries.emplace_back();
 	entry.materialID = materialBuildTable.nextTableIndex++;
-	materialBuildTable.mappedEntryKeys.insert({ structure.name,entry.materialID });
+	materialBuildTable.mappedEntryKeys.insert({ structure.name.c_str(),entry.materialID });
 	for (const auto& substructure : structure.subSutructres)
 	{
-		switch (ExtractStructureType(substructure.identifier))
+		switch (ExtractStructureType(substructure->identifier.c_str()))
 		{
 			case GEX_BufferTypes::GEX_Color://tbd
-				TableEntry(substructure, entry.materialID , textureBuildTable);
+				TableEntry(*substructure, entry.materialID , textureBuildTable);
 				break;
 			DEFAULT_BREAK
 		}

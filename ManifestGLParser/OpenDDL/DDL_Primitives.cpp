@@ -2,10 +2,10 @@
 
 using namespace Manifest_Parser;
 
-DDL_Structure DDL_String::Build(const ScratchPadString& partitionedStructure, DDL_ReferenceMap& referenceMap)
+DDL_Structure* DDL_String::Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap)
 {	
-	DDL_Structure result;
-	ParseStructureHeader(partitionedStructure, result);
+	auto result = New<DDL_Structure, ScratchPad<DDL_Structure>>(1);
+	ParseStructureHeader(partitionedStructure, *result);
 	//check for sub buffer data
 	auto subBufferIdentifier = partitionedStructure.find_first_of('[');
 	auto payloadIndex = partitionedStructure.find_first_of('"');
@@ -14,8 +14,8 @@ DDL_Structure DDL_String::Build(const ScratchPadString& partitionedStructure, DD
 		auto payload = partitionedStructure.substr(payloadIndex+1);
 		data = payload.substr(0, payload.find_first_of('"'));		
 	}	
-	result.typeHeap = static_cast<void*>(&data);
-	MapStructureName(result, referenceMap);
+	result->typeHeap = static_cast<void*>(&data);
+	MapStructureName(*result, referenceMap);
 
 	return result;
 }

@@ -16,7 +16,7 @@ namespace Manifest_Parser
 			static constexpr int MORPH{ INDEX + 1 };
 			static const std::map<const char*, uint32_t> typeProperties;
 		};
-		DDL_Structure Build(const ScratchPadString& partitionedStructure, DDL_ReferenceMap& referenceMap) final;
+		DDL_Structure* Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap) final;
 		//substructures
 		DDL_Float vertexArray;
 		//properties
@@ -37,14 +37,14 @@ namespace Manifest_Parser
 			static constexpr int FRONT{ RESTART + 1 };
 			static const std::map<std::string, uint32_t> typeProperties;
 		};
-		DDL_Structure Build(const ScratchPadString& partitionedStructure, DDL_ReferenceMap& referenceMap) final;
+		DDL_Structure* Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap) final;
 
 		//substructures
 		DDL_Int32 indexArray;
 		//properties
 		uint32_t material = 0;
 		uint64_t restart;
-		std::string front = "ccw";
+		ScratchPadString front = "ccw";
 	};
 
 	/*The Mesh structure contains data for a single geometric mesh, and a GeometryObject structure contains one mesh for each level of detail. A mesh may also contain a single Skin structure that holds the skeleton and bone influence data needed for skinning.*/	
@@ -56,7 +56,7 @@ namespace Manifest_Parser
 			static constexpr int PRIMTIIVE{ LOD + 1 };
 			static const std::map<std::string, uint32_t> typeProperties;
 		};				
-		DDL_Structure Build(const ScratchPadString& partitionedStructure, DDL_ReferenceMap& referenceMap) final;
+		DDL_Structure* Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap) final;
 
 		//substructures
 		ScratchPadVector<GEX_VertexArray> vertexArrays;//see comment
@@ -64,6 +64,6 @@ namespace Manifest_Parser
 		GEX_Skin* skin;
 		//properties
 		uint32_t lod = 0;//starting from 0, specifies a progressively lower resolution mesh
-		std::string primitive = "triangles";//specifies how the vertices are to be drawn
+		ScratchPadString primitive = "triangles";//specifies how the vertices are to be drawn
 	};
 }

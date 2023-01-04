@@ -15,9 +15,9 @@ void Manifest_Persistence::TableEntry(const DDL_Structure& structure, const Fore
 {	
 	MDB_Texture& entry = textureBuildTable.entries.emplace_back();
 	entry.textureID = textureBuildTable.nextTableIndex++;
-	textureBuildTable.mappedEntryKeys.insert({ structure.name,entry.textureID });
+	textureBuildTable.mappedEntryKeys.insert({ structure.name.c_str(),entry.textureID });
 	entry.materialID = materialID;
-	switch (DDL_BufferTypes::DDL_BufferTypeMap.find(structure.identifier)->second)
+	switch (DDL_BufferTypes::DDL_BufferTypeMap.find(structure.identifier.c_str())->second)
 	{
 		case GEX_BufferTypes::GEX_Color:
 		{			
@@ -27,9 +27,8 @@ void Manifest_Persistence::TableEntry(const DDL_Structure& structure, const Fore
 			SetCompositeWard(size, TEXTURE_INFO_BOW_BITOFFSET, entry.textureInfo);//sets number of elements in texture info
 			SetCompositeBow(1, TEXTURE_DIMENSION_BOW_BITOFFSET, entry.textureDimensions);//sets the height of the texture
 			SetCompositeWard(1, TEXTURE_DIMENSION_BOW_BITOFFSET, entry.textureDimensions);//sets the width of the texture
-			entry.textureType = TextureTypes::textureTypeMap.find(color.attrib)->second;
-			//entry.channelData = new float[size];
-			entry.channelData = New<float,ScratchPad<float>>(size);
+			entry.textureType = TextureTypes::textureTypeMap.find(color.attrib.c_str())->second;
+			entry.channelData = new float[size];
 			memcpy(entry.channelData, color.channel.data.typeHeap, size * sizeof(float));
 			break;
 		}

@@ -19,7 +19,7 @@ namespace Manifest_Parser
 			static constexpr int ATTRIB{ 0 };
 			static const std::map<std::string, uint32_t> typeProperties;
 		};
-		DDL_Structure Build(const ScratchPadString& partitionedStructure, DDL_ReferenceMap& referenceMap)  final;
+		DDL_Structure* Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap)  final;
 
 		//substructures
 		GEX_ColorType colorType;

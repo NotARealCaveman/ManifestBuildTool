@@ -12,10 +12,10 @@ namespace Manifest_Parser
 	template<typename T, DDL_BufferType bufferType>
 	struct Primitive : public RegisteredBuilder
 	{
-		DDL_Structure Build(const ScratchPadString& partitionedStructure, DDL_ReferenceMap& referenceMap) final
+		DDL_Structure* Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap) final
 		{			
-			DDL_Structure result;
-			ParseStructureHeader(partitionedStructure, result);
+			auto result = New<DDL_Structure,ScratchPad<DDL_Structure>>(1);
+			ParseStructureHeader(partitionedStructure, *result);
 			data.bufferType = bufferType;
 			//check for sub buffer data
 			auto subBufferIdentifier = partitionedStructure.find_first_of("[");
@@ -30,8 +30,8 @@ namespace Manifest_Parser
 			}
 			else
 				BuildSubBuffer<T>(partitionedStructure, data);
-			result.typeHeap = static_cast<void*>(this);
-			MapStructureName(result, referenceMap);
+			result->typeHeap = static_cast<void*>(this);
+			MapStructureName(*result, referenceMap);
 
 			return result;
 		}
@@ -52,7 +52,7 @@ namespace Manifest_Parser
 
 	struct DDL_String : public RegisteredBuilder
 	{
-		DDL_Structure Build(const ScratchPadString& partitionedStructure, DDL_ReferenceMap& referenceMap) final;
+		DDL_Structure* Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap) final;
 
 		ScratchPadString data;
 	};

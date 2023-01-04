@@ -18,7 +18,7 @@ namespace Manifest_Parser
 	{
 		DDL_Identifier identifier;
 		DDL_Name name;		
-		ScratchPadVector<DDL_Structure> subSutructres;
+		ScratchPadVector<DDL_Structure*> subSutructres;
 		void* typeHeap;
 	};		
 	template<typename Type>
@@ -29,7 +29,8 @@ namespace Manifest_Parser
 
 	struct DDL_ReferenceMap
 	{		
-		ScratchPadUMap<DDL_Name,const DDL_Structure> referenceMap;
+		//std::map<DDL_Name,const DDL_Structure> referenceMap;
+		ScratchPadUMap<DDL_Name, const DDL_Structure> referenceMap;
 		uint32_t unnamedStructureCount{ 0 };
 	};
 	void MapStructureName(DDL_Structure& structure, DDL_ReferenceMap& referenceMap);

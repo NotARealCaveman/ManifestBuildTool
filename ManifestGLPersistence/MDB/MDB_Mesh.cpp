@@ -6,30 +6,30 @@ ForeignKey Manifest_Persistence::TableEntry(const DDL_Structure& structure, Mesh
 {	
 	MDB_Mesh& entry = meshBuildTable.entries.emplace_back();
 	entry.meshID = meshBuildTable.nextTableIndex++;
-	meshBuildTable.mappedEntryKeys.insert({structure.name, entry.meshID});
+	meshBuildTable.mappedEntryKeys.insert({structure.name.c_str(), entry.meshID});
 
 	for (const auto& substructure : structure.subSutructres)
 	{
-		switch (ExtractStructureType(substructure.identifier))
+		switch (ExtractStructureType(substructure->identifier.c_str()))
 		{
 			case GEX_BufferTypes::GEX_VertexArray:
 			{	
 				auto& vaIDs = entry.vertexArrayIDs;
-				auto bufferIndex{ HeapData<GEX_VertexArray>(substructure).bufferIndex };
+				auto bufferIndex{ HeapData<GEX_VertexArray>(*substructure).bufferIndex };
 				if (bufferIndex == 0)
-					vaIDs.vertexID = TableEntry(substructure, vertexBuildTables.vertexTable);
+					vaIDs.vertexID = TableEntry(*substructure, vertexBuildTables.vertexTable);
 				else if (bufferIndex == 1)
-					vaIDs.uvID = TableEntry(substructure, vertexBuildTables.uvTable);
+					vaIDs.uvID = TableEntry(*substructure, vertexBuildTables.uvTable);
 				else if (bufferIndex == 2)
-					vaIDs.normalID = TableEntry(substructure, vertexBuildTables.normalTable);
+					vaIDs.normalID = TableEntry(*substructure, vertexBuildTables.normalTable);
 				else if (bufferIndex == 3)
-					vaIDs.tangentID = TableEntry(substructure, vertexBuildTables.tangentTable);
+					vaIDs.tangentID = TableEntry(*substructure, vertexBuildTables.tangentTable);
 				else if (bufferIndex == 4)
-					vaIDs.bitangentID = TableEntry(substructure, vertexBuildTables.bitangentTable);
+					vaIDs.bitangentID = TableEntry(*substructure, vertexBuildTables.bitangentTable);
 				break;
 			}				
 			case GEX_BufferTypes::GEX_IndexArray:
-				entry.indexArrayID = TableEntry(substructure, indexBuildTable);
+				entry.indexArrayID = TableEntry(*substructure, indexBuildTable);
 				break;
 			DEFAULT_BREAK
 		}
