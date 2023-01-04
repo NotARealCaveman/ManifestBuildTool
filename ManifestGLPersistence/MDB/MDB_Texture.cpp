@@ -28,7 +28,8 @@ void Manifest_Persistence::TableEntry(const DDL_Structure& structure, const Fore
 			SetCompositeBow(1, TEXTURE_DIMENSION_BOW_BITOFFSET, entry.textureDimensions);//sets the height of the texture
 			SetCompositeWard(1, TEXTURE_DIMENSION_BOW_BITOFFSET, entry.textureDimensions);//sets the width of the texture
 			entry.textureType = TextureTypes::textureTypeMap.find(color.attrib.c_str())->second;
-			entry.channelData = new float[size];
+			//entry.channelData = new float[size];
+			entry.channelData = New<float,ScratchPad<float>>(size);
 			memcpy(entry.channelData, color.channel.data.typeHeap, size * sizeof(float));
 			break;
 		}

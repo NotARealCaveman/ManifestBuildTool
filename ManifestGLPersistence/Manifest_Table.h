@@ -14,7 +14,7 @@ namespace Manifest_Persistence
 	struct DatabaseBuildTable
 	{
 		//std::map<std::string,PrimaryKey> mappedEntryKeys;
-		ScratchPadUMap<std::string, PrimaryKey> mappedEntryKeys;
+		ScratchPadUMap<ScratchPadString, PrimaryKey> mappedEntryKeys;
 		ScratchPadVector<MDB_TableType> entries;
 		PrimaryKey nextTableIndex = 0;
 	};

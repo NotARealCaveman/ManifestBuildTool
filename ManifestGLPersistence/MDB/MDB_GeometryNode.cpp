@@ -9,7 +9,8 @@ ForeignKey Manifest_Persistence::TableEntry(const DDL_Structure& structure, cons
 	objectRefBuildTable.mappedEntryKeys.insert({ structure.name.c_str(),entry.objectRefID });
 	const GEX_ObjectRef& ref{ HeapData<GEX_ObjectRef>(structure) };
 	entry.numReferences = ref.referenceNames.size();
-	entry.geometryIDs = new ForeignKey[entry.numReferences];	
+	//entry.geometryIDs = new ForeignKey[entry.numReferences];	
+	entry.geometryIDs = New<ForeignKey, ScratchPad<ForeignKey>>(entry.numReferences);
 	for (auto objectIndex = 0; objectIndex < entry.numReferences; ++objectIndex)
 	{
 		auto objectRef = geometryObjectBuildTable.mappedEntryKeys.find(ref.referenceNames[objectIndex].c_str());
@@ -29,7 +30,8 @@ ForeignKey Manifest_Persistence::TableEntry(const DDL_Structure& structure, cons
 	materialRefBuildTable.mappedEntryKeys.insert({ structure.name.c_str(),entry.materialRefID });
 	const GEX_MaterialRef& ref{ HeapData<GEX_MaterialRef>(structure) };
 	entry.numReferences = ref.referenceNames.size();
-	entry.materialIDs = new ForeignKey[entry.numReferences];
+	//entry.materialIDs = new ForeignKey[entry.numReferences];
+	entry.materialIDs = New<ForeignKey, ScratchPad<ForeignKey>>(entry.numReferences);
 	for (auto objectIndex = 0; objectIndex < entry.numReferences; ++objectIndex)
 	{
 		auto objectRef = materialBuildTable.mappedEntryKeys.find(ref.referenceNames[objectIndex].c_str());
@@ -59,7 +61,8 @@ ForeignKey Manifest_Persistence::TableEntry(const DDL_Structure& structure, cons
 				break;
 			case GEX_BufferTypes::GEX_Transform:	
 			{
-				entry.transform = new MDB_Transform;				
+				//entry.transform = new MDB_Transform;				
+				entry.transform = New<MDB_Transform,ScratchPad< MDB_Transform>>(1);
 				auto transform{ HeapData<GEX_Transform>(*substructure).field.data.typeHeap };
 				memcpy(entry.transform->field, transform, sizeof(float) * 16);
 				break;

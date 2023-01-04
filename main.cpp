@@ -19,8 +19,8 @@ using namespace Manifest_Memory;
 using namespace Manifest_Experimental;
 
 const std::string TEST_PATH{ "C:\\Users\\Droll\\Desktop\\Game\\testing\\" };
-const std::string TEST_GEX{ "Test2.gex" };
-const std::string TEST_MDB{ "Test2.mdb" };
+const std::string TEST_GEX{ "Test1.gex" };
+const std::string TEST_MDB{ "Test1.mdb" };
 
 void RuntimeTest()
 {
@@ -138,7 +138,7 @@ void BuildAndExport()
 	Initialize_GEXTypes();
 	Initialize_GEXGenerators();	
 	auto nLoops = 10000000;
-	nLoops = 1;
+	//nLoops = 1;
 	auto begin = std::chrono::high_resolution_clock::now();
 	for (auto loop = 0; loop < nLoops; ++loop)
 	{			
@@ -153,6 +153,7 @@ void BuildAndExport()
 			ManifestDatabaseBuilder databaseBuilder;
 			BuildOfflineDatabase(fileObject, databaseBuilder);		
 			std::ofstream bExport{ TEST_PATH + TEST_MDB, std::ios::out | std::ios::binary };
+			DISABLE
 			if (bExport.is_open())
 			{
 				ExportBinaryDatabase(databaseBuilder, bExport);
@@ -265,6 +266,7 @@ int main()
 	//register thread	
 	RegisterProgramExecutiveThread();
 	//create data stores
+	DLOG(34, 0.38 * MEBIBYTE);
 	INIT_MEMORY_RESERVES();	
 	
 	

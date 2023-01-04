@@ -10,8 +10,8 @@ namespace Manifest_Persistence
 	struct MDB_IndexArray
 	{
 		PrimaryKey indexArrayID = KEY_NOT_PRESENT;
-		uint32_t* indexData = BUFFER_NOT_PRESENT;
-		size_t elements = 0;
+		MFu32* indexData = BUFFER_NOT_PRESENT;
+		MFsize elements = 0;
 	};
 	typedef DatabaseBuildTable<MDB_IndexArray> IndexBuildTable;
 	ForeignKey TableEntry(const DDL_Structure& structure, IndexBuildTable& indexBuildTable);
