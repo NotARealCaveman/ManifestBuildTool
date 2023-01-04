@@ -15,6 +15,6 @@ namespace Manifest_Parser
 		//substructures
 		DDL_Float param;
 		//properties
-		ScratchPadString attrib;
+		std::string attrib;
 	};
 }

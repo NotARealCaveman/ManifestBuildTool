@@ -15,20 +15,16 @@
 
 namespace Manifest_Parser
 {	
-	ScratchPadString ParseStructureHeader(const ScratchPadString& partitionedStructure, DDL_Structure& structure);
+	std::string ParseStructureHeader(const std::string& partitionedStructure, DDL_Structure& structure);
 	//partitions a string of properties into a proeprty list for structures that include one
-	PropertyList PartitionStructureProperties(const ScratchPadString& propertyList);
+	PropertyList PartitionStructureProperties(const std::string& propertyList);
 	//partitons the csv reference list into individual names
-	ReferenceList PartitionStructureReferences(const ScratchPadString& partitionedStructure);
+	ReferenceList PartitionStructureReferences(const std::string& partitionedStructure);
 	//split ddl structures into separate objects - works by counting scope depth
-	ScratchPadString PartitionDDLStructures(const ScratchPadString& filteredFile, size_t& filterOffset);
+	std::string PartitionDDLStructures(const std::string& filteredFile, size_t& filterOffset);
 	//partition all structure in a file 
-	ScratchPadVector<ScratchPadString> PartitionDDLFile(const ScratchPadString& filteredFile);
 	std::vector<std::string> PartitionDDLFile(const std::string& filteredFile);
 	//partition a previously partitioned structure into its substructures
-	ScratchPadVector<ScratchPadString> PartitionDDLSubStructures(const ScratchPadString& partitionedStructure);
-	const ScratchPadString LoadFileContents(const std::string& fileName);
-	void ParseDDLFile(const std::string& fileName, DDL_File& file);	
 	ScratchPadVector<std::string> PartitionDDLSubStructures(const std::string& partitionedStructure);
 	const std::string LoadFileContents(const std::string& fileName);
 	void ParseDDLFile(const std::vector<std::string>& fileContents, DDL_File& file);

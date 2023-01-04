@@ -14,7 +14,7 @@ namespace Manifest_Parser
 			static constexpr int ATTRIB{ 0 };
 			static constexpr int INDEX{ ATTRIB + 1 };
 			static constexpr int MORPH{ INDEX + 1 };
-			static const std::map<const char*, uint32_t> typeProperties;
+			static const std::map<std::string, uint32_t> typeProperties;
 		};
 		DDL_Structure* Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap) final;
 		//substructures
@@ -26,7 +26,7 @@ namespace Manifest_Parser
 		//database extension
 		uint8_t bufferIndex;
 	};
-	uint8_t GetBufferIndex(const ScratchPadString& bufferAttrib);
+	uint8_t GetBufferIndex(const std::string& bufferAttrib);
 
 	/*Each IndexArray structure specifies how the vertices are assembled into geometric primitives.For lines, triangles, and quads, the index array contains subarrays that each specify the indexes of the	vertices composing a single primitive.For points, line strips, and triangle strips, the index data is stored as a single array.*/
 	struct GEX_IndexArray : public RegisteredBuilder

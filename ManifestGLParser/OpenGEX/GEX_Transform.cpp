@@ -9,7 +9,6 @@ const std::map<std::string, DDL_BufferType> GEX_Transform::PropertyList::typePro
 };
 
 
-DDL_Structure GEX_Transform::Build(const ScratchPadString& partitionedStructure, DDL_ReferenceMap& referenceMap)
 DDL_Structure* GEX_Transform::Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap)
 {			
 	auto result = New<DDL_Structure, ScratchPad<DDL_Structure>>(1);

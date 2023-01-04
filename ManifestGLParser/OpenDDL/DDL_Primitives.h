@@ -8,7 +8,6 @@
 
 namespace Manifest_Parser
 {
-
 	template<typename T, DDL_BufferType bufferType>
 	struct Primitive : public RegisteredBuilder
 	{

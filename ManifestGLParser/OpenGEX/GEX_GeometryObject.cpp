@@ -20,13 +20,13 @@ DDL_Structure* GEX_GeometryNode::Build(const std::string& partitionedStructure, 
 		switch (PropertyList::typeProperties.find(property.key.c_str())->second)
 		{
 			case PropertyList::VISIBLE:
-				std::stringstream{ property.value } >> std::boolalpha >> *(visible = New<MFbool,ScratchPad<MFbool>>(1));
+				std::stringstream{ property.value } >> std::boolalpha >> *(visible = new bool);
 				break;
 			case PropertyList::SHADOW:
-				std::stringstream{ property.value } >> std::boolalpha >> *(shadow = New<MFbool, ScratchPad<MFbool>>(1));
+				std::stringstream{ property.value } >> std::boolalpha >> *(shadow = new bool);
 				break;
 			case PropertyList::MOTIONBLUR:
-				std::stringstream{ property.value } >> std::boolalpha >> *(motion_blur = New<MFbool, ScratchPad<MFbool>>(1));
+				std::stringstream{ property.value } >> std::boolalpha >> *(motion_blur = new bool);
 				break;
 			DEFAULT_BREAK
 		}	
@@ -80,12 +80,6 @@ DDL_Structure* GEX_GeometryObject::Build(const std::string& partitionedStructure
 	for (const auto& subStructure : PartitionDDLSubStructuresV2(ScratchPadString{ partitionedStructure.c_str() }))
 		switch (ExtractStructureType(subStructure.c_str()))
 		{
-			case GEX_BufferTypes::GEX_Mesh:
-				//result.subSutructres.emplace_back(mesh.Build(subStructure, referenceMap));
-				break;
-			case GEX_BufferTypes::GEX_Morph:
-				result.subSutructres.emplace_back(morph.Build(subStructure, referenceMap));
-				break;
 		case GEX_BufferTypes::GEX_Mesh:
 			result->subSutructres.emplace_back(mesh.Build(subStructure.c_str(), referenceMap));
 			break;

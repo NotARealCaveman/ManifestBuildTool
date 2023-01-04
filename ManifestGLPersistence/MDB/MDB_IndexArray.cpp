@@ -9,7 +9,7 @@ ForeignKey Manifest_Persistence::TableEntry(const DDL_Structure& structure, Inde
 	indexBuildTable.mappedEntryKeys.insert({ structure.name.c_str(),entry.indexArrayID });
 	const DDL_Buffer& bufferData{ HeapData<GEX_VertexArray>(structure).vertexArray.data };
 	entry.elements = bufferData.subBufferCount * bufferData.subBufferElements;
-	entry.indexData = New<MFu32,ScratchPad<MFu32>>(entry.elements);
+	entry.indexData = new uint32_t[entry.elements];
 	memcpy(entry.indexData, bufferData.typeHeap, entry.elements * sizeof(uint32_t));
 	return entry.indexArrayID;
 }

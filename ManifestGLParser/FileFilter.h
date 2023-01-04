@@ -3,9 +3,6 @@
 #include <functional>
 
 #include <ManifestGLUtility/DebugLogger.h>
-#include <EXPERIMENTAL/Manifest_Allocator.h>
-
-using namespace Manifest_Memory;
 
 namespace Manifest_Parser
 {
@@ -16,8 +13,8 @@ namespace Manifest_Parser
 	constexpr uint8_t WHITESPACE_FILTER = 4;
 	constexpr uint8_t ALL_FILTER = COMMENT_FILTER | NEWLINE_FILTER | WHITESPACE_FILTER;
 
-	ScratchPadString FilterWhiteSpace(const ScratchPadString& unfiltered);
-	ScratchPadString FilterComments(const ScratchPadString& unfiltered);
-	ScratchPadString FilterNewLines(const ScratchPadString& unfiltered);
-	ScratchPadString FilterFile(const ScratchPadString& unfiltered, const uint8_t& filterFlags = ALL_FILTER);
+	std::string FilterWhiteSpace(const std::string& unfiltered);
+	std::string FilterComments(const std::string& unfiltered);
+	std::string FilterNewLines(const std::string& unfiltered);
+	std::string FilterFile(const std::string& unfiltered, const uint8_t& filterFlags = ALL_FILTER);
 }

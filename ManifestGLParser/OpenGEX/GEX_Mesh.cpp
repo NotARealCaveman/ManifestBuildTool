@@ -2,7 +2,7 @@
 
 using namespace Manifest_Parser;
 
-const std::map<const char*, DDL_BufferType> GEX_VertexArray::PropertyList::typeProperties
+const std::map<std::string, DDL_BufferType> GEX_VertexArray::PropertyList::typeProperties
 {
 	{ "attrib", PropertyList::ATTRIB},
 	{ "index",PropertyList::INDEX},
@@ -34,7 +34,7 @@ DDL_Structure* GEX_VertexArray::Build(const std::string& partitionedStructure, D
 	return result;
 }
 
-uint8_t Manifest_Parser::GetBufferIndex(const ScratchPadString& bufferAttrib)
+uint8_t Manifest_Parser::GetBufferIndex(const std::string& bufferAttrib)
 {	
 	auto temp = bufferAttrib;
 	temp.erase(std::remove(temp.begin(), temp.end(), '"'),temp.end());

@@ -19,7 +19,7 @@ namespace Manifest_Parser
 		//substructures
 		float distribution;
 		//properties
-		ScratchPadString attrib;
+		std::string attrib;
 		uint32_t min;
 		uint32_t max;
 	};
@@ -39,19 +39,19 @@ namespace Manifest_Parser
 		DDL_Structure* Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap)final;
 
 		//substructures
-		ScratchPadString fileName;
+		std::string fileName;
 		GEX_Transform* transform;
 		GEX_Translation* translation;
 		GEX_Rotation* rotation;
 		GEX_Scale scale;
 		//properties
-		ScratchPadString attrib;
+		std::string attrib;
 		//specifies which texture coordinate set belonging to a mesh should be used to access the texture
 		uint32_t texcoord = 0;
-		ScratchPadString swizzle = "i";
-		ScratchPadString x_address = "repeat";
-		ScratchPadString y_address = "repeat";
-		ScratchPadString z_address = "repeat";
-		ScratchPadString border = "zero";
+		std::string swizzle = "i";
+		std::string x_address = "repeat";
+		std::string y_address = "repeat";
+		std::string z_address = "repeat";
+		std::string border = "zero";
 	};
 }

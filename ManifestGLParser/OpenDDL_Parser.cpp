@@ -2,20 +2,20 @@
 
 using namespace Manifest_Parser;
 
-ScratchPadString Manifest_Parser::ParseStructureHeader(const ScratchPadString& partitionedStructure, DDL_Structure& structure)
+std::string Manifest_Parser::ParseStructureHeader(const std::string& partitionedStructure, DDL_Structure& structure)
 {
 	auto payloadIdentifier = partitionedStructure.find_first_of('{');
-	const ScratchPadString header = partitionedStructure.substr(0, payloadIdentifier);
+	const std::string header = partitionedStructure.substr(0, payloadIdentifier);
 	auto nameIdentifier = header.find_first_of("$%");
 	auto propertyIdentifier = header.find_first_of('(');	
 	structure.identifier = header.substr(0, std::min(nameIdentifier, std::min(propertyIdentifier, payloadIdentifier)));
-	structure.name = nameIdentifier == ScratchPadString::npos ? "" : header.substr(nameIdentifier, std::min(propertyIdentifier, payloadIdentifier) - nameIdentifier);
-	ScratchPadString result{ propertyIdentifier == std::string::npos ? "" : header.substr(propertyIdentifier,payloadIdentifier) };
+	structure.name = nameIdentifier == std::string::npos ? "" : header.substr(nameIdentifier, std::min(propertyIdentifier, payloadIdentifier) - nameIdentifier);
+	std::string result{ propertyIdentifier == std::string::npos ? "" : header.substr(propertyIdentifier,payloadIdentifier) };
 
 	return result;
 }
 
-PropertyList Manifest_Parser::PartitionStructureProperties(const ScratchPadString& properties)
+PropertyList Manifest_Parser::PartitionStructureProperties(const std::string& properties)
 {	
 	auto temp = properties;
 	auto next = temp.find_first_not_of('(');
@@ -35,7 +35,7 @@ PropertyList Manifest_Parser::PartitionStructureProperties(const ScratchPadStrin
 	return result;
 }
 
-ReferenceList Manifest_Parser::PartitionStructureReferences(const ScratchPadString& partitionedStructure)
+ReferenceList Manifest_Parser::PartitionStructureReferences(const std::string& partitionedStructure)
 {	
 	auto begin = partitionedStructure.find_first_of("$%{(");
 	auto end = partitionedStructure.find_last_of('}')+1;
@@ -50,7 +50,7 @@ ReferenceList Manifest_Parser::PartitionStructureReferences(const ScratchPadStri
 }
 
 //starting at the first identifier begins counting scope depths to determine when a sutrcture has exhausted its content 
-ScratchPadString Manifest_Parser::PartitionDDLStructures(const ScratchPadString& filteredFile, size_t& filterOffset)
+std::string Manifest_Parser::PartitionDDLStructures(const std::string& filteredFile, size_t& filterOffset)
 {
 	//determine end of structure by counting scope depth - once it reaches 0 then this is the	endpoint of the current sturcture and the file is split from that point
 	auto temp = filteredFile;
@@ -95,12 +95,12 @@ std::vector<std::string> Manifest_Parser::PartitionDDLFile(const std::string& fi
 	return  result;
 }
 
-ScratchPadVector<ScratchPadString> Manifest_Parser::PartitionDDLSubStructures(const ScratchPadString& partitionedStructure)
+ScratchPadVector<std::string> Manifest_Parser::PartitionDDLSubStructures(const std::string& partitionedStructure)
 {
 	auto begin = partitionedStructure.find_first_of('{') + 1;
 	auto end = partitionedStructure.find_last_of('}');
 	auto payload = partitionedStructure.substr(begin, end - begin);
-	ScratchPadVector<ScratchPadString> result;
+	ScratchPadVector<std::string> result;
 	for(size_t offset = 0; !payload.empty(); payload = payload.substr(offset))
 		result.emplace_back(PartitionDDLStructures(payload, offset));
 
@@ -153,7 +153,7 @@ ScratchPadVector<ScratchPadString> Manifest_Parser::PartitionDDLSubStructuresV2(
 const std::string Manifest_Parser::LoadFileContents(const std::string& fileName)
 {	
 	auto fileStream = std::fstream{ fileName,std::ios::in };
-	ScratchPadString result;
+	std::string result;
 	if (fileStream.is_open())
 	{
 		fileStream.seekg(0, fileStream.end);
