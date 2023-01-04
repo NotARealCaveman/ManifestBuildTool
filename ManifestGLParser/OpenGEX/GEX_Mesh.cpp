@@ -108,24 +108,23 @@ DDL_Structure* GEX_Mesh::Build(const std::string& partitionedStructure, DDL_Refe
 				break;
 			DEFAULT_BREAK
 		}			
-	for (const auto& subStructure : PartitionDDLSubStructuresV2({ partitionedStructure.c_str()}))
-		return result;
-	auto subStructure = "subStructure";
-	switch (ExtractStructureType(subStructure))
-		{			
-			case GEX_BufferTypes::GEX_VertexArray:				
-				vertexArrays.emplace_back();
-				result->subSutructres.emplace_back(vertexArrays.back().Build(subStructure, referenceMap));
-				break;
-			case GEX_BufferTypes::GEX_IndexArray:
-				indexArrays.emplace_back();
-				result->subSutructres.emplace_back(indexArrays.back().Build(subStructure, referenceMap));
-				break;
-			case GEX_BufferTypes::GEX_Skin:
-				result->subSutructres.emplace_back(((skin = new GEX_Skin)->Build(subStructure, referenceMap)));
-				break;
+	for (const auto& subStructure : PartitionDDLSubStructuresV2({ partitionedStructure.c_str() }))
+		switch (ExtractStructureType(subStructure.c_str()))
+		{
+		case GEX_BufferTypes::GEX_VertexArray:
+			vertexArrays.emplace_back();
+			result->subSutructres.emplace_back(vertexArrays.back().Build(subStructure.c_str(), referenceMap));
+			break;
+		case GEX_BufferTypes::GEX_IndexArray:
+			indexArrays.emplace_back();
+			result->subSutructres.emplace_back(indexArrays.back().Build(subStructure.c_str(), referenceMap));
+			break;
+		case GEX_BufferTypes::GEX_Skin:
+			result->subSutructres.emplace_back(((skin = new GEX_Skin)->Build(subStructure.c_str(), referenceMap)));
+			break;
 			DEFAULT_BREAK
 		}
+	
 	result->typeHeap = static_cast<void*>(this);
 	MapStructureName(*result, referenceMap);
 	

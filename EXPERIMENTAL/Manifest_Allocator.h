@@ -114,7 +114,7 @@ namespace Manifest_Memory
                 auto allocationBytes = sizeof(T) * allocation;
                //DLOG(34, "Moving heap from: " << (void*)heap << " to: " << (void*)(alignedHeap + allocationBytes));
                 memoryHandles->scratchPadHeap = alignedHeap + allocationBytes;                
-                //DLOG(35, "Total bytes allocated: " << (uintptr_t)(memoryHandles->scratchPadHeap - memoryHandles->scratchPadBegin) << " Total bytes free: " << (uintptr_t)(memoryHandles->scratchPadEnd - memoryHandles->scratchPadHeap));
+                DLOG(35, "Total bytes allocated: " << (uintptr_t)(memoryHandles->scratchPadHeap - memoryHandles->scratchPadBegin) << " Total bytes free: " << (uintptr_t)(memoryHandles->scratchPadEnd - memoryHandles->scratchPadHeap));
                 return reinterpret_cast<T*>(alignedHeap);
             };            
             //unused - when finished with scratch pad unwind is manually called. allows stl contianers to still be used

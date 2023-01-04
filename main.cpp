@@ -19,8 +19,8 @@ using namespace Manifest_Memory;
 using namespace Manifest_Experimental;
 
 const std::string TEST_PATH{ "C:\\Users\\Droll\\Desktop\\Game\\testing\\" };
-const std::string TEST_GEX{ "Test1.gex" };
-const std::string TEST_MDB{ "Test1.mdb" };
+const std::string TEST_GEX{ "Test2.gex" };
+const std::string TEST_MDB{ "Test2.mdb" };
 
 void RuntimeTest()
 {
@@ -137,7 +137,8 @@ void BuildAndExport()
 	//ddl start up
 	Initialize_GEXTypes();
 	Initialize_GEXGenerators();	
-	auto nLoops = 100000;	
+	auto nLoops = 10000000;
+	nLoops = 1;
 	auto begin = std::chrono::high_resolution_clock::now();
 	for (auto loop = 0; loop < nLoops; ++loop)
 	{			
@@ -147,9 +148,16 @@ void BuildAndExport()
 			ParseDDLFile(fileContents, fileObject);
 			//prints primary and substructure information per top level sturcture
 
-			//build offline database			
-			//ManifestDatabaseBuilder databaseBuilder;
-			//BuildOfflineDatabase(fileObject, databaseBuilder);		
+			//build offline database	
+			
+			ManifestDatabaseBuilder databaseBuilder;
+			BuildOfflineDatabase(fileObject, databaseBuilder);		
+			std::ofstream bExport{ TEST_PATH + TEST_MDB, std::ios::out | std::ios::binary };
+			if (bExport.is_open())
+			{
+				ExportBinaryDatabase(databaseBuilder, bExport);
+				bExport.close();
+			}
 			/*
 			fileObject.primaryStructures.clear();
 			fileObject.referenceMap.referenceMap.clear();
