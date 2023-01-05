@@ -19,8 +19,8 @@ using namespace Manifest_Memory;
 using namespace Manifest_Experimental;
 
 const std::string TEST_PATH{ "C:\\Users\\Droll\\Desktop\\Game\\testing\\" };
-const std::string TEST_GEX{ "Test1.gex" };
-const std::string TEST_MDB{ "Test1.mdb" };
+const std::string TEST_GEX{ "Test2.gex" };
+const std::string TEST_MDB{ "Test2.mdb" };
 
 void RuntimeTest()
 {
@@ -89,7 +89,10 @@ void ImportAndTest()
 {
 
 	std::ifstream bImport{ TEST_PATH + TEST_MDB, std::ios::in | std::ios::binary };
-	ManifestBinaryDatabase binaryDatabase = ImportBinaryDatabase(bImport);
+	auto nLoops = 1;
+	for(int i = 0 ; i < nLoops;++i)
+	{
+		ManifestBinaryDatabase binaryDatabase = ImportBinaryDatabase(bImport);		
 	for (auto i = 0; i < binaryDatabase.binaryGeometryNodeTable.header.totalEntries; ++i)
 	{
 		const auto importObject = binaryDatabase.binaryGeometryNodeTable[i];
@@ -121,7 +124,10 @@ void ImportAndTest()
 		auto nTextureElements{ importTexture.header.payloadSize / sizeof(MFfloat)};
 		for (auto data{ 0 }; data < nTextureElements; ++data)
 			std::cout << importTexture.payload[data] << ", ";
-		std::cout << std::endl;		
+		std::cout << std::endl;				
+	}
+	bImport.seekg(std::ios::beg);
+	ScratchPad<Byte>{}.Unwind();
 	}
 }
 
@@ -137,7 +143,7 @@ void BuildAndExport()
 	//ddl start up
 	Initialize_GEXTypes();
 	Initialize_GEXGenerators();	
-	auto nLoops = 10000000;
+	auto nLoops = 195000;
 	//nLoops = 1;
 	auto begin = std::chrono::high_resolution_clock::now();
 	for (auto loop = 0; loop < nLoops; ++loop)
@@ -158,72 +164,11 @@ void BuildAndExport()
 				ExportBinaryDatabase(databaseBuilder, bExport);
 				bExport.close();
 			}
-			/*
-			fileObject.primaryStructures.clear();
-			fileObject.referenceMap.referenceMap.clear();
-			fileObject.referenceMap.unnamedStructureCount = 0;
-			databaseBuilder.geometryNodeBuildTable.entries.clear();
-			databaseBuilder.geometryNodeBuildTable.mappedEntryKeys.clear();
-			databaseBuilder.geometryNodeBuildTable.nextTableIndex = 0;
-			databaseBuilder.geometryObjectBuildTable.entries.clear();
-			databaseBuilder.geometryObjectBuildTable.mappedEntryKeys.clear();
-			databaseBuilder.geometryObjectBuildTable.nextTableIndex = 0;
-			databaseBuilder.indexBuildTable.entries.clear();
-			databaseBuilder.indexBuildTable.mappedEntryKeys.clear();
-			databaseBuilder.indexBuildTable.nextTableIndex = 0;
-			databaseBuilder.materialBuildTable.entries.clear();
-			databaseBuilder.materialBuildTable.mappedEntryKeys.clear();
-			databaseBuilder.materialBuildTable.nextTableIndex = 0;
-			databaseBuilder.materialRefBuildTable.entries.clear();
-			databaseBuilder.materialRefBuildTable.mappedEntryKeys.clear();
-			databaseBuilder.materialRefBuildTable.nextTableIndex = 0;
-			databaseBuilder.meshBuildTable.entries.clear();
-			databaseBuilder.meshBuildTable.mappedEntryKeys.clear();
-			databaseBuilder.meshBuildTable.nextTableIndex = 0;
-			databaseBuilder.objectRefBuildTable.entries.clear();
-			databaseBuilder.objectRefBuildTable.mappedEntryKeys.clear();
-			databaseBuilder.objectRefBuildTable.nextTableIndex = 0;
-			databaseBuilder.textureBuildTable.entries.clear();
-			databaseBuilder.textureBuildTable.mappedEntryKeys.clear();
-			databaseBuilder.textureBuildTable.nextTableIndex = 0;
-
-			databaseBuilder.vertexBuildTables.bitangentTable.entries.clear();
-			databaseBuilder.vertexBuildTables.bitangentTable.mappedEntryKeys.clear
-	();
-			databaseBuilder.vertexBuildTables.bitangentTable.nextTableIndex = 0;
-			databaseBuilder.vertexBuildTables.normalTable.entries.clear();
-			databaseBuilder.vertexBuildTables.normalTable.mappedEntryKeys.clear
-			();
-			databaseBuilder.vertexBuildTables.normalTable.nextTableIndex = 0;
-			databaseBuilder.vertexBuildTables.tangentTable.entries.clear();
-			databaseBuilder.vertexBuildTables.tangentTable.mappedEntryKeys.clear
-			();
-			databaseBuilder.vertexBuildTables.tangentTable.nextTableIndex = 0;
-			databaseBuilder.vertexBuildTables.uvTable.entries.clear();
-			databaseBuilder.vertexBuildTables.uvTable.mappedEntryKeys.clear
-			();
-			databaseBuilder.vertexBuildTables.uvTable.nextTableIndex = 0;
-			databaseBuilder.vertexBuildTables.vertexTable.entries.clear();
-			databaseBuilder.vertexBuildTables.vertexTable.mappedEntryKeys.clear
-			();
-			databaseBuilder.vertexBuildTables.vertexTable.nextTableIndex = 0;
-			*/
 		}
 		ScratchPad<Byte>{}.Unwind();
 	}	
 	auto end = std::chrono::high_resolution_clock::now();
-	LOG(36, "Total loops: " << nLoops << " avg time/loop: " << (end - begin) / nLoops);
-	//export conversion
-	//export
-	std::ofstream bExport{ TEST_PATH + TEST_MDB, std::ios::out | std::ios::binary };
-	if (bExport.is_open())
-	{
-		//ExportBinaryDatabase(databaseBuilder, bExport);
-		bExport.close();
-	}	
-	
-	//finished with all allocations - unwind to beginninig
-	ScratchPad<Byte>{}.Unwind();
+	LOG(36, "Total loops: " << nLoops << " avg time/loop: " << (end - begin) / nLoops);	
 }
 
 void ThreadTest()
@@ -238,14 +183,10 @@ void ThreadTest()
 
 void MessageTest()
 {
+
 }
 
-#include <list>
-#include <unordered_map>
 
-
-template<typename Key, typename T, typename Alloc, typename Hash = std::hash<Key>, typename KeyEqual = std::equal_to<Key>>
-using umap = std::unordered_map<Key, T,std::hash<Key>,KeyEqual,Alloc>;
 
 void TestLoadTrigger()
 {	
@@ -279,9 +220,9 @@ int main()
 	DISABLE
 		ThreadTest();
 	//persistence tests
-	//DISABLE
-		BuildAndExport();
 	DISABLE
+		BuildAndExport();
+	//DISABLE
 		ImportAndTest();
 	//final
 	DISABLE
