@@ -87,7 +87,7 @@ namespace Manifest_Persistence
 		const size_t& allocation = result.header.dynamicTableSize;
 
 		//result.entries = reinterpret_cast<Binary_TableType*>(malloc(allocation));
-		result.entries = reinterpret_cast<Binary_TableType*>(ScratchPad<Byte>{}.allocate(allocation,0));
+		result.entries = reinterpret_cast<Binary_TableType*>(ScratchPad<Byte>{}.allocate(allocation,1));
 		currentImport.read(reinterpret_cast<char*>(result.entries), allocation);
 		uint64_t byteOffset{ 0 };
 		for (auto entry = 0; entry < result.header.totalEntries; ++entry)
