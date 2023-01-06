@@ -59,6 +59,11 @@ namespace Manifest_Experimental
 
 	};
 
+	//TODO - Multi Reader Single Writer /Lock/
+	//not sure if it will be a lock - previous ended up not being a technical lock
+	//the previous method is essentially already a MRSW exchange
+	//will not be looking into MRMW exchanges - all data production points must be contained in their respective logical spacings. only a single writer(producer) will ever exist for a given piece of data though an infinite amount of readers may exist. therefore, should the program be structured properly, then the production of consumed data will naturally be applicable in only the place in which it may be found.
+
 	//table types
 	template<typename Key, typename Value>
 	concept UniqueType = !std::is_same<Key, Value>::value;

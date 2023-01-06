@@ -73,7 +73,7 @@ namespace Manifest_Persistence
 		{
 			const Binary_TableType& record{ table.entries[entry] };
 			currentExport.write(reinterpret_cast<const char*>(&record.header), sizeof(record.header));//write header data
-			currentExport.write("\0\0\0\0\0\0\0\0", sizeof(Binary_TableType*));//write storage for payload ptr - nullptr
+			currentExport.write("\0\0\0\0\0\0\0\0", sizeof(record.payload));//write storage for payload ptr - nullptr
 			currentExport.write(reinterpret_cast<const char*>(record.payload), record.header.payloadSize);//write payload			
 		}
 	}
@@ -87,7 +87,7 @@ namespace Manifest_Persistence
 		const size_t& allocation = result.header.dynamicTableSize;
 
 		//result.entries = reinterpret_cast<Binary_TableType*>(malloc(allocation));
-		result.entries = reinterpret_cast<Binary_TableType*>(ScratchPad<Byte>{}.allocate(allocation,1));
+		result.entries = reinterpret_cast<Binary_TableType*>(ScratchPad<Byte>{}.allocate(allocation));
 		currentImport.read(reinterpret_cast<char*>(result.entries), allocation);
 		uint64_t byteOffset{ 0 };
 		for (auto entry = 0; entry < result.header.totalEntries; ++entry)

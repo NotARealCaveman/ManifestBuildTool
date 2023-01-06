@@ -54,12 +54,14 @@ void RuntimeTest()
 
 	std::ifstream bImport{ TEST_PATH + TEST_MDB, std::ios::in | std::ios::binary };	
 	ManifestRuntimeDatabase runtimeDatabase{ ImportBinaryDatabase(bImport) };	
+	//unwind allocations from binary import
+	ScratchPad<Byte>{}.Unwind();
 
 	auto geometryObjects = runtimeDatabase.PullGeometryObjects();
 	auto geometryNodes = runtimeDatabase.PullGeometryNodes();
 	auto materials = runtimeDatabase.PullMaterials();
 
-	for (auto nodeEntry = 0; nodeEntry < geometryNodes->geometryNodeTable.tableSize; ++nodeEntry)
+	for (auto nodeEntry = 0; nodeEntry < geometryNodes->geometryNodeTable.tableSize*0; ++nodeEntry)
 	{			
 		//get geometryObject id from the key address offset
 		
@@ -89,11 +91,11 @@ void ImportAndTest()
 {
 
 	std::ifstream bImport{ TEST_PATH + TEST_MDB, std::ios::in | std::ios::binary };
-	auto nLoops = 1;
+	auto nLoops = 100000000;
 	for(int i = 0 ; i < nLoops;++i)
 	{
 		ManifestBinaryDatabase binaryDatabase = ImportBinaryDatabase(bImport);		
-	for (auto i = 0; i < binaryDatabase.binaryGeometryNodeTable.header.totalEntries; ++i)
+	for (auto i = 0; i < binaryDatabase.binaryGeometryNodeTable.header.totalEntries*0; ++i)
 	{
 		const auto importObject = binaryDatabase.binaryGeometryNodeTable[i];
 		const auto importGeometry = binaryDatabase.binaryGeometryObjectTable[importObject.header.geometryID];
