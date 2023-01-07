@@ -78,7 +78,7 @@ void ManifestRuntimeDatabase::PushStates(MFu64* stateSnapshot)
 {
 	MFu64* prevStates{ nullptr };
 	
-	//atomically check for old sim and store new
+	//atomically swap old  and  new store sim
 	stateLock.Write(std::function([&]()
 		{			
 			prevStates = newStates.exchange(stateSnapshot, std::memory_order_relaxed); //may change to release

@@ -59,10 +59,14 @@ namespace Manifest_Experimental
 
 	};
 
-	//TODO - Multi Reader Single Writer /Lock/
+	//TODO - Multi Reader Single Writer(MRSW) /Lock/
 	//not sure if it will be a lock - previous ended up not being a technical lock
 	//the previous method is essentially already a MRSW exchange
 	//will not be looking into MRMW exchanges - all data production points must be contained in their respective logical spacings. only a single writer(producer) will ever exist for a given piece of data though an infinite amount of readers may exist. therefore, should the program be structured properly, then the production of consumed data will naturally be applicable in only the place in which it may be found.
+	/*----
+	while realistcally there is only going to be a single reader and a single writer for a given set of data the above locking is overkill but still useful for investigation as i believe the notifcation and messaging system will need to implement a form of RCU as the lifetime of that data cannot have assumptions made about the need to keep it around.
+	the event space will also be coming back as more of a philosophical type than anything else but still plays a cruical role of brokering oberseved events. essentially the event space allows observers to know what type of event they observed and when
+	the assumption about the production of data appears to hold up - the messaging system is a coupling bypass to handle the specific/variable data of otherwise static interactions. by forming the logical spacings and allowing only one writer per type of event message type(s) this forces the prior assumption the program will be properly formed such that the only place in which this data may be created is that where it is produced*/
 
 	//table types
 	template<typename Key, typename Value>
