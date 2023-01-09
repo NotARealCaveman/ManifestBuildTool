@@ -8,7 +8,7 @@
 
 #include <EXPERIMENTAL/Manifest_Allocator.h>
 #include <EXPERIMENTAL/EXPERIMENTAL_RUNTIME_DATA_STRUCTURES.h>
-#include <EXPERIMENTAL/EXPERIMENTAL_MESSAGING_STRUCTURES.h>
+#include <EXPERIMENTAL/ManifestCommunication/FileSystem.h>
 
 #include <thread>
 #include <chrono>
@@ -17,6 +17,7 @@ using namespace Manifest_Parser;
 using namespace Manifest_Persistence;
 using namespace Manifest_Memory;
 using namespace Manifest_Experimental;
+using namespace Manifest_Communication;
 
 const std::string TEST_PATH{ "C:\\Users\\Droll\\Desktop\\Game\\testing\\" };
 const std::string TEST_GEX{ "Test2.gex" };
@@ -191,13 +192,19 @@ void MessageTest()
 
 
 void TestLoadTrigger()
-{	
-	std::vector<int> pointlessLoadVector;
-	for (int i = 0; i < 10; ++i)
-		pointlessLoadVector.emplace_back(i);
-	int loadEvent = 69;	
+{		
+	constexpr int loadEvent = 69;	
+	FileSystemMessageType message;
+
+	constexpr auto message1 = FileSystemMessageType::TYPE_MDB_GEOMETRYNODE;
+	constexpr auto message2 = FileSystemMessageType::TYPE_MDB_GEOMETRYOBJECT;
+
+	constexpr auto message3 = message1 & message2;
+	constexpr auto message4 = message1 | message2;	
+	
 	FileSystemTriggers::loadTrigger(loadEvent);	
 }
+
 
 int main()
 {
@@ -208,7 +215,6 @@ int main()
 	//register thread	
 	RegisterProgramExecutiveThread();
 	//create data stores
-	DLOG(34, 0.38 * MEBIBYTE);
 	INIT_MEMORY_RESERVES();	
 	
 	
