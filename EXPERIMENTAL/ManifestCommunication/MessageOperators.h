@@ -6,6 +6,7 @@ using namespace Manifest_Experimental;
 
 namespace Manifest_Communication
 {
+	//there is allowed up to 64 possible flags
 	constexpr MFu64 pow2(MFu64 base, MFu64 result = 1)
 	{
 		for (; base; base--, result <<= 1); return result;

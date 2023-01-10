@@ -1,6 +1,8 @@
 #pragma once
 #include <functional>
 
+#include "Event.h"
+
 namespace Manifest_Communication
 {
 	template<typename... Args>

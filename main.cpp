@@ -198,9 +198,23 @@ void TestLoadTrigger()
 
 	constexpr auto message1 = FileSystemMessageType::TYPE_MDB_GEOMETRYNODE;
 	constexpr auto message2 = FileSystemMessageType::TYPE_MDB_GEOMETRYOBJECT;
+	constexpr auto message3 = FileSystemMessageType::TYPE_MDB_MATERIAL;
 
-	constexpr auto message3 = message1 & message2;
-	constexpr auto message4 = message1 | message2;	
+	Event<FileSystem> fsEvent;
+	auto f = fsEvent.messages;
+	fsEvent.messages.emplace_back(message1);
+	fsEvent.messages.emplace_back(message3);
+	fsEvent.messages.emplace_back(message2);
+	fsEvent.messages.emplace_back(message3);
+	FileSystemEvents::events.emplace_back(fsEvent);
+	constexpr FileSystemToken eo0{ message1 | message3 };
+	constexpr FileSystemToken eo1{ message2 };
+	const auto eo0EventMessages = FileSystemEvents::ObserveEventMessages(eo0);
+	const auto eo1EventMessages = FileSystemEvents::ObserveEventMessages(eo1);
+	for (const auto& message : eo0EventMessages)		
+			DLOG(31, "eo0 message: " << (int)message);
+	for (const auto& message : eo1EventMessages)
+			DLOG(31, "eo1 message: " << (int)message);
 	
 	FileSystemTriggers::loadTrigger(loadEvent);	
 }

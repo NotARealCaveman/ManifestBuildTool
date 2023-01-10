@@ -180,7 +180,7 @@
     <ClCompile Include="EXPERIMENTAL\ManifestCommunication\FileSystem.cpp">
       <Filter>Source Files\EXPERIMENTAL\Communication</Filter>
     </ClCompile>
-    <ClCompile Include="EXPERIMENTAL\ManifestCommunication\Triggers.cpp">
+    <ClCompile Include="EXPERIMENTAL\ManifestCommunication\Event.cpp">
       <Filter>Source Files\EXPERIMENTAL\Communication</Filter>
     </ClCompile>
   </ItemGroup>
@@ -357,6 +357,12 @@
       <Filter>Header Files\EXPERIMENTAL\Communication</Filter>
     </ClInclude>
     <ClInclude Include="EXPERIMENTAL\ManifestCommunication\Triggers.h">
+      <Filter>Header Files\EXPERIMENTAL\Communication</Filter>
+    </ClInclude>
+    <ClInclude Include="EXPERIMENTAL\ManifestCommunication\Event.h">
+      <Filter>Header Files\EXPERIMENTAL\Communication</Filter>
+    </ClInclude>
+    <ClInclude Include="EXPERIMENTAL\ManifestCommunication\EventSystem.h">
       <Filter>Header Files\EXPERIMENTAL\Communication</Filter>
     </ClInclude>
   </ItemGroup>

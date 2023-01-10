@@ -140,8 +140,8 @@
   <ItemGroup>
     <ClCompile Include="EXPERIMENTAL\EXPERIMENTAL_RUNTIME_DATA_STRUCTURES.cpp" />
     <ClCompile Include="EXPERIMENTAL\Manifect_Allocator.cpp" />
+    <ClCompile Include="EXPERIMENTAL\ManifestCommunication\Event.cpp" />
     <ClCompile Include="EXPERIMENTAL\ManifestCommunication\FileSystem.cpp" />
-    <ClCompile Include="EXPERIMENTAL\ManifestCommunication\Triggers.cpp" />
     <ClCompile Include="EXPERIMENTAL\RNG.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ManifestGLParser\FileFilter.cpp" />
@@ -180,6 +180,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EXPERIMENTAL\EXPERIMENTAL_RUNTIME_DATA_STRUCTURES.h" />
+    <ClInclude Include="EXPERIMENTAL\ManifestCommunication\Event.h" />
+    <ClInclude Include="EXPERIMENTAL\ManifestCommunication\EventSystem.h" />
     <ClInclude Include="EXPERIMENTAL\ManifestCommunication\FileSystem.h" />
     <ClInclude Include="EXPERIMENTAL\ManifestCommunication\MessageOperators.h" />
     <ClInclude Include="EXPERIMENTAL\ManifestCommunication\Triggers.h" />
