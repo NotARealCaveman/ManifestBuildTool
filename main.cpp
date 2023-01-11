@@ -205,18 +205,9 @@ void TestLoadTrigger()
 	fsEvent.messages.emplace_back(message1);
 	fsEvent.messages.emplace_back(message3);
 	fsEvent.messages.emplace_back(message2);
-	fsEvent.messages.emplace_back(message3);
-	FileSystemEvents::events.emplace_back(fsEvent);
+	fsEvent.messages.emplace_back(message3);	
 	constexpr FileSystemToken eo0{ message1 | message3 };
-	constexpr FileSystemToken eo1{ message2 };
-	const auto eo0EventMessages = FileSystemEvents::ObserveEventMessages(eo0);
-	const auto eo1EventMessages = FileSystemEvents::ObserveEventMessages(eo1);
-	for (const auto& message : eo0EventMessages)		
-			DLOG(31, "eo0 message: " << (int)message);
-	for (const auto& message : eo1EventMessages)
-			DLOG(31, "eo1 message: " << (int)message);
-	
-	FileSystemTriggers::loadTrigger(loadEvent);	
+	constexpr FileSystemToken eo1{ message2 };	
 }
 
 

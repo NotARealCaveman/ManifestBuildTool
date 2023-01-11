@@ -1,33 +1,21 @@
 #pragma once
 #include <functional>
-
+#include <EXPERIMENTAL/FunctionWrapper.h>
 #include "Event.h"
 
 namespace Manifest_Communication
-{
-	template<typename... Args>
-	struct Trigger
-	{
-	private:
-		Trigger() = delete;
-		const std::function<void(Args...)> action;
-	public:
-		Trigger(const std::function<void(Args...)>& function)
-			: action{ function } {};
-		constexpr void operator()(Args&&... args) const
-		{
-			action(args...);
-		};
-	};
-
-	typedef Trigger<const int&> LoadTrigger;
+{	
+	typedef FunctionWrapper Trigger;
 
 	template<typename ObservableGroup>
 	struct ObservableGroupTriggers
 	{
-		static const LoadTrigger loadTrigger;
+		static const Trigger loadTrigger;
+		static const Trigger saveTrigger;
 	};
 	//hook up obersvable group actions to their triggers
 	template<typename ObservableGroup>
-	const LoadTrigger ObservableGroupTriggers< ObservableGroup>::loadTrigger{ ObservableGroup::OnLoad };
+	const Trigger ObservableGroupTriggers< ObservableGroup>::loadTrigger{ ObservableGroup::OnLoad };
+	template<typename ObservableGroup>
+	const Trigger ObservableGroupTriggers< ObservableGroup>::saveTrigger{ ObservableGroup::OnSave };
 }

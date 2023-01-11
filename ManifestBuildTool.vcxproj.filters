@@ -365,5 +365,14 @@
     <ClInclude Include="EXPERIMENTAL\ManifestCommunication\EventSystem.h">
       <Filter>Header Files\EXPERIMENTAL\Communication</Filter>
     </ClInclude>
+    <ClInclude Include="EXPERIMENTAL\FunctionWrapper.h">
+      <Filter>Header Files\EXPERIMENTAL</Filter>
+    </ClInclude>
+    <ClInclude Include="EXPERIMENTAL\ManifestCommunication\Message.h">
+      <Filter>Header Files\EXPERIMENTAL\Communication</Filter>
+    </ClInclude>
+    <ClInclude Include="EXPERIMENTAL\ManifestCommunication\Observer.h">
+      <Filter>Header Files\EXPERIMENTAL\Communication</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -2,7 +2,7 @@
 
 using namespace Manifest_Communication;
 
-void ObersvableFileSystem::OnLoad(const int& loadEvent)
+void ObersvableFileSystem::OnLoad()
 {
 	
 }

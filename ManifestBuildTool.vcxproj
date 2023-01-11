@@ -180,10 +180,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EXPERIMENTAL\EXPERIMENTAL_RUNTIME_DATA_STRUCTURES.h" />
+    <ClInclude Include="EXPERIMENTAL\FunctionWrapper.h" />
     <ClInclude Include="EXPERIMENTAL\ManifestCommunication\Event.h" />
     <ClInclude Include="EXPERIMENTAL\ManifestCommunication\EventSystem.h" />
     <ClInclude Include="EXPERIMENTAL\ManifestCommunication\FileSystem.h" />
+    <ClInclude Include="EXPERIMENTAL\ManifestCommunication\Message.h" />
     <ClInclude Include="EXPERIMENTAL\ManifestCommunication\MessageOperators.h" />
+    <ClInclude Include="EXPERIMENTAL\ManifestCommunication\Observer.h" />
     <ClInclude Include="EXPERIMENTAL\ManifestCommunication\Triggers.h" />
     <ClInclude Include="EXPERIMENTAL\Manifest_Allocator.h" />
     <ClInclude Include="EXPERIMENTAL\Manifest_Memory.h" />
