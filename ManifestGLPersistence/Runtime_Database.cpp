@@ -180,7 +180,7 @@ void Manifest_Persistence::SimThread(ManifestRuntimeDatabase& runtimeDatabase)
 }
 
 void Manifest_Persistence::RenderThread(ManifestRuntimeDatabase& runtimeDatabase)
-{
+{	
 	DLOG(35, "RenderThread ID : " << std::this_thread::get_id());
 	auto set = false;
 	if (!(set = runtimeDatabase.init.test()))

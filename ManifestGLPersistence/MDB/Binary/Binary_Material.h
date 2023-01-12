@@ -10,7 +10,7 @@ namespace Manifest_Persistence
 	{
 		struct Entry_Header
 		{
-			const MFsize payloadSize{ 0 };//amount of raw bytes comprising the material texture data
+			MFsize payloadSize{ 0 };//amount of raw bytes comprising the material texture data
 			PrimaryKey materialID;//stored database id of the entry
 			ForeignKey diffuseID{KEY_NOT_PRESENT};//maps the texture id to the materials diffuse component
 			ForeignKey noramlID{ KEY_NOT_PRESENT };//maps the texture id to the materials normal component

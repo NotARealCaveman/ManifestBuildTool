@@ -200,14 +200,52 @@ void TestLoadTrigger()
 	constexpr auto message2 = FileSystemMessageType::TYPE_MDB_GEOMETRYOBJECT;
 	constexpr auto message3 = FileSystemMessageType::TYPE_MDB_MATERIAL;
 
-	Event<FileSystem> fsEvent;
-	auto f = fsEvent.messages;
-	fsEvent.messages.emplace_back(message1);
-	fsEvent.messages.emplace_back(message3);
-	fsEvent.messages.emplace_back(message2);
-	fsEvent.messages.emplace_back(message3);	
-	constexpr FileSystemToken eo0{ message1 | message3 };
-	constexpr FileSystemToken eo1{ message2 };	
+	constexpr FileSystemToken eo0{ message1 | message2 };
+	constexpr FileSystemToken eo1{ message3 };
+
+	Binary_GeometryNode bNode_import;
+	bNode_import.header.geometryID = 0;
+	bNode_import.header.materialID = 0;
+	bNode_import.header.nodeID = 0;
+	bNode_import.header.payloadSize = 0;
+	bNode_import.payload = nullptr;
+	Binary_GeometryObject nObject_import;
+	nObject_import.header.geometryID = 0;
+	nObject_import.header.meshID = 0;
+	nObject_import.header.morphID = KEY_NOT_PRESENT;
+	nObject_import.header.payloadSize = 0;
+	nObject_import.payload = nullptr;
+	Binary_Material bMaterial_import;
+	bMaterial_import.header.diffuseID = 0;
+	bMaterial_import.header.materialID = 0;
+	bMaterial_import.header.noramlID = KEY_NOT_PRESENT;
+	bMaterial_import.header.diffuseID = KEY_NOT_PRESENT;
+	bMaterial_import.header.payloadSize = sizeof(float) * 3;
+	bMaterial_import.payload = new float[3];
+	float* ptr = reinterpret_cast<float*>(bMaterial_import.payload);
+	ptr[0] = 0;//r 
+	ptr[1] = 1;//g 
+	ptr[2] = 0;//b 
+		
+	{
+		FileSystemEvent fsEvent;
+		//fsEvent.messages.reserve(3);
+		void* addy = 0;
+		{
+			fsEvent.eventToken = message1 | message2 | message3;
+			//event action 1
+			fsEvent.messageTypes.emplace_back(message1);
+			fsEvent.messages.emplace_back(bNode_import);
+			//event action 2
+			fsEvent.messageTypes.emplace_back(message2);
+			fsEvent.messages.emplace_back(nObject_import);
+			//event action 3
+			fsEvent.messageTypes.emplace_back(message3);
+			fsEvent.messages.emplace_back(bMaterial_import);
+		}
+	}	
+	for (auto i = 0; i < GIBIBYTE; ++i)
+		Message((int)1);
 }
 
 
@@ -235,7 +273,7 @@ int main()
 	//persistence tests
 	DISABLE
 		BuildAndExport();
-	//DISABLE
+	DISABLE
 		ImportAndTest();
 	//final
 	DISABLE

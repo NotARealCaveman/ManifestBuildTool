@@ -20,8 +20,11 @@ namespace Manifest_Experimental
 
 			Function wrapped;
 		};
-
 		std::unique_ptr<FunctionBase> function;
+
+		FunctionWrapper(const FunctionWrapper&) = delete;
+		FunctionWrapper(FunctionWrapper&) = delete;
+		FunctionWrapper operator =(const FunctionWrapper&) = delete;
 	public:
 		FunctionWrapper() = default;
 		template<typename Function>
@@ -34,10 +37,7 @@ namespace Manifest_Experimental
 		{
 			function = std::move(other.function);
 			return *this;
-		}
-		FunctionWrapper(const FunctionWrapper&) = delete;
-		FunctionWrapper(FunctionWrapper&) = delete;
-		FunctionWrapper operator =(const FunctionWrapper&) = delete;
+		}		
 
 		void operator()() const
 		{
