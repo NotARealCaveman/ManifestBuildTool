@@ -209,12 +209,12 @@ void TestLoadTrigger()
 	bNode_import.header.nodeID = 0;
 	bNode_import.header.payloadSize = 0;
 	bNode_import.payload = nullptr;
-	Binary_GeometryObject nObject_import;
-	nObject_import.header.geometryID = 0;
-	nObject_import.header.meshID = 0;
-	nObject_import.header.morphID = KEY_NOT_PRESENT;
-	nObject_import.header.payloadSize = 0;
-	nObject_import.payload = nullptr;
+	Binary_GeometryObject bObject_import;
+	bObject_import.header.geometryID = 0;
+	bObject_import.header.meshID = 0;
+	bObject_import.header.morphID = KEY_NOT_PRESENT;
+	bObject_import.header.payloadSize = 0;
+	bObject_import.payload = nullptr;
 	Binary_Material bMaterial_import;
 	bMaterial_import.header.diffuseID = 0;
 	bMaterial_import.header.materialID = 0;
@@ -226,26 +226,24 @@ void TestLoadTrigger()
 	ptr[0] = 0;//r 
 	ptr[1] = 1;//g 
 	ptr[2] = 0;//b 
-		
-	{
-		FileSystemEvent fsEvent;
-		//fsEvent.messages.reserve(3);
-		void* addy = 0;
-		{
-			fsEvent.eventToken = message1 | message2 | message3;
-			//event action 1
-			fsEvent.messageTypes.emplace_back(message1);
-			fsEvent.messages.emplace_back(bNode_import);
-			//event action 2
-			fsEvent.messageTypes.emplace_back(message2);
-			fsEvent.messages.emplace_back(nObject_import);
-			//event action 3
-			fsEvent.messageTypes.emplace_back(message3);
-			fsEvent.messages.emplace_back(bMaterial_import);
-		}
-	}	
-	for (auto i = 0; i < GIBIBYTE; ++i)
-		Message((int)1);
+	
+	FileSystemEvent fsEvent;		
+	fsEvent.eventToken = message1 | message2 | message3;
+	auto& eventInformation = fsEvent.eventInformation;
+	//event action 1
+	eventInformation.messageTypes.emplace_back(message1);
+	eventInformation.messages.emplace_back(bNode_import);
+	//event action 2
+	eventInformation.messageTypes.emplace_back(message2);
+	eventInformation.messages.emplace_back(bObject_import);
+	//event action 3
+	eventInformation.messageTypes.emplace_back(message3);
+	eventInformation.messages.emplace_back(bMaterial_import);
+	
+	FileSystemObserver fsObserver{ eo0 };
+	FileSystemEventSpace fsEventSpace;
+	fsEventSpace.observers.emplace_back(&fsObserver);
+	fsEventSpace.BrokerEvent(fsEvent);
 }
 
 

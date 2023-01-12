@@ -4,3 +4,4 @@
 #include "Triggers.h"
 #include "MessageOperators.h"
 #include "Event.h"
+#include "Observer.h"

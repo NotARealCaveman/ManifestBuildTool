@@ -2,6 +2,8 @@
 #include <vector>
 #include <thread>
 
+#include "Event.h"
+
 #include <EXPERIMENTAL/Typenames.h>
 #include <ManifestGLUtility/DebugLogger.h>
 
@@ -13,8 +15,7 @@ namespace Manifest_Communication
 	template<typename ObservableSystem>
 	struct Observer
 	{
-		using ObserverationToken = enum ObservableSystem::MessageTypes;
-
-		constexpr ObserverationToken observationToken;
+		const ObserverationToken<ObservableSystem> observationToken;
+		EventInformation<ObservableSystem> observedEvents;
 	};
 }

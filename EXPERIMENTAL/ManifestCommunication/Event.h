@@ -15,10 +15,16 @@ namespace Manifest_Communication
 	using ObserverationToken = enum ObservableSystem::MessageTypes;	
 
 	template<typename ObservableSystem>
-	struct ObservableEvent
-	{		
-		ObserverationToken<ObservableSystem> eventToken;
+	struct EventInformation
+	{
 		std::vector<enum ObservableSystem::MessageTypes> messageTypes;
 		std::vector<Message> messages;
 	};
+
+	template<typename ObservableSystem>
+	struct ObservableEvent
+	{		
+		ObserverationToken<ObservableSystem> eventToken;
+		EventInformation<ObservableSystem> eventInformation;
+	};	
 }

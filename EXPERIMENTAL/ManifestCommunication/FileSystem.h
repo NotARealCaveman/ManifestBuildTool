@@ -1,5 +1,5 @@
 #pragma once
-#include "EventSystem.h"
+#include "EventSpace.h"
 
 #include <ManifestGLUtility/DebugLogger.h>
 
@@ -19,15 +19,8 @@ namespace Manifest_Communication
 	};
 	typedef ObersvableFileSystem FileSystem;
 	typedef FileSystem::MessageTypes FileSystemMessageType;	
-	typedef
-		ObservableGroupTriggers<FileSystem> FileSystemTriggers;	
 	typedef ObserverationToken<FileSystem> FileSystemToken;
 	typedef ObservableEvent<FileSystem> FileSystemEvent;
-
-
-	struct FSObserver
-	{
-		const FileSystemToken observerToken;
-
-	};
+	typedef Observer<FileSystem> FileSystemObserver;
+	typedef EventSpace<FileSystem> FileSystemEventSpace;
 }

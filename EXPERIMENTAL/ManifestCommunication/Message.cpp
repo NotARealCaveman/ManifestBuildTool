@@ -1,4 +1,4 @@
-#include "Event.h"
+#include "Message.h"
 
 using namespace Manifest_Communication;
 
@@ -15,6 +15,6 @@ Message::Message(Message&& other) noexcept
 }
 
 void Message::CopyMessageContents(void* copyAddress)
-{	
+{
 	messageBase->CopyContents(copyAddress);
 }
