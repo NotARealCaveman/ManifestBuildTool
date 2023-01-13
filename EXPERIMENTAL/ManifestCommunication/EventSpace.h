@@ -7,25 +7,34 @@
 namespace Manifest_Communication
 {
 	template<typename ObservableSystem>
-	struct EventSpace
-	{
-		using EventObserver = Observer<ObservableSystem>;
+	class EventSpace
+	{			
+		private:
+			using EventObserver = Observer<ObservableSystem>;
+			using Event = ObservableEvent<ObservableSystem>;
 
-		std::vector<EventObserver*> observers;
-		void BrokerEvent(const ObservableEvent<ObservableSystem>& event)
-		{
-			for (auto messageIndex{ 0 }; messageIndex < event.eventInformation.messages.size(); ++messageIndex)
-			{				
-				const auto& messageType = event.eventInformation.messageTypes[messageIndex];
-				const auto& message = event.eventInformation.messages[messageIndex];
-				for (auto& observer : observers)
-					if ((bool)(observer->observationToken & messageType))
-					{
-						observer->observedEvents.messageTypes.emplace_back(messageType);
-						//need to look into this further - lack of copy constructor is causing a problem
-						observer->observedEvents.messages.emplace_back(std::move(message);
+			mutable std::vector<Event> events;
+		public:			
+			void RecordEvent(Event&& event)
+			{
+				events.emplace_back(std::move(event));			
+			}		
+			void ObserveEvents(Observer<ObservableSystem>& observer)
+			{
+				//for each event in the list of events
+				for (ObservableEvent<ObservableSystem>& event : events)
+				{//check if the event has any messages of interest
+					if (!UnderlyingType(observer.observationToken & event.eventToken))
+						return;
+					const EventInformation<ObservableSystem>& eventInformation = event.eventInformation;		
+					for (auto messageIndex{ 0 }; messageIndex < eventInformation.messages.size(); ++messageIndex)
+					{	//check if current message is of interest
+						if (!UnderlyingType(observer.observationToken & eventInformation.messageTypes[messageIndex]))
+							continue;
+						//move message of interest
+						//need finer granulairty in movement - currently moving entire event info. need to move only messages of ineterst
 					}
-			}				
-		};
+				}
+			}
 	};
 }

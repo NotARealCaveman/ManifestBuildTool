@@ -14,12 +14,11 @@ namespace Manifest_Communication
 			TYPE_MDB_GEOMETRYOBJECT = pow2(1),
 			TYPE_MDB_MATERIAL = pow2(2),
 		};
-		static void OnLoad();		
-		static void OnSave()=delete;
+		static void OnLoad();				
 	};
 	typedef ObersvableFileSystem FileSystem;
 	typedef FileSystem::MessageTypes FileSystemMessageType;	
-	typedef ObserverationToken<FileSystem> FileSystemToken;
+	typedef ObserverationToken<FileSystem> FileSystemObservationToken;
 	typedef ObservableEvent<FileSystem> FileSystemEvent;
 	typedef Observer<FileSystem> FileSystemObserver;
 	typedef EventSpace<FileSystem> FileSystemEventSpace;

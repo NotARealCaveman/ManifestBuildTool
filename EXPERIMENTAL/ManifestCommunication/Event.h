@@ -16,14 +16,24 @@ namespace Manifest_Communication
 
 	template<typename ObservableSystem>
 	struct EventInformation
-	{
+	{		
+		EventInformation() = default;
+		EventInformation(EventInformation&& other)
+			 : messageTypes{other.messageTypes}
+		{
+			messages.reserve(other.messages.size());
+			std::for_each(other.messages.begin(), other.messages.end(), [&](Message& message) {messages.emplace_back(std::move(message)); });		
+		}
 		std::vector<enum ObservableSystem::MessageTypes> messageTypes;
 		std::vector<Message> messages;
 	};
 
 	template<typename ObservableSystem>
 	struct ObservableEvent
-	{		
+	{			
+		ObservableEvent() {};
+		ObservableEvent(ObservableEvent&& other)
+			 : eventToken{other.eventToken}, eventInformation{std::move(other.eventInformation)} {}
 		ObserverationToken<ObservableSystem> eventToken;
 		EventInformation<ObservableSystem> eventInformation;
 	};	

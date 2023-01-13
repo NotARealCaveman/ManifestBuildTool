@@ -15,7 +15,13 @@ namespace Manifest_Communication
 	template<typename ObservableSystem>
 	struct Observer
 	{
-		const ObserverationToken<ObservableSystem> observationToken;
-		EventInformation<ObservableSystem> observedEvents;
+		using ObservationToken = ObserverationToken<ObservableSystem>;
+		using EventInformation = EventInformation<ObservableSystem>;
+
+		Observer(const ObservationToken& token)
+			:observationToken{ token } {}
+
+		const ObservationToken observationToken;
+		std::vector<EventInformation> observedEvents;
 	};
 }

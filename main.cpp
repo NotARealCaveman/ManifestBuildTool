@@ -192,16 +192,16 @@ void MessageTest()
 
 
 void TestLoadTrigger()
-{		
-	constexpr int loadEvent = 69;	
+{
+	constexpr int loadEvent = 69;
 	FileSystemMessageType message;
 
 	constexpr auto message1 = FileSystemMessageType::TYPE_MDB_GEOMETRYNODE;
 	constexpr auto message2 = FileSystemMessageType::TYPE_MDB_GEOMETRYOBJECT;
 	constexpr auto message3 = FileSystemMessageType::TYPE_MDB_MATERIAL;
 
-	constexpr FileSystemToken eo0{ message1 | message2 };
-	constexpr FileSystemToken eo1{ message3 };
+	constexpr FileSystemObservationToken eo0{ message1 | message2 };
+	constexpr FileSystemObservationToken eo1{ message3 };
 
 	Binary_GeometryNode bNode_import;
 	bNode_import.header.geometryID = 0;
@@ -226,24 +226,30 @@ void TestLoadTrigger()
 	ptr[0] = 0;//r 
 	ptr[1] = 1;//g 
 	ptr[2] = 0;//b 
-	
-	FileSystemEvent fsEvent;		
-	fsEvent.eventToken = message1 | message2 | message3;
-	auto& eventInformation = fsEvent.eventInformation;
-	//event action 1
-	eventInformation.messageTypes.emplace_back(message1);
-	eventInformation.messages.emplace_back(bNode_import);
-	//event action 2
-	eventInformation.messageTypes.emplace_back(message2);
-	eventInformation.messages.emplace_back(bObject_import);
-	//event action 3
-	eventInformation.messageTypes.emplace_back(message3);
-	eventInformation.messages.emplace_back(bMaterial_import);
-	
-	FileSystemObserver fsObserver{ eo0 };
-	FileSystemEventSpace fsEventSpace;
-	fsEventSpace.observers.emplace_back(&fsObserver);
-	fsEventSpace.BrokerEvent(fsEvent);
+
+
+	FileSystemObserver fsObserver0{ eo0 };
+	FileSystemObserver fsObserver1{ eo1 };
+	{
+		FileSystemEventSpace fsEventSpace;
+		{
+			FileSystemEvent fsEvent;
+			fsEvent.eventToken = message1 | message2 | message3;
+			auto& eventInformation = fsEvent.eventInformation;
+			//event action 1
+			eventInformation.messageTypes.emplace_back(message1);
+			eventInformation.messages.emplace_back(bNode_import);
+			//event action 2
+			eventInformation.messageTypes.emplace_back(message2);
+			eventInformation.messages.emplace_back(bObject_import);
+			//event action 3
+			eventInformation.messageTypes.emplace_back(message3);
+			eventInformation.messages.emplace_back(bMaterial_import);
+			fsEventSpace.RecordEvent(std::move(fsEvent));
+		}
+		fsEventSpace.ObserveEvents(fsObserver0);
+		fsEventSpace.ObserveEvents(fsObserver1);
+	}
 }
 
 
