@@ -12,24 +12,27 @@ using namespace Manifest_Experimental;
 namespace Manifest_Communication
 {	
 	//token that allow access to specific event space messages
-	template<typename ObservableSystem>
-	using ObserverationToken = enum ObservableSystem::MessageTypes;		
+	//template<typename ObservableSystem>
+	//using ObserverationToken = enum ObservableSystem::MessageTypes;		
+	using ObservationToken = MFu64;	
 	
-	template<typename ObservableSystem>
-	using EventMessage = std::pair<ObserverationToken<ObservableSystem>, Message>;
+	//template<typename ObservableSystem>
+	//using EventMessage = std::pair<ObserverationToken<ObservableSystem>, Message>;
+	using EventMessage = std::pair<ObservationToken, Message>;
 
 	//ObservableEvent is a snapshot of all the messages created during an event
 	//When observing an event an observer may opt out of the event all together if any of the message types they are observing are not present 
-	template<typename ObservableSystem>
+	//template<typename ObservableSystem>
 	struct ObservableEvent
 	{			
-		using EventMessage = EventMessage<ObservableSystem>;
+		//using EventMessage = EventMessage<ObservableSystem>;
 
 		ObservableEvent() {};
 		ObservableEvent(ObservableEvent&& other)
 			: eventToken{ other.eventToken }, messages{ std::move(other.messages) } {};
 		//encodes messages types present in event using operator|
-		ObserverationToken<ObservableSystem> eventToken;	
+		//ObserverationToken<ObservableSystem> eventToken;	
+		ObservationToken eventToken;
 		//holds each event message created during the event
 		std::vector<EventMessage> messages;
 	};	

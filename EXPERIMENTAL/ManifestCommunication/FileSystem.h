@@ -1,5 +1,5 @@
 #pragma once
-#include "EventSpace.h"
+#include "Observer.h"
 
 #include <ManifestGLUtility/DebugLogger.h>
 
@@ -15,10 +15,10 @@ namespace Manifest_Communication
 			TYPE_MDB_MATERIAL = pow2(2),
 		};		
 	};
-	typedef ObersvableFileSystem FileSystem;
-	typedef FileSystem::MessageTypes FileSystemMessageType;	
-	typedef ObserverationToken<FileSystem> FileSystemObservationToken;
-	typedef ObservableEvent<FileSystem> FileSystemEvent;
-	typedef Observer<FileSystem> FileSystemObserver;
-	typedef EventSpace<FileSystem> FileSystemEventSpace;	
+	using FileSystem= ObersvableFileSystem;
+	using FileSystemMessageType = FileSystem::MessageTypes;
+	using FileSystemObservationToken = ObservationToken;
+	using FileSystemEvent = ObservableEvent;
+	using FileSystemObserver = Observer;
+	using FileSystemEventSpace = EventSpace;
 }

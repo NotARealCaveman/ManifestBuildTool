@@ -3,17 +3,17 @@
 #include <algorithm>
 #include <atomic>
 
-#include "Observer.h"
+#include "Event.h"
 
 namespace Manifest_Communication
 {
-	template<typename ObservableSystem>
+	//template<typename ObservableSystem>
 	class EventSpace
 	{			
-		private:
-			using EventObserver = Observer<ObservableSystem>;
-			using Event = ObservableEvent<ObservableSystem>;
-			using EventMessage = EventMessage<ObservableSystem>;
+		private:			
+			using Event = ObservableEvent;// <ObservableSystem>;
+			//using EventMessage = EventMessage<ObservableSystem>;
+			//using ObserverationToken = ObserverationToken<ObservableSystem>;
 			
 			mutable std::vector<Event> events;
 		public:			
@@ -21,23 +21,23 @@ namespace Manifest_Communication
 			{
 				events.emplace_back(std::move(event));			
 			}		
-			void ObserveEvents(EventObserver& observer)
+			void ObserveEvents(const ObservationToken& observationToken, std::vector<EventMessage>& eventMessages)
 			{
 				//for each event in the list of events
 				for(Event& event : events)
 				{//check if the event has any messages of interest
-					if (!UnderlyingType(observer.observationToken & event.eventToken))
+					if (!(observationToken & event.eventToken))
 						return;					
 					for (EventMessage& message : event.messages)
 					{
-						if (!UnderlyingType(observer.observationToken & message.first))
+						if (!(observationToken & message.first))
 							continue;
 
-					observer.observedEventMessages.emplace_back(std::move(message));
+						eventMessages.emplace_back(std::move(message));
 					}
 				}
 			}	
 			std::atomic<MFu64> currentObservations;
-			std::
 	};
+
 }

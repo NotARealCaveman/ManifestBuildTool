@@ -200,9 +200,8 @@ void MessageTest()
 	constexpr auto message2 = FileSystemMessageType::TYPE_MDB_GEOMETRYOBJECT;
 	constexpr auto message3 = FileSystemMessageType::TYPE_MDB_MATERIAL;
 
-	constexpr FileSystemObservationToken eo0{ message1 | message2 };
-	constexpr FileSystemObservationToken eo1{ message3 };
-
+	constexpr FileSystemObservationToken eo0{ UnderlyingType(message1 | message2) };
+	constexpr FileSystemObservationToken eo1{ UnderlyingType(message3) };
 	Binary_GeometryNode bNode_import;
 	bNode_import.header.geometryID = 2;
 	bNode_import.header.materialID = 2;
@@ -233,17 +232,17 @@ void MessageTest()
 		FileSystemEventSpace fsEventSpace;
 		{
 			FileSystemEvent fsEvent;			
-			fsEvent.eventToken = message1 | message2 | message3;
+			fsEvent.eventToken = UnderlyingType(message1 | message2 | message3);
 			//event action 1			
-			fsEvent.messages.emplace_back(std::make_pair(message1, bNode_import));			
+			fsEvent.messages.emplace_back(std::make_pair(UnderlyingType(message1), bNode_import));
 			//event action 2
-			fsEvent.messages.emplace_back(std::make_pair(message2, bObject_import));			
+			fsEvent.messages.emplace_back(std::make_pair(UnderlyingType(message2), bObject_import));
 			//event action 3
-			fsEvent.messages.emplace_back(std::make_pair(message3, bMaterial_import));
+			fsEvent.messages.emplace_back(std::make_pair(UnderlyingType(message3), bMaterial_import));
 			fsEventSpace.RecordEvent(std::move(fsEvent));
 		}
-		fsEventSpace.ObserveEvents(fsObserver0);
-		fsEventSpace.ObserveEvents(fsObserver1);
+		fsEventSpace.ObserveEvents(fsObserver0.observationToken, fsObserver0.observedEventMessages);
+		fsEventSpace.ObserveEvents(fsObserver1.observationToken, fsObserver1.observedEventMessages);
 	}
 }
 

@@ -183,6 +183,15 @@
     <ClCompile Include="EXPERIMENTAL\ManifestCommunication\Message.cpp">
       <Filter>Source Files\EXPERIMENTAL\Communication</Filter>
     </ClCompile>
+    <ClCompile Include="EXPERIMENTAL\ManifestCommunication\Event.cpp">
+      <Filter>Source Files\EXPERIMENTAL\Communication</Filter>
+    </ClCompile>
+    <ClCompile Include="EXPERIMENTAL\ManifestCommunication\EventSpace.cpp">
+      <Filter>Source Files\EXPERIMENTAL\Communication</Filter>
+    </ClCompile>
+    <ClCompile Include="EXPERIMENTAL\ManifestCommunication\Observer.cpp">
+      <Filter>Source Files\EXPERIMENTAL\Communication</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ManifestGLParser\OpenDDL\DDL_Buffers.h">
