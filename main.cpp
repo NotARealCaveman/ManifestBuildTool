@@ -226,8 +226,8 @@ void MessageTest()
 	ptr[1] = 1;//g 
 	ptr[2] = 2;//b 
 
-	FileSystemObserver fsObserver0{ eo0 };
-	FileSystemObserver fsObserver1{ eo1 };
+	FileSystemObserver fsObserver0{ eo0,FileSystem::observerRegister };
+	FileSystemObserver fsObserver1{ eo1,FileSystem::observerRegister };
 	{
 		FileSystemEventSpace fsEventSpace;
 		{
@@ -250,26 +250,24 @@ void MessageTest()
 int main()
 {
 	WINDOWS_COLOR_CONSOLE;	
-
 	//register thread	
 	RegisterProgramExecutiveThread();
 	//create data stores
-	INIT_MEMORY_RESERVES();	
-	
+	INIT_MEMORY_RESERVES();		
 	
 	MEMORYSTATUSEX status;
 	status.dwLength = sizeof(status);
 	GlobalMemoryStatusEx(&status);
 
 	//db threading
-	DISABLE
+	//DISABLE
 		MessageTest();
 	DISABLE
 		ThreadTest();
 	//persistence tests
-	//DISABLE
+	DISABLE
 		BuildAndExport();
-	//DISABLE
+	DISABLE
 		ImportAndTest();
 	//final
 	DISABLE

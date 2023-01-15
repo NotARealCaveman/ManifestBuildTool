@@ -32,7 +32,7 @@ namespace Manifest_Communication
 					{
 						if (!(observationToken & message.first))
 							continue;
-
+						ClearObservedMessages(event.eventToken, message.first);
 						eventMessages.emplace_back(std::move(message));
 					}
 				}

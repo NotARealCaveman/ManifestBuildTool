@@ -14,11 +14,13 @@ namespace Manifest_Communication
 			TYPE_MDB_GEOMETRYOBJECT = pow2(1),
 			TYPE_MDB_MATERIAL = pow2(2),
 		};		
+
+		static UniqueObserverRegister observerRegister;
 	};
 	using FileSystem= ObersvableFileSystem;
 	using FileSystemMessageType = FileSystem::MessageTypes;
 	using FileSystemObservationToken = ObservationToken;
 	using FileSystemEvent = ObservableEvent;
 	using FileSystemObserver = Observer;
-	using FileSystemEventSpace = EventSpace;
+	using FileSystemEventSpace = EventSpace;	
 }

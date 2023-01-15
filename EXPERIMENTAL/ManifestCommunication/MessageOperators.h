@@ -7,9 +7,16 @@ using namespace Manifest_Experimental;
 namespace Manifest_Communication
 {
 	//there is allowed up to 64 possible flags
-	constexpr MFu64 pow2(MFu64 base, MFu64 result = 1)
+	constexpr MFu64 pow2(MFu64 base)
 	{
-		for (; base; base--, result <<= 1); return result;
+		return MFu64{1} << base;
+	}
+	constexpr MFu8 DecodeMessageBase(MFu64 pow2Base)
+	{
+		MFu8 result{ 0 };
+		for (; pow2Base > 1; ++result)
+			pow2Base >>= 1;
+		return result;
 	}
 	//generally - will return the MFu64 value of the MessageType
 	template<typename E>

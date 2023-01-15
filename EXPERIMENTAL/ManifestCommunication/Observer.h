@@ -13,9 +13,8 @@ namespace Manifest_Communication
 {
 	struct UniqueObserverRegister
 	{
-
 		std::atomic<MFu64> registeredObservationTokens{ 0 };
-		bool RegisterObserver(const ObservationToken&);
+		bool RegisterObserver(const ObservationToken& observationToken);
 	};
 
 	//Observer is an independent broker
@@ -26,7 +25,7 @@ namespace Manifest_Communication
 		//using ObservationToken = ObserverationToken<ObservableSystem>;
 		//using EventMessage = EventMessage<ObservableSystem>;
 		
-		Observer(const ObservationToken& token, UniqueObserverRegister& uniqueObserverRegister);
+		Observer(const ObservationToken& observationToken, UniqueObserverRegister& uniqueObserverRegister);
 			
 		
 		const ObservationToken observationToken;
