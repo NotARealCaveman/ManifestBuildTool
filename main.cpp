@@ -243,7 +243,7 @@ void MessageTest()
 		}
 		fsEventSpace.ObserveEvents(fsObserver0.observationToken, fsObserver0.observedEventMessages);
 		fsEventSpace.ObserveEvents(fsObserver1.observationToken, fsObserver1.observedEventMessages);
-	}
+	}	
 }
 
 
