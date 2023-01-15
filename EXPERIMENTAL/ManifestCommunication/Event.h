@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <utility>
 
 #include "Message.h"
 
@@ -10,31 +11,26 @@ using namespace Manifest_Experimental;
 
 namespace Manifest_Communication
 {	
-	//allows a compile time token to be created that allow access to specific event space messages
+	//token that allow access to specific event space messages
 	template<typename ObservableSystem>
-	using ObserverationToken = enum ObservableSystem::MessageTypes;	
-
+	using ObserverationToken = enum ObservableSystem::MessageTypes;		
+	
 	template<typename ObservableSystem>
-	struct EventInformation
-	{		
-		EventInformation() = default;
-		EventInformation(EventInformation&& other)
-			 : messageTypes{other.messageTypes}
-		{
-			messages.reserve(other.messages.size());
-			std::for_each(other.messages.begin(), other.messages.end(), [&](Message& message) {messages.emplace_back(std::move(message)); });		
-		}
-		std::vector<enum ObservableSystem::MessageTypes> messageTypes;
-		std::vector<Message> messages;
-	};
+	using EventMessage = std::pair<ObserverationToken<ObservableSystem>, Message>;
 
+	//ObservableEvent is a snapshot of all the messages created during an event
+	//When observing an event an observer may opt out of the event all together if any of the message types they are observing are not present 
 	template<typename ObservableSystem>
 	struct ObservableEvent
 	{			
+		using EventMessage = EventMessage<ObservableSystem>;
+
 		ObservableEvent() {};
 		ObservableEvent(ObservableEvent&& other)
-			 : eventToken{other.eventToken}, eventInformation{std::move(other.eventInformation)} {}
-		ObserverationToken<ObservableSystem> eventToken;
-		EventInformation<ObservableSystem> eventInformation;
+			: eventToken{ other.eventToken }, messages{ std::move(other.messages) } {};
+		//encodes messages types present in event using operator|
+		ObserverationToken<ObservableSystem> eventToken;	
+		//holds each event message created during the event
+		std::vector<EventMessage> messages;
 	};	
 }

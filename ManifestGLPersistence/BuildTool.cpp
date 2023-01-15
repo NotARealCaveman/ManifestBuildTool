@@ -7,7 +7,7 @@ void Manifest_Persistence::BuildOfflineDatabase(const DDL_File& file, ManifestDa
 	ScratchPadVector<DDL_Structure*>geometryObjects;
 	ScratchPadVector<DDL_Structure*> materials;
 	ScratchPadVector<DDL_Structure*> geometryNodes;
-	
+	//get all top level build structures
 	for (const auto& structure : file.primaryStructures)
 	{
 		auto identifier = structure->identifier;

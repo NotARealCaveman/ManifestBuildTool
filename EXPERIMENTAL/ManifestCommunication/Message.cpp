@@ -9,12 +9,12 @@ Message::~Message()
 }
 
 Message::Message(Message&& other) noexcept
-	:messageBase{ std::move(other.messageBase) }
+	: messageBase{ std::move(other.messageBase) }
 {
 	other.messageBase = nullptr;
 }
 
-void Message::CopyMessageContents(void* copyAddress)
+void Message::GetMessageContents(void* copyAddress)
 {
-	messageBase->CopyContents(copyAddress);
+	messageBase->GetContents(copyAddress);
 }

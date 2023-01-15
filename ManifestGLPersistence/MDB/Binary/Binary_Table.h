@@ -15,6 +15,12 @@ namespace Manifest_Persistence
 	template<typename Binary_TableType>
 	struct BinaryTable
 	{		
+		struct Table_Header
+		{
+			size_t totalEntries;//number of base elements to be created		
+			size_t dynamicTableSize{ 0 };//number of bytes to be created for elements + payloads
+		}header;
+
 		BinaryTable() = default;
 		BinaryTable(const BinaryTable&) = delete;
 		BinaryTable operator=(const BinaryTable&) = delete;
@@ -43,11 +49,6 @@ namespace Manifest_Persistence
 			return *result;
 		};
 
-		struct Table_Header
-		{
-			size_t totalEntries;//number of base elements to be created		
-			size_t dynamicTableSize{ 0 };//number of bytes to be created for elements + payloads
-		}header;
 		Binary_TableType* entries;		
 	};
 

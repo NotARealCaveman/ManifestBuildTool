@@ -93,15 +93,17 @@ void ImportAndTest()
 
 	std::ifstream bImport{ TEST_PATH + TEST_MDB, std::ios::in | std::ios::binary };
 	auto nLoops = 100000000;
+	nLoops = 1;
 	for(int i = 0 ; i < nLoops;++i)
 	{
-		ManifestBinaryDatabase binaryDatabase = ImportBinaryDatabase(bImport);		
-	for (auto i = 0; i < binaryDatabase.binaryGeometryNodeTable.header.totalEntries*0; ++i)
+		ManifestBinaryDatabase binaryDatabase = ImportBinaryDatabase(bImport);	
+		DLOG(45, "Printing Imported Database:");
+	for (auto i = 0; i < binaryDatabase.binaryGeometryNodeTable.header.totalEntries; ++i)
 	{
-		const auto importObject = binaryDatabase.binaryGeometryNodeTable[i];
-		const auto importGeometry = binaryDatabase.binaryGeometryObjectTable[importObject.header.geometryID];
+		const auto importNode = binaryDatabase.binaryGeometryNodeTable[i];
+		const auto importGeometry = binaryDatabase.binaryGeometryObjectTable[importNode.header.geometryID];
 		const auto importMesh = binaryDatabase.binaryMeshTable[importGeometry.header.meshID];
-		const auto importMaterial = binaryDatabase.binaryMaterialTable[importObject.header.materialID];
+		const auto importMaterial = binaryDatabase.binaryMaterialTable[importNode.header.materialID];
 		const auto importTexture = binaryDatabase.binaryTextureTable[importMaterial.header.diffuseID];
 		DLOG(37, "Reading from file:" << i);
 		DLOG(33, "Mesh Stride:" << importMesh.header.vboStride << " AttributeCode: " << +importMesh.header.activeArrayAttributes << " Vertex Buffer Size: " << importMesh.header.payloadSize << " bytes Vertex Buffer Elements: " << importMesh.header.payloadSize / sizeof(float) << " texture channels: " << +importTexture.header.nChannels << " texture size: " << +importTexture.header.payloadSize);
@@ -123,10 +125,14 @@ void ImportAndTest()
 		std::cout << std::endl;
 		DLOG(31, "Material: " << importMaterial.header.materialID << " MTL(Diffuse): " << importMaterial.header.diffuseID << " MTL(Normal) : " << importMaterial.header.noramlID << " MTL(Parllax) : " << importMaterial.header.parallaxID);
 		DLOG(35, "Texture info - w: " << importTexture.header.width << " h: " << importTexture.header.height << " nChannels: " << +importTexture.header.nChannels << " size: " << importTexture.header.payloadSize);		
-		std::cout << "Texture Data: ";	
+		DLOG(33,"Texture Data: ");	
 		auto nTextureElements{ importTexture.header.payloadSize / sizeof(MFfloat)};
 		for (auto data{ 0 }; data < nTextureElements; ++data)
 			std::cout << importTexture.payload[data] << ", ";
+		std::cout << std::endl;
+		DLOG(32, "Worldspace Data: ");
+		for (auto index{ 0 };index <16;++index)
+			std::cout << importNode.payload[index] << ", ";
 		std::cout << std::endl;				
 	}
 	bImport.seekg(std::ios::beg);
@@ -138,16 +144,16 @@ void BuildAndExport()
 {
 	//for printing purposes
 	auto file = LoadFileContents(TEST_PATH + TEST_GEX);
-	DLOG(31, file);
+	//DLOG(31, file);
 	auto filtered = FilterFile(file);
-	DLOG(32, filtered);	
+	//DLOG(32, filtered);	
 	auto fileContents = PartitionDDLFile(filtered);
 	//begin actual parse
 	//ddl start up
 	Initialize_GEXTypes();
 	Initialize_GEXGenerators();	
 	auto nLoops = 195000;
-	//nLoops = 1;
+	nLoops = 1;
 	auto begin = std::chrono::high_resolution_clock::now();
 	for (auto loop = 0; loop < nLoops; ++loop)
 	{			
@@ -164,6 +170,7 @@ void BuildAndExport()
 			std::ofstream bExport{ TEST_PATH + TEST_MDB, std::ios::out | std::ios::binary };			
 			if (bExport.is_open())
 			{
+				DLOG(45, "Printing Exported Database:");
 				ExportBinaryDatabase(databaseBuilder, bExport);
 				bExport.close();
 			}
@@ -171,7 +178,7 @@ void BuildAndExport()
 		ScratchPad<Byte>{}.Unwind();
 	}	
 	auto end = std::chrono::high_resolution_clock::now();
-	LOG(36, "Total loops: " << nLoops << " avg time/loop: " << (end - begin) / nLoops);	
+	//LOG(36, "Total loops: " << nLoops << " avg time/loop: " << (end - begin) / nLoops);	
 }
 
 void ThreadTest()
@@ -186,13 +193,6 @@ void ThreadTest()
 
 void MessageTest()
 {
-
-}
-
-
-
-void TestLoadTrigger()
-{
 	constexpr int loadEvent = 69;
 	FileSystemMessageType message;
 
@@ -204,29 +204,28 @@ void TestLoadTrigger()
 	constexpr FileSystemObservationToken eo1{ message3 };
 
 	Binary_GeometryNode bNode_import;
-	bNode_import.header.geometryID = 0;
-	bNode_import.header.materialID = 0;
-	bNode_import.header.nodeID = 0;
+	bNode_import.header.geometryID = 2;
+	bNode_import.header.materialID = 2;
+	bNode_import.header.nodeID = 2;
 	bNode_import.header.payloadSize = 0;
 	bNode_import.payload = nullptr;
 	Binary_GeometryObject bObject_import;
-	bObject_import.header.geometryID = 0;
-	bObject_import.header.meshID = 0;
+	bObject_import.header.geometryID = 2;
+	bObject_import.header.meshID = 2;
 	bObject_import.header.morphID = KEY_NOT_PRESENT;
 	bObject_import.header.payloadSize = 0;
 	bObject_import.payload = nullptr;
 	Binary_Material bMaterial_import;
-	bMaterial_import.header.diffuseID = 0;
-	bMaterial_import.header.materialID = 0;
+	bMaterial_import.header.diffuseID = 2;
+	bMaterial_import.header.materialID = 2;
 	bMaterial_import.header.noramlID = KEY_NOT_PRESENT;
 	bMaterial_import.header.diffuseID = KEY_NOT_PRESENT;
 	bMaterial_import.header.payloadSize = sizeof(float) * 3;
 	bMaterial_import.payload = new float[3];
 	float* ptr = reinterpret_cast<float*>(bMaterial_import.payload);
-	ptr[0] = 0;//r 
+	ptr[0] = 2;//r 
 	ptr[1] = 1;//g 
-	ptr[2] = 0;//b 
-
+	ptr[2] = 2;//b 
 
 	FileSystemObserver fsObserver0{ eo0 };
 	FileSystemObserver fsObserver1{ eo1 };
@@ -234,17 +233,13 @@ void TestLoadTrigger()
 		FileSystemEventSpace fsEventSpace;
 		{
 			FileSystemEvent fsEvent;
-			fsEvent.eventToken = message1 | message2 | message3;
-			auto& eventInformation = fsEvent.eventInformation;
-			//event action 1
-			eventInformation.messageTypes.emplace_back(message1);
-			eventInformation.messages.emplace_back(bNode_import);
+			fsEvent.eventToken = message1 | message2 | message3;		
+			//event action 1			
+			fsEvent.messages.emplace_back(std::make_pair(message1, bNode_import));			
 			//event action 2
-			eventInformation.messageTypes.emplace_back(message2);
-			eventInformation.messages.emplace_back(bObject_import);
+			fsEvent.messages.emplace_back(std::make_pair(message2, bObject_import));			
 			//event action 3
-			eventInformation.messageTypes.emplace_back(message3);
-			eventInformation.messages.emplace_back(bMaterial_import);
+			fsEvent.messages.emplace_back(std::make_pair(message3, bMaterial_import));
 			fsEventSpace.RecordEvent(std::move(fsEvent));
 		}
 		fsEventSpace.ObserveEvents(fsObserver0);
@@ -256,8 +251,6 @@ void TestLoadTrigger()
 int main()
 {
 	WINDOWS_COLOR_CONSOLE;	
-
-	TestLoadTrigger();
 
 	//register thread	
 	RegisterProgramExecutiveThread();
@@ -275,9 +268,9 @@ int main()
 	DISABLE
 		ThreadTest();
 	//persistence tests
-	DISABLE
+	//DISABLE
 		BuildAndExport();
-	DISABLE
+	//DISABLE
 		ImportAndTest();
 	//final
 	DISABLE

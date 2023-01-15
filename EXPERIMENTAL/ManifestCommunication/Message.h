@@ -6,30 +6,35 @@
 
 namespace Manifest_Communication
 {
+	//Messages will be paired with EventSpace<ObserveableSystem>::MessageTypes
+	//Messages are type erased containers - this allows multiple messages with varying types of contents to be placed into the same Event snapshot
+	//Messages are copy only - EventSpace<ObserveableSystem>::MessageTypes may only have one observer per type of message, though there may up to be N observers of an event space;N = number of Message Types
 	struct Message
 	{
 		struct MessageBase
-		{
-			virtual void CopyContents(void* copyAddress) const = 0;
+		{			
+			virtual void GetContents(void* copyAddress) const = 0;
 		};
-		template<typename Payload>
-		struct PayloadWrapper : MessageBase
+		template<typename Content>
+		struct ContentWrapper : MessageBase
 		{				
-			PayloadWrapper(const Payload& contents)
-				: payload{ contents } {};
-			PayloadWrapper(PayloadWrapper&& other)
-				: payload{ std::move(other.payload) } {};
-			PayloadWrapper(const PayloadWrapper& other) = delete;
-			void CopyContents(void* copyAddress) const { memcpy(copyAddress, &payload, sizeof(Payload)); };
-			const Payload payload;
+			ContentWrapper(const Content& _content)
+				: content{ _content } {};
+			ContentWrapper(ContentWrapper&& other)
+				: content{ std::move(other.content) } {};
+			ContentWrapper(const ContentWrapper& other) = delete;
+			//moves msg contents to object supplied by observer
+			void GetContents(void* copyAddress) const { memcpy(copyAddress, &content, sizeof(Content)); };
+			const Content content;
 		};		
 		const MessageBase* messageBase;
-		template<typename Payload>
-		Message(const Payload& payload)
-			: messageBase{ new PayloadWrapper{payload} } {};	
+		template<typename Content>
+		Message(const Content& content)
+			: messageBase{ new ContentWrapper{content} } {};
 		Message(Message&& other) noexcept;
 		Message(const Message& other) = delete;		
-		~Message();
-		void CopyMessageContents(void* copyAddress);		
+		~Message();		
+		//invokes move semantics from message to observer object
+		void GetMessageContents(void* copyAddress);		
 	};
 };

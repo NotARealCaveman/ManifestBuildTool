@@ -14,7 +14,7 @@ namespace Manifest_Persistence
 			ForeignKey materialID;
 			
 		}header;
-		void* payload;//represents a transform if present
+		MFfloat* payload;//represents a transform if present
 	};	
 	//see Buffer_Types.cpp for details
 	size_t Convert_MDB(const MDB_GeometryNode& geometryNode,const ObjectRefBuildTable& objectRefBuildTable, const MaterialRefBuildTable& materialRefBuildTable, Binary_GeometryNode& binaryGeometryNode);
