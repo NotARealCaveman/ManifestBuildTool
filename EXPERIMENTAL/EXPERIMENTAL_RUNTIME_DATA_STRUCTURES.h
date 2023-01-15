@@ -12,12 +12,12 @@ using namespace Manifest_Persistence;
 namespace Manifest_Experimental
 {	
 	//loop on exchange while lock is held(1) until released(0)
-	constexpr MFu8 LOCKED{ 1 };
-	constexpr MFu8 UNLOCKED{ 0 };
+	constexpr MFbool LOCKED{ 1 };
+	constexpr MFbool UNLOCKED{ 0 };
 	struct ExchangeLock
 	{
 	protected:
-		std::atomic<MFu8> lock{ UNLOCKED };
+		std::atomic<MFbool> lock{ UNLOCKED };
 	public:
 		//attempts to lock, spins on exchange until locked
 		void Lock();

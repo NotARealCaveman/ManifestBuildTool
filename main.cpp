@@ -232,8 +232,8 @@ void MessageTest()
 	{
 		FileSystemEventSpace fsEventSpace;
 		{
-			FileSystemEvent fsEvent;
-			fsEvent.eventToken = message1 | message2 | message3;		
+			FileSystemEvent fsEvent;			
+			fsEvent.eventToken = message1 | message2 | message3;
 			//event action 1			
 			fsEvent.messages.emplace_back(std::make_pair(message1, bNode_import));			
 			//event action 2

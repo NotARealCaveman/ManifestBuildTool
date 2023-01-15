@@ -2,13 +2,16 @@
 
 using namespace Manifest_Experimental;
 
-//exchange spin lock
+//exchange spin lock - spin locally
 void ExchangeLock::Lock()
 {
-	int waitCount{ 0 };
-	while (lock.exchange(LOCKED, std::memory_order_acquire))++waitCount;
-	if (waitCount)
-		DLOG(36, std::this_thread::get_id() << " waiting on lock(" << waitCount << ")");
+	while (true)
+	{//if currently unlocked !false->true, else remains locked
+		if (!lock.exchange(LOCKED, std::memory_order_acquire))
+			return;
+	//just read lock value without write
+		while (lock.load(std::memory_order_relaxed));
+	}
 };
 
 void ExchangeLock::Unlock()

@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <algorithm>
+#include <atomic>
 
 #include "Observer.h"
 
@@ -35,6 +36,8 @@ namespace Manifest_Communication
 					observer.observedEventMessages.emplace_back(std::move(message));
 					}
 				}
-			}			
+			}	
+			std::atomic<MFu64> currentObservations;
+			std::
 	};
 }
