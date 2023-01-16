@@ -8,9 +8,7 @@ namespace Manifest_Communication
 {
 	class EventSpace
 	{			
-		private:			
-			using Event = ObservableEvent;
-			
+		private:				
 			mutable std::vector<Event> events;
 		public:			
 			void RecordEvent(Event&& event);

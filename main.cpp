@@ -254,6 +254,16 @@ void MessageTest()
 	}	
 }
 
+template<typename T, typename Alloc>
+struct Deleter
+{
+	void operator()(T* p) const
+	{
+		Delete<T, Alloc>(p);
+	}
+};
+
+using SPDeleter = Deleter<double, ScratchPad<double>>;
 
 int main()
 {
@@ -261,7 +271,18 @@ int main()
 	//register thread	
 	RegisterProgramExecutiveThread();
 	//create data stores
-	INIT_MEMORY_RESERVES();		
+	INIT_MEMORY_RESERVES();	
+
+	std::shared_ptr<double> ptr = std::make_shared<double>(1);
+	{
+		std::shared_ptr<double> ptr2(nullptr, SPDeleter{});
+	}
+	{
+		std::shared_ptr<double> ptr3(New<double,ScratchPad<double>>(2), SPDeleter{}, ScratchPad<double>{});
+		DLOG(31, sizeof(SPDeleter));
+		ptr3 = std::make_shared<double>(3);
+	}
+	
 	
 	MEMORYSTATUSEX status;
 	status.dwLength = sizeof(status);

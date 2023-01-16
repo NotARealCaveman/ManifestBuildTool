@@ -27,6 +27,7 @@ namespace Manifest_Communication
 		//holds each event message created during the event
 		std::vector<EventMessage> messages;
 	};	
+	using Event = ObservableEvent;
 	//clears bits of event token with CAS
 	void ClearObservedMessages(const ObservationToken& observationToken, std::atomic<ObservationToken>& eventToken);
 }
