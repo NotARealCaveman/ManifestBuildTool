@@ -7,9 +7,7 @@
 
 namespace Manifest_Communication
 {
-	//Messages will be paired with EventSpace<ObserveableSystem>::MessageTypes
-	//Messages are type erased containers - this allows multiple messages with varying types of contents to be placed into the same Event snapshot
-	//Messages are copy only - EventSpace<ObserveableSystem>::MessageTypes may only have one observer per type of message, though there may up to be N observers of an event space;N = number of Message Types
+	//Messages are type erased containers - this allows multiple messages with varying types of contents to be placed into the same Event snapshot	
 	struct Message
 	{
 		struct MessageBase

@@ -32,7 +32,7 @@ ManifestRuntimeDatabase::ManifestRuntimeDatabase(const ManifestBinaryDatabase& b
 		const auto& node = binaryDatabase.binaryGeometryNodeTable[entry];
 		//add node into runtime
 		auto runtimeID = ss.Crunch();
-		DLOG(36, "Inserting node: " << geometryNodes.geometryNodeTable.tableEntries << " with key " << node.header.nodeID <<" and value: " << runtimeID);
+		//DLOG(36, "Inserting node: " << geometryNodes.geometryNodeTable.tableEntries << " with key " << node.header.nodeID <<" and value: " << runtimeID);
 		geometryNodes.geometryNodeTable.keys[geometryNodes.geometryNodeTable.tableEntries] = node.header.nodeID;
 		geometryNodes.geometryNodeTable.values[geometryNodes.geometryNodeTable.tableEntries] = runtimeID;//ss.Crunch();		
 		//search for nodes geometry
@@ -150,7 +150,7 @@ MFu64* Manifest_Persistence::Simulate(const Simulation& simulation, const MFsize
 void Manifest_Persistence::SimThread(ManifestRuntimeDatabase& runtimeDatabase)
 {	
 	DLOG(35, "SimThread ID: " << std::this_thread::get_id());
-	auto nPhysicsObjects = runtimeDatabase.PullGeometryNodes()->geometryNodeTable.tableEntries;
+	/*auto nPhysicsObjects = runtimeDatabase.PullGeometryNodes()->geometryNodeTable.tableEntries;
 	//nPhysicsObjects = 100000;
 	Simulation simulation;	
 	simulation.bodies.bodyID = new UniqueKey[nPhysicsObjects];
@@ -163,7 +163,7 @@ void Manifest_Persistence::SimThread(ManifestRuntimeDatabase& runtimeDatabase)
 	//sleep and predicition
 	auto simInterval = std::chrono::duration<double>{ 1/50.0 };
 	auto begin = std::chrono::high_resolution_clock::now();	
-	for(;;)
+	for (;;)
 	{			
 		auto prediction = begin + simulation.simulationFrame * simInterval;		
 		//copy results to snapshot
@@ -176,13 +176,15 @@ void Manifest_Persistence::SimThread(ManifestRuntimeDatabase& runtimeDatabase)
 		//sleep if permissible
 		if (prediction > std::chrono::high_resolution_clock::now())
 			std::this_thread::sleep_until(prediction);
-	}
+	}*/
+	FileSystemObserver fsObserver{ UnderlyingType(FileSystemMessageType::TYPE_MDB_GEOMETRYNODE), FileSystem::observerRegister };
+
 }
 
 void Manifest_Persistence::RenderThread(ManifestRuntimeDatabase& runtimeDatabase)
 {	
 	DLOG(35, "RenderThread ID : " << std::this_thread::get_id());
-	auto set = false;
+	/*auto set = false;
 	if (!(set = runtimeDatabase.init.test()))
 		runtimeDatabase.init.wait(set, std::memory_order_relaxed);
 	MFu64 renderFrame = 0;	
@@ -211,5 +213,6 @@ void Manifest_Persistence::RenderThread(ManifestRuntimeDatabase& runtimeDatabase
 		//sleep if permissible
 		if (prediction > std::chrono::high_resolution_clock::now())
 			std::this_thread::sleep_until(prediction);
-	}
+	}*/
+	FileSystemObserver fsObserver{ UnderlyingType(FileSystemMessageType::TYPE_MDB_GEOMETRYOBJECT | FileSystemMessageType::TYPE_MDB_MATERIAL), FileSystem::observerRegister };
 }

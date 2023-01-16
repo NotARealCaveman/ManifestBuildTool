@@ -5,12 +5,14 @@
 
 #include "Binary_Database.h"
 
+#include <EXPERIMENTAL/ManifestCommunication/FileSystem.h>
 #include<EXPERIMENTAL/EXPERIMENTAL_RUNTIME_DATA_STRUCTURES.h>
 #include <EXPERIMENTAL/RNG.h>
 #include <EXPERIMENTAL/Manifest_Allocator.h>
 
 using namespace Manifest_Memory;
 using namespace Manifest_Experimental;
+using namespace Manifest_Communication;
 
 namespace Manifest_Persistence
 {

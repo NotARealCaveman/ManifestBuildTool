@@ -181,14 +181,22 @@ void BuildAndExport()
 	//LOG(36, "Total loops: " << nLoops << " avg time/loop: " << (end - begin) / nLoops);	
 }
 
+void RegiterThread(FileSystemMessageType observation, const std::chrono::time_point<std::chrono::steady_clock, std::chrono::duration<double,std::nano>>& sleepUntil)
+{	
+	std::this_thread::sleep_until(sleepUntil);	
+	FileSystemObserver fsObserver{ UnderlyingType(observation), FileSystem::observerRegister };
+}
+
 void ThreadTest()
 {
 	std::ifstream bImport{ TEST_PATH + TEST_MDB, std::ios::in | std::ios::binary };
 	ManifestRuntimeDatabase runtimeDatabase{ ImportBinaryDatabase(bImport) };
-	std::thread rthread{ RenderThread,std::ref(runtimeDatabase) };
+	std::thread rthread{ RenderThread,std::ref(runtimeDatabase) };	
 	runtimeDatabase.simThreadId = std::this_thread::get_id();
 	runtimeDatabase.renderThreadId = rthread.get_id();
 	SimThread(runtimeDatabase);//runs on main thread	
+	rthread.join();	
+	DLOG(31, "registration value: " << FileSystem::observerRegister.registeredObservationTokens);
 }
 
 void MessageTest()

@@ -9,7 +9,11 @@ bool UniqueObserverRegister::RegisterObserver(const ObservationToken& observatio
 		return false;
 	auto desired = expected | observationToken;
 	while (!registeredObservationTokens.compare_exchange_strong(expected, desired, std::memory_order_release, std::memory_order_relaxed))
-		desired = expected | observationToken;	
+	{		
+		if (expected & observationToken)
+			return false;
+		desired = expected | observationToken;
+	}
 
 	return true;
 }

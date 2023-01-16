@@ -12,7 +12,7 @@ namespace Manifest_Communication
 		{
 			TYPE_MDB_GEOMETRYNODE = pow2(0),
 			TYPE_MDB_GEOMETRYOBJECT = pow2(1),
-			TYPE_MDB_MATERIAL = pow2(2),
+			TYPE_MDB_MATERIAL = pow2(2),			
 		};		
 
 		static UniqueObserverRegister observerRegister;

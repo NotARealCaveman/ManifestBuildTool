@@ -13,7 +13,7 @@ namespace Manifest_Communication
 {	
 	//token that allow access to specific event space messages
 	using ObservationToken = MFu64;	
-	
+	//pairs event message types to messages themselves
 	using EventMessage = std::pair<ObservationToken, Message>;
 
 	//ObservableEvent is a snapshot of all the messages created during an event
@@ -23,9 +23,10 @@ namespace Manifest_Communication
 		ObservableEvent() = default;
 		ObservableEvent(ObservableEvent&& other) noexcept;
 		//encodes messages types present in event using operator|
-		ObservationToken eventToken;
+		std::atomic<ObservationToken> eventToken;
 		//holds each event message created during the event
 		std::vector<EventMessage> messages;
 	};	
-	void ClearObservedMessages(const MFu64& messageType, ObservationToken& eventToken);
+	//clears bits of event token with CAS
+	void ClearObservedMessages(const ObservationToken& observationToken, std::atomic<ObservationToken>& eventToken);
 }
