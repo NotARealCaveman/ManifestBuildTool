@@ -2,7 +2,7 @@
 
 using namespace Manifest_Experimental;
 
-//exchange spin lock - spin locally
+//exchange spin lock - spin locally & back off
 void ExchangeLock::Lock()
 {
 	while (true)
@@ -10,7 +10,8 @@ void ExchangeLock::Lock()
 		if (!lock.exchange(LOCKED, std::memory_order_acquire))
 			return;
 	//just read lock value without write
-		while (lock.load(std::memory_order_relaxed));
+		while (lock.load(std::memory_order_relaxed))
+			for (volatile int i{ 0 }; i < 50; ++i);
 	}
 };
 
