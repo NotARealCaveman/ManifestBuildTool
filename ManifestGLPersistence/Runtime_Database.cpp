@@ -177,7 +177,6 @@ void Manifest_Persistence::SimThread(ManifestRuntimeDatabase& runtimeDatabase)
 		if (prediction > std::chrono::high_resolution_clock::now())
 			std::this_thread::sleep_until(prediction);
 	}*/
-	FileSystemObserver fsObserver{ UnderlyingType(FileSystemMessageType::TYPE_MDB_GEOMETRYNODE), FileSystem::observerRegister };
 
 }
 
@@ -213,6 +212,5 @@ void Manifest_Persistence::RenderThread(ManifestRuntimeDatabase& runtimeDatabase
 		//sleep if permissible
 		if (prediction > std::chrono::high_resolution_clock::now())
 			std::this_thread::sleep_until(prediction);
-	}*/
-	FileSystemObserver fsObserver{ UnderlyingType(FileSystemMessageType::TYPE_MDB_GEOMETRYOBJECT | FileSystemMessageType::TYPE_MDB_MATERIAL), FileSystem::observerRegister };
+	}*/	
 }

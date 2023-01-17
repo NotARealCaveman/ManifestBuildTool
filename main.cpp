@@ -181,12 +181,6 @@ void BuildAndExport()
 	//LOG(36, "Total loops: " << nLoops << " avg time/loop: " << (end - begin) / nLoops);	
 }
 
-void RegiterThread(FileSystemMessageType observation, const std::chrono::time_point<std::chrono::steady_clock, std::chrono::duration<double,std::nano>>& sleepUntil)
-{	
-	std::this_thread::sleep_until(sleepUntil);	
-	FileSystemObserver fsObserver{ UnderlyingType(observation), FileSystem::observerRegister };
-}
-
 void ThreadTest()
 {
 	std::ifstream bImport{ TEST_PATH + TEST_MDB, std::ios::in | std::ios::binary };
@@ -195,12 +189,18 @@ void ThreadTest()
 	runtimeDatabase.simThreadId = std::this_thread::get_id();
 	runtimeDatabase.renderThreadId = rthread.get_id();
 	SimThread(runtimeDatabase);//runs on main thread	
-	rthread.join();	
-	DLOG(31, "registration value: " << FileSystem::observerRegister.registeredObservationTokens);
+	rthread.join();		
+}
+
+void ProcessFunc(std::vector<EventMessage>& messages, void* addy)
+{
+	for (const auto& message : messages)
+		DLOG(31, "This: " << addy << " observed message with type : " << message.first);
 }
 
 void MessageTest()
 {
+
 	constexpr int loadEvent = 69;
 	FileSystemMessageType message;
 
@@ -208,8 +208,8 @@ void MessageTest()
 	constexpr auto message2 = FileSystemMessageType::TYPE_MDB_GEOMETRYOBJECT;
 	constexpr auto message3 = FileSystemMessageType::TYPE_MDB_MATERIAL;
 
-	constexpr FileSystemObservationToken eo0{ UnderlyingType(message1 | message2) };
-	constexpr FileSystemObservationToken eo1{ UnderlyingType(message3) };
+	constexpr FileSystemObservationToken eo0{ UnderlyingType(message1 ) };
+	constexpr FileSystemObservationToken eo1{ UnderlyingType(message2 | message3) };
 	Binary_GeometryNode bNode_import;
 	bNode_import.header.geometryID = 2;
 	bNode_import.header.materialID = 2;
@@ -230,28 +230,26 @@ void MessageTest()
 	bMaterial_import.header.payloadSize = sizeof(float) * 3;
 	bMaterial_import.payload = new float[3];
 	float* ptr = reinterpret_cast<float*>(bMaterial_import.payload);
-	ptr[0] = 2;//r 
+	ptr[0] = 0;//r 
 	ptr[1] = 1;//g 
-	ptr[2] = 2;//b 
+	ptr[2] = 0;//b 
 
-	FileSystemObserver fsObserver0{ eo0,FileSystem::observerRegister };
-	FileSystemObserver fsObserver1{ eo1,FileSystem::observerRegister };
+	FileSystemEventSpace fsEventSpace;
+	FileSystemObserver fsObserver0{ eo0,fsEventSpace.observerRegister };
+	FileSystemObserver fsObserver1{ eo1,fsEventSpace.observerRegister };
 	{
-		FileSystemEventSpace fsEventSpace;
-		{
-			FileSystemEvent fsEvent;			
-			fsEvent.eventToken = UnderlyingType(message1 | message2 | message3);
-			//event action 1			
-			fsEvent.messages.emplace_back(std::make_pair(UnderlyingType(message1), bNode_import));
-			//event action 2
-			fsEvent.messages.emplace_back(std::make_pair(UnderlyingType(message2), bObject_import));
-			//event action 3
-			fsEvent.messages.emplace_back(std::make_pair(UnderlyingType(message3), bMaterial_import));
-			fsEventSpace.RecordEvent(std::move(fsEvent));
-		}
-		fsEventSpace.ObserveEvents(fsObserver0.observationToken, fsObserver0.observedEventMessages);
-		fsEventSpace.ObserveEvents(fsObserver1.observationToken, fsObserver1.observedEventMessages);
+		FileSystemEvent fsEvent;
+		fsEvent.eventToken = UnderlyingType(message1 | message2 | message3);
+		//event action 1			
+		fsEvent.messages.emplace_back(std::make_pair(UnderlyingType(message1), bNode_import));
+		//event action 2
+		fsEvent.messages.emplace_back(std::make_pair(UnderlyingType(message2), bObject_import));
+		//event action 3
+		fsEvent.messages.emplace_back(std::make_pair(UnderlyingType(message3), bMaterial_import));
+		fsEventSpace.NotifyRegisteredObservers(std::move(fsEvent));		
 	}	
+	fsObserver0.ProcessEvents(ProcessFunc);
+	fsObserver1.ProcessEvents(ProcessFunc);
 }
 
 template<typename T, typename Alloc>
@@ -267,6 +265,7 @@ using SPDeleter = Deleter<double, ScratchPad<double>>;
 
 int main()
 {
+
 	WINDOWS_COLOR_CONSOLE;	
 	//register thread	
 	RegisterProgramExecutiveThread();

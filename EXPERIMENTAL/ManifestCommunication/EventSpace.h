@@ -2,18 +2,19 @@
 #include <vector>
 #include <algorithm>
 
-#include "Event.h"
+#include "Observer.h"
 
 namespace Manifest_Communication
 {
-	class EventSpace
+	//Eventspaces are simply event brokers
+	//they have the cavet that they must be fully subscribed to the degree of the event token they're recving before they may notify of an event
+	struct EventSpace
 	{			
-		private:				
-			mutable std::vector<Event> events;
-		public:			
-			void RecordEvent(Event&& event);
-			//processes events based on observation token and removes bits from observed event's event token
-			void ObserveEvents(const ObservationToken& observationToken, std::vector<EventMessage>& eventMessages);
+		public:		
+			//Doles out event messages based on observer tokens
+			void NotifyRegisteredObservers(Event&& event);
+
+			UniqueObserverRegister observerRegister;
 	};
 
 }
