@@ -2,6 +2,7 @@
 #include <chrono>
 #include <vector>	
 #include <functional>
+#include <string>
 
 #include "Binary_Database.h"
 
@@ -114,6 +115,8 @@ namespace Manifest_Persistence
 	};	
 
 	void SimThread(ManifestRuntimeDatabase& runtimeDatabase);
-	void RenderThread(ManifestRuntimeDatabase& runtimeDatabase);	
+	void RenderThread(ManifestRuntimeDatabase& runtimeDatabase);
+	void MessageThread();
+	void ProcessFunc(std::vector<Message>& messages, void* addy);
 }
 

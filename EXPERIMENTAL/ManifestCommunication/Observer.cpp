@@ -32,18 +32,18 @@ Observer::Observer(const ObservationToken& observationToken, UniqueObserverRegis
 	assert(("Failed to assert Unique Observation Token", isUnique));
 }
 
-void Observer::ObserveEvent(EventMessage&& eventMessage)
+void Observer::ObserveEvent(Message&& message)
 {
 	messageLock.Lock();
-	observedEventMessages.emplace_back(std::move(eventMessage));
+	observedEventMessages.emplace_back(std::move(message));
 	messageLock.Unlock();
 }
 
 void Observer::ProcessEvents(const MessageProcessingFunction& processFunction)
 {
 	messageLock.Lock();
-	std::vector<EventMessage> messages = std::move(observedEventMessages);
+	std::vector<Message> messages = std::move(observedEventMessages);
 	messageLock.Unlock();
 
-	processFunction(messages,this);
+	processFunction(messages,this);	
 }

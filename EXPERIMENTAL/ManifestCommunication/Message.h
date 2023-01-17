@@ -7,6 +7,9 @@
 
 namespace Manifest_Communication
 {
+	//token that allow access to specific event space messages
+	using ObservationToken = MFu64;
+
 	//Messages are type erased containers - this allows multiple messages with varying types of contents to be placed into the same Event snapshot	
 	struct Message
 	{
@@ -25,15 +28,17 @@ namespace Manifest_Communication
 			//moves msg contents to object supplied by observer
 			void GetContents(void* copyAddress) const { memcpy(copyAddress, &content, sizeof(Content)); };
 			const Content content;
-		};		
-		const MessageBase* messageBase;
+		};				
 		template<typename Content>
-		Message(const Content& content)
-			: messageBase{ new ContentWrapper{content} } {};
+		Message(const Content& content, const ObservationToken& _messageToken)
+			: messageBase{ new ContentWrapper{content} }, messageToken{ _messageToken } {};
 		Message(Message&& other) noexcept;
 		Message(const Message& other) = delete;		
 		~Message();		
 		//invokes move semantics from message to observer object
 		void GetMessageContents(void* copyAddress);		
+
+		const MessageBase* messageBase;
+		const ObservationToken messageToken;
 	};
 };

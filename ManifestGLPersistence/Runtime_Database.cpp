@@ -147,6 +147,17 @@ MFu64* Manifest_Persistence::Simulate(const Simulation& simulation, const MFsize
 	return new MFu64{simulation.simulationFrame};
 }
 
+void Manifest_Persistence::ProcessFunc(std::vector<Message>& messages, void* addy)
+{	
+	for (const auto& message : messages)
+	{
+		const volatile int volatile i = message.messageToken;
+		//std::string output{ "This: " + std::to_string((uintptr_t)addy)+ " observed message with type : " + std::to_string(message.messageToken) };
+		//DLOG(31, output);
+	}
+}
+FileSystemEventSpace FILESYSTEMEVENTSPACE;
+
 void Manifest_Persistence::SimThread(ManifestRuntimeDatabase& runtimeDatabase)
 {	
 	DLOG(35, "SimThread ID: " << std::this_thread::get_id());
@@ -177,7 +188,10 @@ void Manifest_Persistence::SimThread(ManifestRuntimeDatabase& runtimeDatabase)
 		if (prediction > std::chrono::high_resolution_clock::now())
 			std::this_thread::sleep_until(prediction);
 	}*/
-
+	constexpr FileSystemObservationToken simFSObservationToken{ UnderlyingType(FileSystem::MessageTypes::TYPE_MDB_GEOMETRYNODE) };
+	FileSystemObserver simFSObserver{ simFSObservationToken,FILESYSTEMEVENTSPACE.observerRegister };
+	while (1)
+		simFSObserver.ProcessEvents(ProcessFunc);
 }
 
 void Manifest_Persistence::RenderThread(ManifestRuntimeDatabase& runtimeDatabase)
@@ -213,4 +227,84 @@ void Manifest_Persistence::RenderThread(ManifestRuntimeDatabase& runtimeDatabase
 		if (prediction > std::chrono::high_resolution_clock::now())
 			std::this_thread::sleep_until(prediction);
 	}*/	
+	constexpr FileSystemObservationToken renderFSObservationToken{ UnderlyingType(FileSystemMessageType::TYPE_MDB_GEOMETRYOBJECT | FileSystemMessageType::TYPE_MDB_MATERIAL) };
+	FileSystemObserver renderFSObserver{ renderFSObservationToken,FILESYSTEMEVENTSPACE.observerRegister };
+	while (1)	
+		renderFSObserver.ProcessEvents(ProcessFunc);	
+}
+
+void Manifest_Persistence::MessageThread()
+{
+	Binary_GeometryNode bNode_import;
+	bNode_import.header.geometryID = 2;
+	bNode_import.header.materialID = 2;
+	bNode_import.header.nodeID = 2;
+	bNode_import.header.payloadSize = 0;
+	bNode_import.payload = nullptr;
+	Binary_GeometryObject bObject_import;
+	bObject_import.header.geometryID = 2;
+	bObject_import.header.meshID = 2;
+	bObject_import.header.morphID = KEY_NOT_PRESENT;
+	bObject_import.header.payloadSize = 0;
+	bObject_import.payload = nullptr;
+	Binary_Material bMaterial_import;
+	bMaterial_import.header.diffuseID = 2;
+	bMaterial_import.header.materialID = 2;
+	bMaterial_import.header.noramlID = KEY_NOT_PRESENT;
+	bMaterial_import.header.diffuseID = KEY_NOT_PRESENT;
+	bMaterial_import.header.payloadSize = sizeof(float) * 3;
+	bMaterial_import.payload = new float[3];
+	float* ptr = reinterpret_cast<float*>(bMaterial_import.payload);
+	ptr[0] = 0;//r 
+	ptr[1] = 1;//g 
+	ptr[2] = 0;//b
+	constexpr auto message1 = FileSystemMessageType::TYPE_MDB_GEOMETRYNODE;
+	constexpr auto message2 = FileSystemMessageType::TYPE_MDB_GEOMETRYOBJECT;
+	constexpr auto message3 = FileSystemMessageType::TYPE_MDB_MATERIAL;
+
+	xoshiro256ss_state rand;	
+	auto sleepUntil = std::chrono::high_resolution_clock::now() + std::chrono::duration<double, std::milli > (1750);
+	std::this_thread::sleep_until(sleepUntil);
+	while (1)			
+	{		
+		FileSystemEvent fsEvent;
+		//switch (rand.Crunch() % 3)
+		switch (1)
+		{
+			case 0:
+				fsEvent.eventToken = UnderlyingType(message1 | message2 | message3);
+				//event action 1			
+				fsEvent.messages.emplace_back(Message{ bNode_import,UnderlyingType(message1) });
+				//event action 2
+				fsEvent.messages.emplace_back(Message{ bObject_import,UnderlyingType(message2) });
+				//event action 3
+				fsEvent.messages.emplace_back(Message{ bMaterial_import,UnderlyingType(message3) });
+				//event action 1			
+				fsEvent.messages.emplace_back(Message{ bNode_import,UnderlyingType(message1) });
+				//event action 2
+				fsEvent.messages.emplace_back(Message{ bObject_import,UnderlyingType(message2) });
+				//event action 3
+				fsEvent.messages.emplace_back(Message{ bMaterial_import,UnderlyingType(message3) });
+				break;
+			case 1:
+				fsEvent.eventToken = UnderlyingType(message1);
+				//event action 1			
+				fsEvent.messages.emplace_back(Message{ bNode_import,UnderlyingType(message1) });
+				fsEvent.messages.emplace_back(Message{ bNode_import,UnderlyingType(message1) });
+				fsEvent.messages.emplace_back(Message{ bNode_import,UnderlyingType(message1) });
+				fsEvent.messages.emplace_back(Message{ bNode_import,UnderlyingType(message1) });
+				fsEvent.messages.emplace_back(Message{ bNode_import,UnderlyingType(message1) });
+				break;
+			case 2:				
+				fsEvent.eventToken = UnderlyingType(message1 | message2 | message3);
+				//event action 1			
+				fsEvent.messages.emplace_back(Message{ bNode_import,UnderlyingType(message1) });
+				//event action 2
+				fsEvent.messages.emplace_back(Message{ bObject_import,UnderlyingType(message2) });
+				//event action 3
+				fsEvent.messages.emplace_back(Message{ bMaterial_import,UnderlyingType(message3) });
+				break;
+		}
+		FILESYSTEMEVENTSPACE.NotifyRegisteredObservers(std::move(fsEvent));
+	}
 }

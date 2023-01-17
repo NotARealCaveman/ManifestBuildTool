@@ -9,7 +9,7 @@ void EventSpace::NotifyRegisteredObservers(Event&& event)
 	{
 		auto& observers = observerRegister.registeredObservers;
 		auto observer = std::find_if(observers.begin(), observers.end(), [&](Observer* observer)
-			{return (observer->observationToken & message.first); });
+			{return (observer->observationToken & message.messageToken); });
 		assert(("no observer", observer != observers.end()));
 		(*observer)->ObserveEvent(std::move(message));
 	}

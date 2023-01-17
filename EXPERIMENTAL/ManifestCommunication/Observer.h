@@ -38,11 +38,11 @@ namespace Manifest_Communication
 	{
 	private:
 		friend EventSpace;
-		using MessageProcessingFunction = void(*)(std::vector<EventMessage>&,void*);	
+		using MessageProcessingFunction = void(*)(std::vector<Message>&,void*);
 		//Moves into messages - spins if moving for processing
-		void ObserveEvent(EventMessage&& eventMessage);
+		void ObserveEvent(Message&& message);
 
-		std::vector<EventMessage> observedEventMessages;
+		std::vector<Message> observedEventMessages;
 		ExchangeLock messageLock;
 	public:
 		Observer(const ObservationToken& observationToken, UniqueObserverRegister& uniqueObserverRegister);		

@@ -15,10 +15,10 @@ namespace Manifest_Communication
 			TYPE_MDB_MATERIAL = pow2(2),			
 		};				
 	};
-	using FileSystem= ObersvableFileSystem;
+	using FileSystem = ObersvableFileSystem;
 	using FileSystemMessageType = FileSystem::MessageTypes;
 	using FileSystemObservationToken = ObservationToken;
 	using FileSystemEvent = ObservableEvent;
 	using FileSystemObserver = Observer;
-	using FileSystemEventSpace = EventSpace;	
+	using FileSystemEventSpace = EventSpace;		
 }

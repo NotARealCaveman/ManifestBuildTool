@@ -188,22 +188,14 @@ void ThreadTest()
 	std::thread rthread{ RenderThread,std::ref(runtimeDatabase) };	
 	runtimeDatabase.simThreadId = std::this_thread::get_id();
 	runtimeDatabase.renderThreadId = rthread.get_id();
+	std::thread mThread{ MessageThread };
 	SimThread(runtimeDatabase);//runs on main thread	
 	rthread.join();		
 }
 
-void ProcessFunc(std::vector<EventMessage>& messages, void* addy)
-{
-	for (const auto& message : messages)
-		DLOG(31, "This: " << addy << " observed message with type : " << message.first);
-}
 
 void MessageTest()
 {
-
-	constexpr int loadEvent = 69;
-	FileSystemMessageType message;
-
 	constexpr auto message1 = FileSystemMessageType::TYPE_MDB_GEOMETRYNODE;
 	constexpr auto message2 = FileSystemMessageType::TYPE_MDB_GEOMETRYOBJECT;
 	constexpr auto message3 = FileSystemMessageType::TYPE_MDB_MATERIAL;
@@ -241,11 +233,11 @@ void MessageTest()
 		FileSystemEvent fsEvent;
 		fsEvent.eventToken = UnderlyingType(message1 | message2 | message3);
 		//event action 1			
-		fsEvent.messages.emplace_back(std::make_pair(UnderlyingType(message1), bNode_import));
+		fsEvent.messages.emplace_back(Message{ bNode_import,UnderlyingType(message1) });		
 		//event action 2
-		fsEvent.messages.emplace_back(std::make_pair(UnderlyingType(message2), bObject_import));
+		fsEvent.messages.emplace_back(Message{ bObject_import,UnderlyingType(message2) });
 		//event action 3
-		fsEvent.messages.emplace_back(std::make_pair(UnderlyingType(message3), bMaterial_import));
+		fsEvent.messages.emplace_back(Message{ bMaterial_import,UnderlyingType(message3) });
 		fsEventSpace.NotifyRegisteredObservers(std::move(fsEvent));		
 	}	
 	fsObserver0.ProcessEvents(ProcessFunc);
@@ -282,7 +274,6 @@ int main()
 		ptr3 = std::make_shared<double>(3);
 	}
 	
-	
 	MEMORYSTATUSEX status;
 	status.dwLength = sizeof(status);
 	GlobalMemoryStatusEx(&status);
@@ -290,7 +281,7 @@ int main()
 	//db threading
 	//DISABLE
 		MessageTest();
-	DISABLE
+	//DISABLE
 		ThreadTest();
 	//persistence tests
 	DISABLE
