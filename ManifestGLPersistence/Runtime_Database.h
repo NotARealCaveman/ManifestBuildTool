@@ -76,12 +76,6 @@ namespace Manifest_Persistence
 	};
 	MFu64* Simulate(const Simulation& simulation, const MFsize nBodies);
 
-
-	enum class DatabaseInitializerTypes
-	{
-		STATE_INITIALIZER
-	};
-
 	//Currently exploring a push/pull paradigm for updating and centralizing shared game state in the runtime database
 	class ManifestRuntimeDatabase
 	{

@@ -13,10 +13,7 @@ namespace Manifest_Communication
 	//Messages are type erased containers - this allows multiple messages with varying types of contents to be placed into the same Event snapshot	
 	struct Message
 	{
-		struct MessageBase
-		{			
-			virtual void GetContents(void* copyAddress) const = 0;
-		};
+		struct MessageBase{};
 		template<typename Content>
 		struct ContentWrapper : MessageBase
 		{				
@@ -26,9 +23,7 @@ namespace Manifest_Communication
 				: content{ std::move(_content) } {};
 			ContentWrapper(ContentWrapper&& other)
 				: content{ std::move(other.content) } {};
-			ContentWrapper(const ContentWrapper& other) = delete;
-			//moves msg contents to object supplied by observer
-			void GetContents(void* copyAddress) const { memcpy(copyAddress, &content, sizeof(Content)); };
+			ContentWrapper(const ContentWrapper& other) = delete;			
 			const Content content;
 		};				
 		template<typename Content>
@@ -40,10 +35,16 @@ namespace Manifest_Communication
 		Message(Message&& other) noexcept;
 		Message(const Message& other) = delete;		
 		~Message();		
-		//invokes move semantics from message to observer object
-		void GetMessageContents(void* copyAddress);		
-
-		const MessageBase* messageBase; 
+		//transfers ownserhip of the resource - new owner MUST delete
+		template<typename Content>
+		ContentWrapper<Content>* GetMessageContent()
+		{
+			ContentWrapper<Content>* result = reinterpret_cast<ContentWrapper<Content>*>(messageBase);
+			messageBase = nullptr;
+			return result;
+		}
+				
 		const ObservationToken messageToken;				
+		MessageBase* messageBase;
 	};
 };

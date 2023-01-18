@@ -15,37 +15,41 @@ void ObersvableFileSystem::LoadMBD(const std::string& mbd, EventSpace& eventSpac
 		Material material;
 		material.materialIDs[0] = bImportMaterial.header.diffuseID;
 		material.materialIDs[1] = bImportMaterial.header.normalID;
-		material.materialIDs[2] = bImportMaterial.header.diffuseID;
+		material.materialIDs[2] = bImportMaterial.header.parallaxID;
 		event.messages.emplace_back(Message {UnderlyingType(MessageTypes::MBD_MATERIAL),material });
 	}	
 	for (auto texture{ 0 }; texture < binaryDatabase.binaryTextureTable.header.totalEntries; ++texture)
 	{
 		event.eventToken |= UnderlyingType(MessageTypes::MBD_TEXTURE);
-		auto& bImportTexture= binaryDatabase.binaryTextureTable.entries[texture];		
-		auto textureDataCopy = bImportTexture;
-		constexpr auto iFloatSize = 1.0f / sizeof(MFfloat);
-		//copy texture and payload for deffered processing - this is done so the scratchpad may be attempted to be unwound now
-		textureDataCopy.payload = new MFfloat[bImportTexture.header.payloadSize * iFloatSize];
-		memcpy(textureDataCopy.payload, bImportTexture.payload, textureDataCopy.header.payloadSize);		
-		event.messages.emplace_back(Message {UnderlyingType(MessageTypes::MBD_TEXTURE), textureDataCopy});
-	}
-	ScratchPad<Byte>{}.Unwind();//attempt to unwind
+		auto& bImportTexture= binaryDatabase.binaryTextureTable.entries[texture];	
+		auto textureCopy = bImportTexture;
+		textureCopy.payload = new float[3];
+		memcpy(textureCopy.payload, bImportTexture.payload, sizeof(float) * 3);
+		event.messages.emplace_back(Message {UnderlyingType(MessageTypes::MBD_TEXTURE), textureCopy });
+	}	
+	ScratchPad<Byte>{}.Unwind();
 	eventSpace.NotifyRegisteredObservers(std::move(event));
 }
 
-Message* Manifest_Communication::TEST_PROCESS_FUNC(std::vector<Message>& messages, void* addy)
+Message* Manifest_Communication::TEST_PROCESS_FUNC(std::vector<Message>& messages)
 {	
-
 	for (auto& message : messages)
 	{
 		switch (message.messageToken)
 		{
 			case UnderlyingType(FileSystemMessageType::MBD_MATERIAL):
+				//create material table entry
 				break;
-			case UnderlyingType(FileSystemMessageType::MBD_TEXTURE):
+			case UnderlyingType(FileSystemMessageType::MBD_TEXTURE):				
+				Message::ContentWrapper<Binary_Texture>* binaryTexture = message.GetMessageContent<Binary_Texture>();
+				//create opengl id
+				//release copy memory
+				delete binaryTexture->content.payload;
+				//relase message
+				delete binaryTexture;
+				//create texture table entry
 				break;
 		}
 	}
-
 	return nullptr;
 }

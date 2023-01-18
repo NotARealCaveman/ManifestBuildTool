@@ -13,9 +13,3 @@ Message::~Message()
 	if (messageBase)
 		delete messageBase;
 }
-
-
-void Message::GetMessageContents(void* copyAddress)
-{
-	messageBase->GetContents(copyAddress);
-}

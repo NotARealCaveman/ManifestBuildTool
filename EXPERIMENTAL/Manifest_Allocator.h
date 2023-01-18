@@ -122,7 +122,7 @@ namespace Manifest_Memory
             void Unwind()
             {
                 auto memoryHandles = GetThreadMemoryHandles();
-                //DLOG(36, "Unwinding: " << (uintptr_t)(memoryHandles->scratchPadHeap - memoryHandles->scratchPadBegin) <<" Bytes");
+                DLOG(36, "Unwinding: " << (uintptr_t)(memoryHandles->scratchPadHeap - memoryHandles->scratchPadBegin) <<" Bytes");
                 memoryHandles->scratchPadHeap = memoryHandles->scratchPadBegin;
                 memset(memoryHandles->scratchPadBegin, 0, (uintptr_t)memoryHandles->scratchPadEnd - (uintptr_t)memoryHandles->scratchPadBegin);
             }

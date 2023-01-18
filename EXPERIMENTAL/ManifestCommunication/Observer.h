@@ -39,7 +39,7 @@ namespace Manifest_Communication
 	private:
 		friend EventSpace;
 		//allows meta messages to be generated
-		using MessageProcessingFunction = Message*(*)(std::vector<Message>&,void*);
+		using MessageProcessingFunction = Message*(*)(std::vector<Message>&);
 		//Moves into messages - spins if moving for processing
 		void ObserveEvent(Message&& message);
 

@@ -1,6 +1,7 @@
 #pragma once
 #include "EventSpace.h"
 
+
 #include <ManifestGLUtility/DebugLogger.h>
 
 #include <ManifestGLPersistence/Binary_Database.h>
@@ -22,7 +23,7 @@ namespace Manifest_Communication
 		void LoadMBD(const std::string& mbd, EventSpace& eventSpace);
 	};
 
-	Message* TEST_PROCESS_FUNC(std::vector<Message>& messages, void* addy);
+	Message* TEST_PROCESS_FUNC(std::vector<Message>& messages);
 
 	using FileSystem = ObersvableFileSystem;
 	using FileSystemMessageType = FileSystem::MessageTypes;
