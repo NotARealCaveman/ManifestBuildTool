@@ -3,7 +3,7 @@
 using namespace Manifest_Communication;
 
 Message::Message(Message&& other) noexcept
-	: messageBase{ std::move(other.messageBase) }, messageToken{ other.messageToken }
+	: messageToken{ other.messageToken } , messageBase{ std::move(other.messageBase) }
 {
 	other.messageBase = nullptr;
 }

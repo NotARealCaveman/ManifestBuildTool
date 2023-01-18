@@ -22,6 +22,8 @@ namespace Manifest_Communication
 		{				
 			ContentWrapper(const Content& _content)
 				: content{ _content } {};
+			ContentWrapper(Content&& _content)
+				: content{ std::move(_content) } {};
 			ContentWrapper(ContentWrapper&& other)
 				: content{ std::move(other.content) } {};
 			ContentWrapper(const ContentWrapper& other) = delete;
@@ -30,15 +32,18 @@ namespace Manifest_Communication
 			const Content content;
 		};				
 		template<typename Content>
-		Message(const Content& content, const ObservationToken& _messageToken)
-			: messageBase{ new ContentWrapper{content} }, messageToken{ _messageToken } {};
+		Message(const ObservationToken& _messageToken, const Content& content)
+			: messageToken{ _messageToken }, messageBase{ new ContentWrapper{content} } {};
+		template<typename Content>
+		Message(const ObservationToken& _messageToken, Content&& content)
+			: messageToken{ _messageToken }, messageBase{ new ContentWrapper{std::move(content)} } {};
 		Message(Message&& other) noexcept;
 		Message(const Message& other) = delete;		
 		~Message();		
 		//invokes move semantics from message to observer object
 		void GetMessageContents(void* copyAddress);		
 
-		const MessageBase* messageBase;
-		const ObservationToken messageToken;
+		const MessageBase* messageBase; 
+		const ObservationToken messageToken;				
 	};
 };

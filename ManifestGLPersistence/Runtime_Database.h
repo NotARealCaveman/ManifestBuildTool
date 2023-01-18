@@ -7,7 +7,7 @@
 #include "Binary_Database.h"
 
 #include <EXPERIMENTAL/ManifestCommunication/FileSystem.h>
-#include<EXPERIMENTAL/EXPERIMENTAL_RUNTIME_DATA_STRUCTURES.h>
+#include <EXPERIMENTAL/EXPERIMENTAL_RUNTIME_DATA_STRUCTURES.h>
 #include <EXPERIMENTAL/RNG.h>
 #include <EXPERIMENTAL/Manifest_Allocator.h>
 
@@ -19,7 +19,7 @@ namespace Manifest_Persistence
 {
 	typedef MFu32 GraphicID;	
 
-	typedef Table<PrimaryKey, GraphicID> GeometryObjectTable;
+	using GeometryObjectTable = Table<PrimaryKey, GraphicID>;
 	struct GeometryObjects
 	{
 		GeometryObjectTable geometryObjectTable;//pairs database mesh IDs to runtime ids
@@ -31,12 +31,18 @@ namespace Manifest_Persistence
 		inline const GraphicID& operator[](const MFint32& index) { return materialIDs[index]; };
 	};
 
-	typedef Table<PrimaryKey, Material> MaterialTable;
+	using MaterialTable = Table<PrimaryKey, Material>;
 	struct Materials
 	{
 		MaterialTable materialTable;//pairs database mtls to runtime ids
 	};
 
+	using Texture = MFu32;
+	using TextureTable = Table<PrimaryKey, Texture>;
+	struct Textures
+	{
+		TextureTable textureTable;
+	};
 	//this reference system may require some "smart" tracking for multithreading/general persistence
 	typedef Table<PrimaryKey, UniqueKey> GeometryNodeTable;
 	struct GeometryNodes
@@ -86,6 +92,7 @@ namespace Manifest_Persistence
 			GeometryNodes geometryNodes;
 			GeometryObjects geometryObjects;
 			Materials materials;
+			Textures textures;
 
 			SimulationSnapshot committedSimulation;
 
@@ -106,7 +113,9 @@ namespace Manifest_Persistence
 			GeometryObjects* PullGeometryObjects();
 
 			void PushMaterials();
-			Materials* PullMaterials();			
+			Materials* PullMaterials();		
+
+
 
 			std::atomic_flag init = ATOMIC_FLAG_INIT;		
 
@@ -116,7 +125,6 @@ namespace Manifest_Persistence
 
 	void SimThread(ManifestRuntimeDatabase& runtimeDatabase);
 	void RenderThread(ManifestRuntimeDatabase& runtimeDatabase);
-	void MessageThread();
-	void ProcessFunc(std::vector<Message>& messages, void* addy);
+	void MessageThread();	
 }
 

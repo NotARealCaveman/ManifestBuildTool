@@ -20,8 +20,8 @@ using namespace Manifest_Experimental;
 using namespace Manifest_Communication;
 
 const std::string TEST_PATH{ "C:\\Users\\Droll\\Desktop\\Game\\testing\\" };
-const std::string TEST_GEX{ "Test2.gex" };
-const std::string TEST_MDB{ "Test2.mdb" };
+const std::string TEST_GEX{ "Test1.gex" };
+const std::string TEST_MDB{ "Test1.mdb" };
 
 void RuntimeTest()
 {
@@ -123,7 +123,7 @@ void ImportAndTest()
 		for (auto index = 0; index < nIndices; ++index)
 			std::cout << reinterpret_cast<uint32_t*>(beginIndices)[index] << ",";
 		std::cout << std::endl;
-		DLOG(31, "Material: " << importMaterial.header.materialID << " MTL(Diffuse): " << importMaterial.header.diffuseID << " MTL(Normal) : " << importMaterial.header.noramlID << " MTL(Parllax) : " << importMaterial.header.parallaxID);
+		DLOG(31, "Material: " << importMaterial.header.materialID << " MTL(Diffuse): " << importMaterial.header.diffuseID << " MTL(Normal) : " << importMaterial.header.normalID << " MTL(Parllax) : " << importMaterial.header.parallaxID);
 		DLOG(35, "Texture info - w: " << importTexture.header.width << " h: " << importTexture.header.height << " nChannels: " << +importTexture.header.nChannels << " size: " << importTexture.header.payloadSize);		
 		DLOG(33,"Texture Data: ");	
 		auto nTextureElements{ importTexture.header.payloadSize / sizeof(MFfloat)};
@@ -188,7 +188,7 @@ void ThreadTest()
 	std::thread rthread{ RenderThread,std::ref(runtimeDatabase) };	
 	runtimeDatabase.simThreadId = std::this_thread::get_id();
 	runtimeDatabase.renderThreadId = rthread.get_id();
-	std::thread mThread{ MessageThread };
+	//std::thread mThread{ MessageThread };
 	SimThread(runtimeDatabase);//runs on main thread	
 	rthread.join();		
 }
@@ -196,52 +196,17 @@ void ThreadTest()
 
 void MessageTest()
 {
-	constexpr auto message1 = FileSystemMessageType::TYPE_MDB_GEOMETRYNODE;
-	constexpr auto message2 = FileSystemMessageType::TYPE_MDB_GEOMETRYOBJECT;
-	constexpr auto message3 = FileSystemMessageType::TYPE_MDB_MATERIAL;
-
-	constexpr FileSystemObservationToken eo0{ UnderlyingType(message1 ) };
-	constexpr FileSystemObservationToken eo1{ UnderlyingType(message2 | message3) };
-	Binary_GeometryNode bNode_import;
-	bNode_import.header.geometryID = 2;
-	bNode_import.header.materialID = 2;
-	bNode_import.header.nodeID = 2;
-	bNode_import.header.payloadSize = 0;
-	bNode_import.payload = nullptr;
-	Binary_GeometryObject bObject_import;
-	bObject_import.header.geometryID = 2;
-	bObject_import.header.meshID = 2;
-	bObject_import.header.morphID = KEY_NOT_PRESENT;
-	bObject_import.header.payloadSize = 0;
-	bObject_import.payload = nullptr;
-	Binary_Material bMaterial_import;
-	bMaterial_import.header.diffuseID = 2;
-	bMaterial_import.header.materialID = 2;
-	bMaterial_import.header.noramlID = KEY_NOT_PRESENT;
-	bMaterial_import.header.diffuseID = KEY_NOT_PRESENT;
-	bMaterial_import.header.payloadSize = sizeof(float) * 3;
-	bMaterial_import.payload = new float[3];
-	float* ptr = reinterpret_cast<float*>(bMaterial_import.payload);
-	ptr[0] = 0;//r 
-	ptr[1] = 1;//g 
-	ptr[2] = 0;//b 
-
+	
+	//set up event space and observers	
 	FileSystemEventSpace fsEventSpace;
-	FileSystemObserver fsObserver0{ eo0,fsEventSpace.observerRegister };
-	FileSystemObserver fsObserver1{ eo1,fsEventSpace.observerRegister };
-	{
-		FileSystemEvent fsEvent;
-		fsEvent.eventToken = UnderlyingType(message1 | message2 | message3);
-		//event action 1			
-		fsEvent.messages.emplace_back(Message{ bNode_import,UnderlyingType(message1) });		
-		//event action 2
-		fsEvent.messages.emplace_back(Message{ bObject_import,UnderlyingType(message2) });
-		//event action 3
-		fsEvent.messages.emplace_back(Message{ bMaterial_import,UnderlyingType(message3) });
-		fsEventSpace.NotifyRegisteredObservers(std::move(fsEvent));		
-	}	
-	fsObserver0.ProcessEvents(ProcessFunc);
-	fsObserver1.ProcessEvents(ProcessFunc);
+	FileSystemObservationToken fsToken{ UnderlyingType(FileSystemMessageType::MBD_MATERIAL | FileSystemMessageType::MBD_TEXTURE) };
+	FileSystemObserver fsObserver{fsToken,fsEventSpace.observerRegister};
+	//create observed system
+	FileSystem fileSystem;
+	//load database and send fs messages
+	fileSystem.LoadMBD(TEST_PATH + TEST_MDB,fsEventSpace);
+	fsObserver.ProcessEvents(TEST_PROCESS_FUNC);
+	
 }
 
 template<typename T, typename Alloc>
@@ -273,7 +238,6 @@ int main()
 		DLOG(31, sizeof(SPDeleter));
 		ptr3 = std::make_shared<double>(3);
 	}
-	
 	MEMORYSTATUSEX status;
 	status.dwLength = sizeof(status);
 	GlobalMemoryStatusEx(&status);
@@ -281,7 +245,7 @@ int main()
 	//db threading
 	//DISABLE
 		MessageTest();
-	//DISABLE
+	DISABLE
 		ThreadTest();
 	//persistence tests
 	DISABLE

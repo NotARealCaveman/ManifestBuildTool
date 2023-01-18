@@ -43,7 +43,7 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_Material& material, const Tex
 					binaryMaterial.header.diffuseID = texture.textureID;
 					break;
 				case TextureTypes::NORMAL_TEXTURE:
-					binaryMaterial.header.noramlID = texture.textureID;
+					binaryMaterial.header.normalID = texture.textureID;
 					break;
 				case TextureTypes::PARALLAX_TEXTURE:
 					binaryMaterial.header.parallaxID = texture.textureID;
@@ -51,7 +51,7 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_Material& material, const Tex
 				DEFAULT_BREAK
 			}
 		}
-	DLOG(33, "Converting mdb_mtl with mtlID, tdID, tnID, tpID: " << material.materialID << " " << binaryMaterial.header.diffuseID << " " << binaryMaterial.header.noramlID << " "<< binaryMaterial.header.parallaxID);
+	DLOG(33, "Converting mdb_mtl with mtlID, tdID, tnID, tpID: " << material.materialID << " " << binaryMaterial.header.diffuseID << " " << binaryMaterial.header.normalID << " "<< binaryMaterial.header.parallaxID);
 	return EntrySize(binaryMaterial);
 }
 

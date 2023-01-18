@@ -13,7 +13,7 @@ namespace Manifest_Persistence
 			MFsize payloadSize{ 0 };//amount of raw bytes comprising the material texture data
 			PrimaryKey materialID;//stored database id of the entry
 			ForeignKey diffuseID{KEY_NOT_PRESENT};//maps the texture id to the materials diffuse component
-			ForeignKey noramlID{ KEY_NOT_PRESENT };//maps the texture id to the materials normal component
+			ForeignKey normalID{ KEY_NOT_PRESENT };//maps the texture id to the materials normal component
 			ForeignKey parallaxID{ KEY_NOT_PRESENT };//maps the texture id to the materials parallax component
 		}header;
 		void* payload;//contains diffuse->normal->parallax material data

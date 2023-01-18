@@ -63,7 +63,7 @@ ManifestRuntimeDatabase::ManifestRuntimeDatabase(const ManifestBinaryDatabase& b
 			instance = &(materials.materialTable.keys[materials.materialTable.tableEntries] = material.header.materialID);
 			//add material to material runtime
 			materials.materialTable.values[materials.materialTable.tableEntries].materialIDs[0] = material.header.diffuseID == KEY_NOT_PRESENT ? KEY_NOT_PRESENT : creationIndexCounter++;
-			materials.materialTable.values[materials.materialTable.tableEntries].materialIDs[1] = material.header.noramlID == KEY_NOT_PRESENT ? KEY_NOT_PRESENT : creationIndexCounter++;
+			materials.materialTable.values[materials.materialTable.tableEntries].materialIDs[1] = material.header.normalID == KEY_NOT_PRESENT ? KEY_NOT_PRESENT : creationIndexCounter++;
 			materials.materialTable.values[materials.materialTable.tableEntries].materialIDs[2] = material.header.parallaxID == KEY_NOT_PRESENT ? KEY_NOT_PRESENT : creationIndexCounter++;
 			materials.materialTable.tableEntries++;
 		}
@@ -147,15 +147,6 @@ MFu64* Manifest_Persistence::Simulate(const Simulation& simulation, const MFsize
 	return new MFu64{simulation.simulationFrame};
 }
 
-void Manifest_Persistence::ProcessFunc(std::vector<Message>& messages, void* addy)
-{	
-	for (const auto& message : messages)
-	{
-		const volatile int volatile i = message.messageToken;
-		//std::string output{ "This: " + std::to_string((uintptr_t)addy)+ " observed message with type : " + std::to_string(message.messageToken) };
-		//DLOG(31, output);
-	}
-}
 FileSystemEventSpace FILESYSTEMEVENTSPACE;
 
 void Manifest_Persistence::SimThread(ManifestRuntimeDatabase& runtimeDatabase)
@@ -188,10 +179,8 @@ void Manifest_Persistence::SimThread(ManifestRuntimeDatabase& runtimeDatabase)
 		if (prediction > std::chrono::high_resolution_clock::now())
 			std::this_thread::sleep_until(prediction);
 	}*/
-	constexpr FileSystemObservationToken simFSObservationToken{ UnderlyingType(FileSystem::MessageTypes::TYPE_MDB_GEOMETRYNODE) };
+	constexpr FileSystemObservationToken simFSObservationToken{ UnderlyingType(FileSystem::MessageTypes::MBD_GEOMETRYNODE) };
 	FileSystemObserver simFSObserver{ simFSObservationToken,FILESYSTEMEVENTSPACE.observerRegister };
-	while (1)
-		simFSObserver.ProcessEvents(ProcessFunc);
 }
 
 void Manifest_Persistence::RenderThread(ManifestRuntimeDatabase& runtimeDatabase)
@@ -227,14 +216,13 @@ void Manifest_Persistence::RenderThread(ManifestRuntimeDatabase& runtimeDatabase
 		if (prediction > std::chrono::high_resolution_clock::now())
 			std::this_thread::sleep_until(prediction);
 	}*/	
-	constexpr FileSystemObservationToken renderFSObservationToken{ UnderlyingType(FileSystemMessageType::TYPE_MDB_GEOMETRYOBJECT | FileSystemMessageType::TYPE_MDB_MATERIAL) };
+	constexpr FileSystemObservationToken renderFSObservationToken{ UnderlyingType(FileSystemMessageType::MBD_GEOMETRYOBJECT | FileSystemMessageType::MBD_MATERIAL) };
 	FileSystemObserver renderFSObserver{ renderFSObservationToken,FILESYSTEMEVENTSPACE.observerRegister };
-	while (1)	
-		renderFSObserver.ProcessEvents(ProcessFunc);	
 }
 
 void Manifest_Persistence::MessageThread()
 {
+	/*
 	Binary_GeometryNode bNode_import;
 	bNode_import.header.geometryID = 2;
 	bNode_import.header.materialID = 2;
@@ -258,9 +246,9 @@ void Manifest_Persistence::MessageThread()
 	ptr[0] = 0;//r 
 	ptr[1] = 1;//g 
 	ptr[2] = 0;//b
-	constexpr auto message1 = FileSystemMessageType::TYPE_MDB_GEOMETRYNODE;
-	constexpr auto message2 = FileSystemMessageType::TYPE_MDB_GEOMETRYOBJECT;
-	constexpr auto message3 = FileSystemMessageType::TYPE_MDB_MATERIAL;
+	constexpr auto message1 = FileSystemMessageType::MDB_GEOMETRYNODE;
+	constexpr auto message2 = FileSystemMessageType::MDB_GEOMETRYOBJECT;
+	constexpr auto message3 = FileSystemMessageType::MDB_MATERIAL;
 
 	xoshiro256ss_state rand;	
 	auto sleepUntil = std::chrono::high_resolution_clock::now() + std::chrono::duration<double, std::milli > (1750);
@@ -268,8 +256,7 @@ void Manifest_Persistence::MessageThread()
 	while (1)			
 	{		
 		FileSystemEvent fsEvent;
-		//switch (rand.Crunch() % 3)
-		switch (1)
+		switch (rand.Crunch() % 3)		
 		{
 			case 0:
 				fsEvent.eventToken = UnderlyingType(message1 | message2 | message3);
@@ -307,4 +294,5 @@ void Manifest_Persistence::MessageThread()
 		}
 		FILESYSTEMEVENTSPACE.NotifyRegisteredObservers(std::move(fsEvent));
 	}
+	*/
 }
