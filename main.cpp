@@ -196,17 +196,19 @@ void ThreadTest()
 
 void MessageTest()
 {
-	
+
 	//set up event space and observers	
 	FileSystemEventSpace fsEventSpace;
 	FileSystemObservationToken fsToken{ UnderlyingType(FileSystemMessageType::MBD_MATERIAL | FileSystemMessageType::MBD_TEXTURE) };
-	FileSystemObserver fsObserver{fsToken,fsEventSpace.observerRegister};
+	FileSystemObserver fsObserver{ fsToken,fsEventSpace.observerRegister };
 	//create observed system
 	FileSystem fileSystem;
 	//load database and send fs messages
-	fileSystem.LoadMBD(TEST_PATH + TEST_MDB,fsEventSpace);
-	fsObserver.ProcessEvents(TEST_PROCESS_FUNC);
-	
+	fileSystem.LoadMBD(TEST_PATH + TEST_MDB, fsEventSpace);
+	auto processMessage = fsObserver.ProcessEvents(TEST_PROCESS_FUNC);
+	//push commited information to database
+
+
 }
 
 template<typename T, typename Alloc>

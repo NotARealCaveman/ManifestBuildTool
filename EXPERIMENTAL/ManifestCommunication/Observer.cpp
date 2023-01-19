@@ -39,11 +39,11 @@ void Observer::ObserveEvent(Message&& message)
 	messageLock.Unlock();
 }
 
-void Observer::ProcessEvents(const MessageProcessingFunction& processFunction)
+ProcessMessage Observer::ProcessEvents(const MessageProcessingFunction& processFunction)
 {
 	messageLock.Lock();
 	std::vector<Message> messages = std::move(observedEventMessages);
 	messageLock.Unlock();
 
-	processFunction(messages);		
+	return processFunction(messages);		
 }//messages retaining ownership of messageBase release memory now

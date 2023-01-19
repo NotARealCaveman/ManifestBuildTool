@@ -296,3 +296,9 @@ void Manifest_Persistence::MessageThread()
 	}
 	*/
 }
+
+template<>
+Materials* ManifestRuntimeDatabase::GetTable()
+{
+	return &materials;
+}

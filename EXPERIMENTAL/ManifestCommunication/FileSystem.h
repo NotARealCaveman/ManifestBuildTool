@@ -23,7 +23,7 @@ namespace Manifest_Communication
 		void LoadMBD(const std::string& mbd, EventSpace& eventSpace);
 	};
 
-	Message* TEST_PROCESS_FUNC(std::vector<Message>& messages);
+	ProcessMessage TEST_PROCESS_FUNC(std::vector<Message>& messages);
 
 	using FileSystem = ObersvableFileSystem;
 	using FileSystemMessageType = FileSystem::MessageTypes;

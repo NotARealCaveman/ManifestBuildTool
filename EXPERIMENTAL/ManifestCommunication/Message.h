@@ -37,14 +37,14 @@ namespace Manifest_Communication
 		~Message();		
 		//transfers ownserhip of the resource - new owner MUST delete
 		template<typename Content>
-		ContentWrapper<Content>* GetMessageContent()
+		ContentWrapper<Content>* GetMessageContentWrapper()
 		{
-			ContentWrapper<Content>* result = reinterpret_cast<ContentWrapper<Content>*>(messageBase);
+			ContentWrapper<Content>* result = reinterpret_cast<ContentWrapper<Content>*>(messageBase);			
 			messageBase = nullptr;
 			return result;
 		}
 				
 		const ObservationToken messageToken;				
 		MessageBase* messageBase;
-	};
+	};	
 };

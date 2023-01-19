@@ -76,6 +76,9 @@ namespace Manifest_Persistence
 	};
 	MFu64* Simulate(const Simulation& simulation, const MFsize nBodies);
 
+	template<typename T>
+	using Commit = std::vector<T>;
+
 	//Currently exploring a push/pull paradigm for updating and centralizing shared game state in the runtime database
 	class ManifestRuntimeDatabase
 	{
@@ -91,9 +94,17 @@ namespace Manifest_Persistence
 			SimulationSnapshot committedSimulation;
 
 			SRSWExchangeLock stateLock;//R-W opperations on states
-
+			template<typename T>
+			T* GetTable() {return nullptr};
 		public:
-			ManifestRuntimeDatabase(const ManifestBinaryDatabase& binaryDatabase);	 
+			ManifestRuntimeDatabase(const ManifestBinaryDatabase& binaryDatabase);	
+
+			template<typename T>
+			void PushCommit(Commit<T>&& commit)
+			{
+
+			}
+
 			void INITIALIZE_FIRST_STORES__BYPASS_PULL_BRANCH();
 			//atomically pushes a new simulation states to database and cleans up unused state memory if needed
 			void PushStates(MFu64* stateSnapshot);

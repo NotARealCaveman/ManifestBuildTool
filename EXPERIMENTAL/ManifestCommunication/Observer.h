@@ -31,15 +31,16 @@ namespace Manifest_Communication
 		std::atomic<MFu64> registeredObservationTokens{ 0 };
 	};
 
+	//allows meta messages to be generated		
+	using ProcessMessage = Message*;	
+	using MessageProcessingFunction = ProcessMessage(*)(std::vector<Message>&);
 	//Observer is an independent broker
 	//the observer object is created with an observation token providing guaranteed, exclusive access to the message types of the event it is observing	
 	//the exclusivity is provided by UniqueObserverRegister
 	class Observer
 	{
 	private:
-		friend EventSpace;
-		//allows meta messages to be generated
-		using MessageProcessingFunction = Message*(*)(std::vector<Message>&);
+		friend EventSpace;				
 		//Moves into messages - spins if moving for processing
 		void ObserveEvent(Message&& message);
 
@@ -48,7 +49,7 @@ namespace Manifest_Communication
 	public:
 		Observer(const ObservationToken& observationToken, UniqueObserverRegister& uniqueObserverRegister);		
 		//Processes messages - spins if writing for observation
-		void ProcessEvents(const MessageProcessingFunction& processFunction);
+		ProcessMessage ProcessEvents(const MessageProcessingFunction& processFunction);
 
 		const ObservationToken observationToken;			
 	};

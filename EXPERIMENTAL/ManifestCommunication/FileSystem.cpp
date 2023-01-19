@@ -31,17 +31,19 @@ void ObersvableFileSystem::LoadMBD(const std::string& mbd, EventSpace& eventSpac
 	eventSpace.NotifyRegisteredObservers(std::move(event));
 }
 
-Message* Manifest_Communication::TEST_PROCESS_FUNC(std::vector<Message>& messages)
-{	
+ProcessMessage Manifest_Communication::TEST_PROCESS_FUNC(std::vector<Message>& messages)
+{		
+	std::vector<Message> commits;	
 	for (auto& message : messages)
 	{
 		switch (message.messageToken)
 		{
 			case UnderlyingType(FileSystemMessageType::MBD_MATERIAL):
 				//create material table entry
+				auto material = message.GetMessageContentWrapper<Material>();
 				break;
 			case UnderlyingType(FileSystemMessageType::MBD_TEXTURE):				
-				Message::ContentWrapper<Binary_Texture>* binaryTexture = message.GetMessageContent<Binary_Texture>();
+				auto binaryTexture = message.GetMessageContentWrapper<Binary_Texture>();
 				//create opengl id
 				//release copy memory
 				delete binaryTexture->content.payload;
@@ -51,5 +53,7 @@ Message* Manifest_Communication::TEST_PROCESS_FUNC(std::vector<Message>& message
 				break;
 		}
 	}
-	return nullptr;
+	ProcessMessage result = new Message{ 0,commits };
+
+	return result;
 }
