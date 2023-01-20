@@ -313,9 +313,24 @@ void DatabaseState::ReaderLeave()
 	stateReaders.fetch_sub(1, std::memory_order_release);
 }
 
-void Manifest_Persistence::WriterSynchronize(DatabaseState* stage, std::atomic<DatabaseState*> commit)
+void DatabaseTable::AquireStage()
 {
+	//paired with "commit"->StageLock.unlock() during sync
+	stage->stageLock.Lock();
+}
+
+void DatabaseTable::SynchronizeStage()
+{	
+	//lock staging state for current commit to prevent aquire
+	auto com = commit.load(std::memory_order_acquire);
+	com->stageLock.Lock();//cannot be aquired once made stage
+	//swap commit and exchange leaving both locked
 	stage = commit.exchange(stage, std::memory_order_release);
+	//unlock old stage(current commit)
+	com = commit.load(std::memory_order_acquire);
+	com->stageLock.Unlock();//old stage pushed, unlock commit
+	//wait for all readers of old commit(current stage)
 	while (stage->stateReaders.load(std::memory_order_acquire));
-	stage->stateLock.Unlock();
+	//unlock old commit for staging
+	stage->stageLock.Unlock();//old reads finished, unlock stage
 }

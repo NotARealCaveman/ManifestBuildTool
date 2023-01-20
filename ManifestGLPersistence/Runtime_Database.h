@@ -79,17 +79,28 @@ namespace Manifest_Persistence
 	struct DatabaseState
 	{
 		std::atomic<MFu32> stateReaders;
-		ExchangeLock stateLock;
+		ExchangeLock stageLock;
 		int* TEST_STATE;
 		inline void ReaderEnter();
 		inline void ReaderLeave();				
 	};	
-	void WriterSynchronize(DatabaseState* stage, std::atomic<DatabaseState*> commit);
+	using Stage = DatabaseState*;
+	using Commit = std::atomic<DatabaseState*>;	
+
+	struct DatabaseTable
+	{
+		Stage stage;
+		Commit commit;
+		void AquireStage();
+		void SynchronizeStage();
+	};
 
 	//Currently exploring a push/pull paradigm for updating and centralizing shared game state in the runtime database
 	class ManifestRuntimeDatabase
 	{
-		private:	
+		private:				
+
+
 			//if present - new data to be pulled
 			std::atomic<MFu64*> newStates{ nullptr };
 			
