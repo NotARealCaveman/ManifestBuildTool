@@ -302,3 +302,20 @@ Materials* ManifestRuntimeDatabase::GetTable()
 {
 	return &materials;
 }
+
+void DatabaseState::ReaderEnter()
+{
+	stateReaders.fetch_add(1, std::memory_order_release);
+}
+
+void DatabaseState::ReaderLeave()
+{
+	stateReaders.fetch_sub(1, std::memory_order_release);
+}
+
+void Manifest_Persistence::WriterSynchronize(DatabaseState* stage, std::atomic<DatabaseState*> commit)
+{
+	stage = commit.exchange(stage, std::memory_order_release);
+	while (stage->stateReaders.load(std::memory_order_acquire));
+	stage->stateLock.Unlock();
+}

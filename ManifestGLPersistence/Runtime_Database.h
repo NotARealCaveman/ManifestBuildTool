@@ -76,8 +76,15 @@ namespace Manifest_Persistence
 	};
 	MFu64* Simulate(const Simulation& simulation, const MFsize nBodies);
 
-	template<typename T>
-	using Commit = std::vector<T>;
+	struct DatabaseState
+	{
+		std::atomic<MFu32> stateReaders;
+		ExchangeLock stateLock;
+		int* TEST_STATE;
+		inline void ReaderEnter();
+		inline void ReaderLeave();				
+	};	
+	void WriterSynchronize(DatabaseState* stage, std::atomic<DatabaseState*> commit);
 
 	//Currently exploring a push/pull paradigm for updating and centralizing shared game state in the runtime database
 	class ManifestRuntimeDatabase
