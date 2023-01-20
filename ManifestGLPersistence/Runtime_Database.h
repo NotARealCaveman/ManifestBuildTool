@@ -102,7 +102,7 @@ namespace Manifest_Persistence
 			template<typename T>
 			void PushCommit(Commit<T>&& commit)
 			{
-
+				auto table = GetTable<T>();
 			}
 
 			void INITIALIZE_FIRST_STORES__BYPASS_PULL_BRANCH();
