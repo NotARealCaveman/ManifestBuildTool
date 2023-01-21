@@ -297,40 +297,56 @@ void Manifest_Persistence::MessageThread()
 	*/
 }
 
-template<>
-Materials* ManifestRuntimeDatabase::GetTable()
+DatabaseState*  DatabaseTable::ReaderEnter()
 {
-	return &materials;
+	auto com = commit.load(std::memory_order_acquire);//0
+	com->rwLock.ReadLock();//7
+
+	return com;
 }
 
-void DatabaseState::ReaderEnter()
+void DatabaseTable::ReaderLeave(DatabaseState* state)
 {
-	stateReaders.fetch_add(1, std::memory_order_release);
-}
-
-void DatabaseState::ReaderLeave()
-{
-	stateReaders.fetch_sub(1, std::memory_order_release);
+	state->rwLock.WriteUnlock();
 }
 
 void DatabaseTable::AquireStage()
 {
 	//paired with "commit"->StageLock.unlock() during sync
-	stage->stageLock.Lock();
+	stage->rwLock.Lock();
 }
-
+  
 void DatabaseTable::SynchronizeStage()
 {	
 	//lock staging state for current commit to prevent aquire
-	auto com = commit.load(std::memory_order_acquire);
-	com->stageLock.Lock();//cannot be aquired once made stage
+	auto com = commit.load(std::memory_order_acquire);//1
+	com->rwLock.Lock();//cannot be aquired once made stage,2
 	//swap commit and exchange leaving both locked
-	stage = commit.exchange(stage, std::memory_order_release);
+	stage = commit.exchange(stage, std::memory_order_release);//3
 	//unlock old stage(current commit)
-	com = commit.load(std::memory_order_acquire);
-	com->stageLock.Unlock();//old stage pushed, unlock commit
+	com = commit.load(std::memory_order_relaxed);//4
+	com->rwLock.Unlock();//old stage pushed, unlock commit,5
 	//wait for all readers of old commit(current stage)
-	while (stage->stateReaders.load(std::memory_order_acquire));
+	while (stage->rwLock.stateReaders.load(std::memory_order_acquire));//6
 	//unlock old commit for staging
-	stage->stageLock.Unlock();//old reads finished, unlock stage
+	stage->rwLock.Unlock();//old reads finished, unlock stage,8
+}
+void Manifest_Persistence::Write_States(DatabaseTable& table)
+{
+	table.AquireStage();
+	auto& stage = *table.stage;
+	auto nUpdates = 50;
+	for (auto i{ 0 }; i < nUpdates; ++i)
+		stage[i] = Update();
+	table.SynchronizeStage();
+
+}
+
+int Manifest_Persistence::Update() { return 1; }
+
+void Manifest_Persistence::Read_States(DatabaseTable& table)
+{
+	table.ReaderEnter();
+
+	table.ReaderLeave();
 }

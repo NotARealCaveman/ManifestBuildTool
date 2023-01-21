@@ -77,23 +77,32 @@ namespace Manifest_Persistence
 	MFu64* Simulate(const Simulation& simulation, const MFsize nBodies);
 
 	struct DatabaseState
-	{
-		std::atomic<MFu32> stateReaders;
-		ExchangeLock stageLock;
+	{		
+		RWExchangeLock rwLock;
+		
 		int* TEST_STATE;
-		inline void ReaderEnter();
-		inline void ReaderLeave();				
+		MFsize stateSize;
+		int& operator[](const int& index) { return TEST_STATE[index]; }	
 	};	
 	using Stage = DatabaseState*;
 	using Commit = std::atomic<DatabaseState*>;	
 
+	//provides a lockable stage and an attomic commit
+	//the stage must be aquired and synchronized, respectively, in the same function call
 	struct DatabaseTable
 	{
-		Stage stage;
-		Commit commit;
+		Commit commit;		
+		Stage stage;		
+		//writer
 		void AquireStage();
 		void SynchronizeStage();
+		//readers
+		inline DatabaseState* ReaderEnter();
+		inline void ReaderLeave(DatabaseState* state);
 	};
+	int Update();
+	void Write_States(DatabaseTable& table);
+	void Read_States(DatabaseTable& table);
 
 	//Currently exploring a push/pull paradigm for updating and centralizing shared game state in the runtime database
 	class ManifestRuntimeDatabase
@@ -112,16 +121,8 @@ namespace Manifest_Persistence
 			SimulationSnapshot committedSimulation;
 
 			SRSWExchangeLock stateLock;//R-W opperations on states
-			template<typename T>
-			T* GetTable() {return nullptr};
 		public:
 			ManifestRuntimeDatabase(const ManifestBinaryDatabase& binaryDatabase);	
-
-			template<typename T>
-			void PushCommit(Commit<T>&& commit)
-			{
-				auto table = GetTable<T>();
-			}
 
 			void INITIALIZE_FIRST_STORES__BYPASS_PULL_BRANCH();
 			//atomically pushes a new simulation states to database and cleans up unused state memory if needed

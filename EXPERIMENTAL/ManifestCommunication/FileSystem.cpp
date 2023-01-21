@@ -39,9 +39,11 @@ ProcessMessage Manifest_Communication::TEST_PROCESS_FUNC(std::vector<Message>& m
 		switch (message.messageToken)
 		{
 			case UnderlyingType(FileSystemMessageType::MBD_MATERIAL):
+			{
 				//create material table entry
 				auto material = message.GetMessageContentWrapper<Material>();
 				break;
+			}
 			case UnderlyingType(FileSystemMessageType::MBD_TEXTURE):				
 				auto binaryTexture = message.GetMessageContentWrapper<Binary_Texture>();
 				//create opengl id

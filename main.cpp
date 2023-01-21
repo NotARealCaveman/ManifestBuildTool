@@ -222,9 +222,9 @@ struct Deleter
 
 using SPDeleter = Deleter<double, ScratchPad<double>>;
 
+
 int main()
 {
-
 	WINDOWS_COLOR_CONSOLE;	
 	//register thread	
 	RegisterProgramExecutiveThread();

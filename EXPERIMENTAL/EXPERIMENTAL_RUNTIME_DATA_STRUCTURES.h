@@ -24,6 +24,15 @@ namespace Manifest_Experimental
 		//restores lock to unlocked state
 		void Unlock();
 	};
+	struct RWExchangeLock 
+	{
+		ExchangeLock exchangeLock;
+		std::atomic<MFu32> stateReaders;
+		inline void WriteLock();
+		inline void WriteUnlock();
+		void ReadLock();
+		void ReadUnlock();
+	};
 
 	//single reader single writing
 	struct SRSWExchangeLock : public ExchangeLock
