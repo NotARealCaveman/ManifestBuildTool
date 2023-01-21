@@ -25,7 +25,6 @@ void Manifest_Persistence::ExportBinaryDatabase(const ManifestDatabaseBuilder& d
 
 ManifestBinaryDatabase Manifest_Persistence::ImportBinaryDatabase(std::ifstream& importFile)
 {
-	//TODO: once memory allocator is written all tables will be tightly packed in memory - this means that the import order must match the export order of the file as the database will be loaded with a single read - see header for additional database table creation manipulation
 	ManifestBinaryDatabase result;
 
 	result.binaryMeshTable = ImportBinaryTable<Binary_Mesh>(importFile);	

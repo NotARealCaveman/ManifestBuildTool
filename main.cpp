@@ -20,8 +20,8 @@ using namespace Manifest_Experimental;
 using namespace Manifest_Communication;
 
 const std::string TEST_PATH{ "C:\\Users\\Droll\\Desktop\\Game\\testing\\" };
-const std::string TEST_GEX{ "Test1.gex" };
-const std::string TEST_MDB{ "Test1.mdb" };
+const std::string TEST_GEX{ "Test2.gex" };
+const std::string TEST_MDB{ "Test2.mdb" };
 
 void RuntimeTest()
 {
@@ -152,9 +152,8 @@ void BuildAndExport()
 	//ddl start up
 	Initialize_GEXTypes();
 	Initialize_GEXGenerators();	
-	auto nLoops = 195000;
+	auto nLoops = 1950000;	
 	nLoops = 1;
-	auto begin = std::chrono::high_resolution_clock::now();
 	for (auto loop = 0; loop < nLoops; ++loop)
 	{			
 		{			
@@ -176,9 +175,7 @@ void BuildAndExport()
 			}
 		}
 		ScratchPad<Byte>{}.Unwind();
-	}	
-	auto end = std::chrono::high_resolution_clock::now();
-	//LOG(36, "Total loops: " << nLoops << " avg time/loop: " << (end - begin) / nLoops);	
+	}			
 }
 
 void ThreadTest()
@@ -211,48 +208,76 @@ void MessageTest()
 
 }
 
-template<typename T, typename Alloc>
+template<typename T>
 struct Deleter
 {
 	void operator()(T* p) const
 	{
-		Delete<T, Alloc>(p);
+		//DLOG(31, "Deleting int*: " << p << " with value: " << *p);
+		delete p;
 	}
 };
 
-using SPDeleter = Deleter<double, ScratchPad<double>>;
+using stdIntDelete = Deleter<int>;
 
+#include <EXPERIMENTAL/RCU.h>
+
+using intRCU = RCU<int, stdIntDelete>;
+intRCU rcu;
+int globalInt{ 0 };
+
+void DoSomethingWithInt(const int& myInt)
+{
+	DLOG(32, "This is a neat int: " << myInt<< " " << &myInt);
+}
+
+void readfunc()
+{
+	while (1)
+	{
+		auto readGeneration = rcu.rcu_read_lock();		
+		auto copy = *rcu.dataGenerations[readGeneration % MAX_RCU_GENERATION].data;
+		rcu.rcu_read_unlock(readGeneration);
+		DoSomethingWithInt(copy);
+	}
+}
+
+void writefunc()
+{
+	while (1)
+	{
+		auto newData = new int{ globalInt++ };
+		rcu.synchronize_rcu(newData);
+	}
+}
 
 int main()
-{
-	WINDOWS_COLOR_CONSOLE;	
-	//register thread	
+{	
+	std::thread rthread1{ readfunc };
+	//std::thread rthread2{ readfunc };
+	//std::thread rthread3{ readfunc };
+	writefunc();
+	rthread1.join();
+	//rthread2.join();
+	//rthread3.join();
+
+
 	RegisterProgramExecutiveThread();
 	//create data stores
 	INIT_MEMORY_RESERVES();	
-
-	std::shared_ptr<double> ptr = std::make_shared<double>(1);
-	{
-		std::shared_ptr<double> ptr2(nullptr, SPDeleter{});
-	}
-	{
-		std::shared_ptr<double> ptr3(New<double,ScratchPad<double>>(2), SPDeleter{}, ScratchPad<double>{});
-		DLOG(31, sizeof(SPDeleter));
-		ptr3 = std::make_shared<double>(3);
-	}
 	MEMORYSTATUSEX status;
 	status.dwLength = sizeof(status);
 	GlobalMemoryStatusEx(&status);
 
 	//db threading
-	//DISABLE
+	DISABLE
 		MessageTest();
 	DISABLE
 		ThreadTest();
 	//persistence tests
 	DISABLE
 		BuildAndExport();
-	DISABLE
+	//DISABLE
 		ImportAndTest();
 	//final
 	DISABLE

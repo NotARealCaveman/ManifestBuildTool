@@ -145,6 +145,7 @@
     <ClCompile Include="EXPERIMENTAL\ManifestCommunication\Message.cpp" />
     <ClCompile Include="EXPERIMENTAL\ManifestCommunication\FileSystem.cpp" />
     <ClCompile Include="EXPERIMENTAL\ManifestCommunication\Observer.cpp" />
+    <ClCompile Include="EXPERIMENTAL\RCU.cpp" />
     <ClCompile Include="EXPERIMENTAL\RNG.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ManifestGLParser\FileFilter.cpp" />
@@ -194,6 +195,7 @@
     <ClInclude Include="EXPERIMENTAL\ManifestCommunication\Triggers.h" />
     <ClInclude Include="EXPERIMENTAL\Manifest_Allocator.h" />
     <ClInclude Include="EXPERIMENTAL\Manifest_Memory.h" />
+    <ClInclude Include="EXPERIMENTAL\RCU.h" />
     <ClInclude Include="EXPERIMENTAL\RNG.h" />
     <ClInclude Include="EXPERIMENTAL\Typenames.h" />
     <ClInclude Include="ManifestGLParser\DDL_ExtendedTypes.h" />

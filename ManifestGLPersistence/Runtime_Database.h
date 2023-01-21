@@ -76,9 +76,25 @@ namespace Manifest_Persistence
 	};
 	MFu64* Simulate(const Simulation& simulation, const MFsize nBodies);
 
+	struct MRSWLock
+	{
+		std::atomic<MFu32> reading{ 0 };
+		std::atomic<MFbool> queuedWrite{ false };
+		std::atomic<MFbool> writing{ false };
+
+		//wait for queued write flag and atomic inc reading
+		void QueueRead();		
+		void DequeueRead();
+		
+		//sets write flags and waits for queued readers		
+		void BeginWrite();		
+		//clears write flags in reverse order, unblocking readers
+		void EndWrite();
+	};
+
 	struct DatabaseState
 	{		
-		RWExchangeLock rwLock;
+		MRSWLock rwLock;
 		
 		int* TEST_STATE;
 		MFsize stateSize;
@@ -93,16 +109,9 @@ namespace Manifest_Persistence
 	{
 		Commit commit;		
 		Stage stage;		
-		//writer
-		void AquireStage();
-		void SynchronizeStage();
-		//readers
-		inline DatabaseState* ReaderEnter();
-		inline void ReaderLeave(DatabaseState* state);
+		void ReadTable();
+		void WriteTable();
 	};
-	int Update();
-	void Write_States(DatabaseTable& table);
-	void Read_States(DatabaseTable& table);
 
 	//Currently exploring a push/pull paradigm for updating and centralizing shared game state in the runtime database
 	class ManifestRuntimeDatabase

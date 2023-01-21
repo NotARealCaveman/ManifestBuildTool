@@ -297,56 +297,26 @@ void Manifest_Persistence::MessageThread()
 	*/
 }
 
-DatabaseState*  DatabaseTable::ReaderEnter()
+void MRSWLock::QueueRead()
 {
-	auto com = commit.load(std::memory_order_acquire);//0
-	com->rwLock.ReadLock();//7
-
-	return com;
+	while (queuedWrite.load(std::memory_order_acquire));
+	reading.fetch_add(1, std::memory_order_acq_rel);
+	while(writing.load(std::memory_order_acquire));
+}
+void MRSWLock::DequeueRead()
+{
+	reading.fetch_sub(1, std::memory_order_acq_rel);
 }
 
-void DatabaseTable::ReaderLeave(DatabaseState* state)
+void MRSWLock::BeginWrite()
 {
-	state->rwLock.WriteUnlock();
+	queuedWrite.store(true, std::memory_order_release);
+	while (reading.load(std::memory_order_acquire));	
+	writing.store(true, std::memory_order_release);	
 }
 
-void DatabaseTable::AquireStage()
-{
-	//paired with "commit"->StageLock.unlock() during sync
-	stage->rwLock.Lock();
-}
-  
-void DatabaseTable::SynchronizeStage()
+void MRSWLock::EndWrite()
 {	
-	//lock staging state for current commit to prevent aquire
-	auto com = commit.load(std::memory_order_acquire);//1
-	com->rwLock.Lock();//cannot be aquired once made stage,2
-	//swap commit and exchange leaving both locked
-	stage = commit.exchange(stage, std::memory_order_release);//3
-	//unlock old stage(current commit)
-	com = commit.load(std::memory_order_relaxed);//4
-	com->rwLock.Unlock();//old stage pushed, unlock commit,5
-	//wait for all readers of old commit(current stage)
-	while (stage->rwLock.stateReaders.load(std::memory_order_acquire));//6
-	//unlock old commit for staging
-	stage->rwLock.Unlock();//old reads finished, unlock stage,8
-}
-void Manifest_Persistence::Write_States(DatabaseTable& table)
-{
-	table.AquireStage();
-	auto& stage = *table.stage;
-	auto nUpdates = 50;
-	for (auto i{ 0 }; i < nUpdates; ++i)
-		stage[i] = Update();
-	table.SynchronizeStage();
-
-}
-
-int Manifest_Persistence::Update() { return 1; }
-
-void Manifest_Persistence::Read_States(DatabaseTable& table)
-{
-	table.ReaderEnter();
-
-	table.ReaderLeave();
+	writing.store(false, std::memory_order_release);
+	queuedWrite.store(false, std::memory_order_release);
 }
