@@ -225,11 +225,10 @@ using stdIntDelete = Deleter<int>;
 using intRCU = RCU<int, stdIntDelete>;
 intRCU rcu;
 int globalInt{ 0 };
-std::atomic<int> readInt;
 
-void DoSomethingWithInt(const int& myInt)
+void DoSomethingWithInt(const int& myInt, int& read)
 {
-	readInt.fetch_add(1, std::memory_order_acq_rel);
+	++read;
 }
 
 using Seconds = std::chrono::duration<double>;
@@ -237,53 +236,61 @@ using Milliseconds = std::chrono::duration<double, std::milli>;
 using Nanoseconds = std::chrono::duration<double, std::nano>;
 using Timepoint = std::chrono::time_point<std::chrono::steady_clock,Nanoseconds>;
 
-void readfunc(const Timepoint& begin, const Timepoint& end)
+void readfunc(const Timepoint& begin, const Timepoint& end, int& read)
 {
 	std::this_thread::sleep_until(begin);
 	while (std::chrono::high_resolution_clock::now() < end)
 	{
 		auto readGeneration = rcu.rcu_read_lock();		
-		auto copy = *rcu.dataGenerations[readGeneration % MAX_RCU_GENERATION].data;
-		rcu.rcu_read_unlock(readGeneration);
-		DoSomethingWithInt(copy);
+		//auto copy = *rcu.dataGenerations[readGeneration & RCU_MODULO].data;
+		++read;
+		rcu.rcu_read_unlock(readGeneration);		
+		//DoSomethingWithInt(copy,read);		
 	}
 }
 
 void writefunc(const Timepoint& begin, const Timepoint& end)
 {
-	std::this_thread::sleep_until(begin);
+	std::this_thread::sleep_until(end);
 	while (std::chrono::high_resolution_clock::now() < end)
 	{
 		auto newData = new int{ ++globalInt };
-		rcu.synchronize_rcu(newData);
+		rcu.synchronize_rcu(newData);				
 	}
 }
 
-
+struct paddedInt
+{
+	int i;
+	char padding[64 - sizeof(int)];
+};
 int main()
-{	
+{		
 	Seconds beginDelay { 1 };
 	Timepoint beginTime = std::chrono::high_resolution_clock::now() + beginDelay;
-	Timepoint endTime = beginTime + Seconds{ 10 };
-	std::thread rthread1{ readfunc,std::cref(beginTime),std::cref(endTime) };
-	std::thread rthread2{ readfunc,std::cref(beginTime),std::cref(endTime) };
-	std::thread rthread3{ readfunc,std::cref(beginTime),std::cref(endTime) };
+	Timepoint endTime = beginTime + Seconds{ 1 };
+	paddedInt reads[3]{0,0,0};
+	std::thread rthread1{ readfunc,std::cref(beginTime),std::cref(endTime),std::ref(reads[0].i)};
+	//std::thread rthread2{ readfunc,std::cref(beginTime),std::cref(endTime),std::ref(reads[1].i) };
+	//std::thread rthread3{ readfunc,std::cref(beginTime),std::cref(endTime),std::ref(reads[2].i) };
 	writefunc(beginTime,endTime);
 	rthread1.join();
-	rthread2.join();
-	rthread3.join();
-	auto wAvg = globalInt / Seconds{ 10 }.count();
-	auto rAvg = readInt.load(std::memory_order_relaxed) / Seconds{10}.count();
+	//rthread2.join();
+	//rthread3.join();
+	auto wAvg = globalInt/1.0;	
+	int readInt{0};
+	for (const auto& read : reads)
+		readInt += read.i;
+	auto rAvg = readInt/1.0;
 	LOG(32, "Avg writes/s: " << wAvg);
-	LOG(33, "Avg reads/s: " << rAvg);
-
+	LOG(33, "Avg reads/s: " << rAvg);	
 	RegisterProgramExecutiveThread();
 	//create data stores
 	INIT_MEMORY_RESERVES();	
 	MEMORYSTATUSEX status;
 	status.dwLength = sizeof(status);
 	GlobalMemoryStatusEx(&status);
-	constexpr MFsize mysize = sizeof(intRCU::DataGeneration<int>);
+
 	//db threading
 	DISABLE
 		MessageTest();
@@ -298,5 +305,6 @@ int main()
 	DISABLE
 		RuntimeTest();
 	
+	//std::getchar();
 	return 0;
 }
