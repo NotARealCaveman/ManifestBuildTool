@@ -4,6 +4,7 @@
 
 #include "Typenames.h"
 #include <ManifestGLUtility/DebugLogger.h>
+#include <EXPERIMENTAL/EXPERIMENTAL_RUNTIME_DATA_STRUCTURES.h>
 
 namespace Manifest_Experimental
 {
@@ -74,7 +75,7 @@ namespace Manifest_Experimental
 			Generation previousGeneration = globalGeneration.fetch_add(1, std::memory_order_acq_rel);
 			generationIndex = previousGeneration % MAX_RCU_GENERATION;
 			//wait on readers to leave		
-			while (dataGenerations[generationIndex].readers.load(std::memory_order_acquire))
+			while (dataGenerations[generationIndex].readers.load(std::memory_order_acquire));
 			/*int waited{0};
 			while (dataGenerations[generationIndex].readers.load(std::memory_order_acquire))
 			{

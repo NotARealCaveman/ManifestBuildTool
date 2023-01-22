@@ -225,15 +225,22 @@ using stdIntDelete = Deleter<int>;
 using intRCU = RCU<int, stdIntDelete>;
 intRCU rcu;
 int globalInt{ 0 };
+std::atomic<int> readInt;
 
 void DoSomethingWithInt(const int& myInt)
 {
-	DLOG(32, "This is a neat int: " << myInt<< " " << &myInt);
+	readInt.fetch_add(1, std::memory_order_acq_rel);
 }
 
-void readfunc()
+using Seconds = std::chrono::duration<double>;
+using Milliseconds = std::chrono::duration<double, std::milli>;
+using Nanoseconds = std::chrono::duration<double, std::nano>;
+using Timepoint = std::chrono::time_point<std::chrono::steady_clock,Nanoseconds>;
+
+void readfunc(const Timepoint& begin, const Timepoint& end)
 {
-	while (1)
+	std::this_thread::sleep_until(begin);
+	while (std::chrono::high_resolution_clock::now() < end)
 	{
 		auto readGeneration = rcu.rcu_read_lock();		
 		auto copy = *rcu.dataGenerations[readGeneration % MAX_RCU_GENERATION].data;
@@ -242,25 +249,33 @@ void readfunc()
 	}
 }
 
-void writefunc()
+void writefunc(const Timepoint& begin, const Timepoint& end)
 {
-	while (1)
+	std::this_thread::sleep_until(begin);
+	while (std::chrono::high_resolution_clock::now() < end)
 	{
-		auto newData = new int{ globalInt++ };
+		auto newData = new int{ ++globalInt };
 		rcu.synchronize_rcu(newData);
 	}
 }
 
+
 int main()
 {	
-	std::thread rthread1{ readfunc };
-	//std::thread rthread2{ readfunc };
-	//std::thread rthread3{ readfunc };
-	writefunc();
+	Seconds beginDelay { 1 };
+	Timepoint beginTime = std::chrono::high_resolution_clock::now() + beginDelay;
+	Timepoint endTime = beginTime + Seconds{ 10 };
+	std::thread rthread1{ readfunc,std::cref(beginTime),std::cref(endTime) };
+	std::thread rthread2{ readfunc,std::cref(beginTime),std::cref(endTime) };
+	std::thread rthread3{ readfunc,std::cref(beginTime),std::cref(endTime) };
+	writefunc(beginTime,endTime);
 	rthread1.join();
-	//rthread2.join();
-	//rthread3.join();
-
+	rthread2.join();
+	rthread3.join();
+	auto wAvg = globalInt / Seconds{ 10 }.count();
+	auto rAvg = readInt.load(std::memory_order_relaxed) / Seconds{10}.count();
+	LOG(32, "Avg writes/s: " << wAvg);
+	LOG(33, "Avg reads/s: " << rAvg);
 
 	RegisterProgramExecutiveThread();
 	//create data stores
@@ -277,7 +292,7 @@ int main()
 	//persistence tests
 	DISABLE
 		BuildAndExport();
-	//DISABLE
+	DISABLE
 		ImportAndTest();
 	//final
 	DISABLE
