@@ -8,10 +8,14 @@
 
 namespace Manifest_Experimental
 {
-	using Generation = MFu32;
+	using Generation = MFu32;		
+	//make generation power of 2, bitwise & for %
 	constexpr Generation MAX_RCU_GENERATION{ 4 };
 	constexpr Generation FREE_GENERATION{ UINT32_MAX };
-		
+	constexpr MFu32 RCU_MODULUO{ MAX_RCU_GENERATION - 1 };
+	
+
+
 	template<typename T, typename Deleter>
 	struct RCU
 	{		
@@ -26,7 +30,8 @@ namespace Manifest_Experimental
 				:data{ _data }, readers{ 0 } {};
 			~DataGeneration() {};			
 			std::atomic<MFu32> readers;
-			T* data;								
+			T* data;		
+			char pad[48];
 		};
 		//cannot move or copy RCU
 		RCU(const RCU&) = delete;

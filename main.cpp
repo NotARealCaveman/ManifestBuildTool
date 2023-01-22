@@ -283,7 +283,7 @@ int main()
 	MEMORYSTATUSEX status;
 	status.dwLength = sizeof(status);
 	GlobalMemoryStatusEx(&status);
-
+	constexpr MFsize mysize = sizeof(intRCU::DataGeneration<int>);
 	//db threading
 	DISABLE
 		MessageTest();
