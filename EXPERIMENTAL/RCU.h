@@ -13,6 +13,89 @@ namespace Manifest_Experimental
 	constexpr Generation FREE_GENERATION{ UINT32_MAX };
 	constexpr MFu32 RCU_MODULO{ MAX_RCU_GENERATION - 1 };
 		
+
+	template<typename T, typename Deleter>
+	struct TableRCU
+	{
+		template<typename T>
+		struct DataGeneration
+		{			
+			struct Data
+			{
+				Data(const DataGeneration&) = delete;
+				Data(DataGeneration&&) = delete;				
+				Data(T* _data)
+					:data{ _data } {};
+				~Data() {};
+				T* data;
+			};		
+			struct ReadFlag
+			{
+				std::atomic<MFbool> isReading;
+				char padding[64 - sizeof(isReading)];
+			};
+			DataGeneration(const DataGeneration&) = delete;
+			DataGeneration(DataGeneration&&) = delete;
+			//allows dummy data to be generated
+			DataGeneration(T* data = new T)
+				:protectedData{ data }{};
+			~DataGeneration() {};
+			Data protectedData;
+			ReadFlag* readFlags;
+			char padding[64 - sizeof(Data) - sizeof(ReadFlag*)];
+		};
+		std::array<DataGeneration<T>, MAX_RCU_GENERATION> doubleBuffer;
+		TableRCU(const MFsize _maxReaders)
+			: maxReaders(_maxReaders), registeredReaders{0}
+		{
+			for (auto& buffer : doubleBuffer)
+			{
+				buffer.readFlags = new DataGeneration<T>::ReadFlag[maxReaders];				
+				memset(buffer.readFlags, 0, sizeof(DataGeneration<T>::ReadFlag)*maxReaders);
+			}
+			
+		}
+		Generation lock(const MFu32& readerId)
+		{
+			Generation currentGeneration = globalGeneration.load(std::memory_order_relaxed);
+			MFsize generationIndex = currentGeneration & RCU_MODULO;
+			doubleBuffer[generationIndex].readFlags[readerId].isReading.store(true, std::memory_order_release);
+			Generation oldGeneration = currentGeneration;
+			while (oldGeneration != (currentGeneration = globalGeneration.load(std::memory_order_acquire)))
+			{
+				doubleBuffer[generationIndex].readFlags[readerId].isReading.store(false, std::memory_order_relaxed);
+				generationIndex = currentGeneration & RCU_MODULO;
+				doubleBuffer[generationIndex].readFlags[readerId].isReading.store(true, std::memory_order_release);
+				oldGeneration = currentGeneration;
+			}
+
+			return currentGeneration;
+		}
+		void unlock(const Generation& generation, const MFu32& readerId)
+		{
+			MFsize generationIndex = generation & RCU_MODULO;	
+			doubleBuffer[generationIndex].readFlags[readerId].isReading.store(false, std::memory_order_relaxed);
+		}
+		void sync(T* update)
+		{
+			Generation oldGeneration = globalGeneration.load(std::memory_order_relaxed);
+			MFsize generationIndex = (oldGeneration+1) & RCU_MODULO;
+			doubleBuffer[generationIndex].protectedData.data = update;
+			globalGeneration.store(oldGeneration + 1, std::memory_order_release);
+			for (auto reader{ 0 }; reader < registeredReaders.load(std::memory_order_relaxed); ++reader)
+				while (doubleBuffer[generationIndex].readFlags[reader].isReading.load(std::memory_order_acquire));
+			deleter(doubleBuffer[generationIndex].protectedData.data);
+		}
+		MFu32 RegisterReader()
+		{
+			assert(registeredReaders.load(std::memory_order_seq_cst) + 1 < maxReaders);
+			return registeredReaders.fetch_add(1, std::memory_order_relaxed);
+		}
+		const MFsize maxReaders;
+		std::atomic<Generation> globalGeneration;
+		std::atomic<MFu32> registeredReaders;		
+	};
+
 	template<typename T, typename Deleter>
 	struct RCU
 	{		
