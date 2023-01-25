@@ -25,60 +25,7 @@ const std::string TEST_MDB{ "Test2.mdb" };
 
 void RuntimeTest()
 {
-	const auto& EqualTypeTest = []()
-	{
-		Table<int, int> ints;
-		ints.tableEntries = ints.tableSize = 3;
-		ints.keys = new int[ints.tableSize]; ints.keys[0] = 3; ints.keys[1] = 4; ints.keys[2] = 5;
-		ints.values = new int[ints.tableSize]; ints.values[0] = 0; ints.values[1] = 1; ints.values[2] = 2;
-
-		DLOG(34, "values: " << ints.values << " keys: " << ints.keys);
-		std::for_each(ints.begin<>(), ints.end<>(), [](const auto& i) {DLOG(31, i << " " << &i); });
-		DLOG(35, "begin<values>: " << ints.begin<>() << " end: " << ints.end<>());
-		std::for_each(ints.begin<false>(), ints.end<false>(), [](const auto& i) {DLOG(32, i << " " << &i); });
-		DLOG(35, "begin<keys>: " << ints.begin<false>() << " end: " << ints.end<false>());
-	};
-	DISABLE
-		EqualTypeTest();
-
-	const auto nNodes{ 5 };
-	const auto nMeshes{ 3 };
-	const auto nMaterials{ 3 };
-	const auto nTextures{ 3 * nMaterials };
-
-	//xforms	
-	//WorldSpaces worldSpaces;
-	//worldSpaces.xforms.tableSize = nNodes;
-	//worldSpaces.xforms.tableEntries = 0;
-	//worldSpaces.xforms.keys = new UniqueKey[nNodes];
-	//worldSpaces.xforms.values = new Xform[nNodes];
-
-	std::ifstream bImport{ TEST_PATH + TEST_MDB, std::ios::in | std::ios::binary };	
-	ManifestRuntimeDatabase runtimeDatabase{ ImportBinaryDatabase(bImport) };	
-	//unwind allocations from binary import
-	ScratchPad<Byte>{}.Unwind();
-
-	auto geometryObjects = runtimeDatabase.PullGeometryObjects();
-	auto geometryNodes = runtimeDatabase.PullGeometryNodes();
-	auto materials = runtimeDatabase.PullMaterials();
-
-	for (auto nodeEntry = 0; nodeEntry < geometryNodes->geometryNodeTable.tableSize*0; ++nodeEntry)
-	{			
-		//get geometryObject id from the key address offset
-		
-		auto goBegin = geometryObjects->geometryObjectTable.begin<PrimaryKey>();
-		auto goEnd = geometryObjects->geometryObjectTable.end<PrimaryKey>();
-		
-		auto goID = std::find(goBegin, goEnd, geometryNodes->nodeGeometries[nodeEntry]);
-		auto index = goID - goBegin;
-		auto VAO = geometryObjects->geometryObjectTable.values[index];
-		auto mtlBegin = materials->materialTable.begin<PrimaryKey>();
-		auto mtlEnd = materials->materialTable.end<PrimaryKey>();
-		auto mtlID = std::find(mtlBegin, mtlEnd, geometryNodes->nodeMaterials[nodeEntry]);
-		index = mtlID - mtlBegin;
-		auto MTL = materials->materialTable.values[index];
-		DLOG(31, "Geometry Node with id: " << geometryNodes->geometryNodeTable.values[nodeEntry] << " has VAO: " << VAO << " and MTL diffuse: " << MTL[0] <<" normal: " << MTL[1]<< " parallax: " << MTL[2]);
-	}
+	
 } 
 
 void PrintInfo(const DDL_Structure& structure)
@@ -179,15 +126,7 @@ void BuildAndExport()
 }
 
 void ThreadTest()
-{
-	std::ifstream bImport{ TEST_PATH + TEST_MDB, std::ios::in | std::ios::binary };
-	ManifestRuntimeDatabase runtimeDatabase{ ImportBinaryDatabase(bImport) };
-	std::thread rthread{ RenderThread,std::ref(runtimeDatabase) };	
-	runtimeDatabase.simThreadId = std::this_thread::get_id();
-	runtimeDatabase.renderThreadId = rthread.get_id();
-	//std::thread mThread{ MessageThread };
-	SimThread(runtimeDatabase);//runs on main thread	
-	rthread.join();		
+{	
 }
 
 
@@ -204,8 +143,6 @@ void MessageTest()
 	fileSystem.LoadMBD(TEST_PATH + TEST_MDB, fsEventSpace);
 	auto processMessage = fsObserver.ProcessEvents(TEST_PROCESS_FUNC);
 	//push commited information to database
-
-
 }
 
 template<typename T>
@@ -265,8 +202,17 @@ struct paddedInt
 	char padding[64 - sizeof(int)];
 };
 
+void MyReadFunc()
+{
+	DLOG(32, "I read this thing!");
+}
+
 int main()
 {		
+	Table<int, std::default_delete<int>> table{ 3 };
+	auto myReadId = table.ReserveTableReadFlag();
+	table.Pull(myReadId,MyReadFunc);
+
 	auto loops = 20;
 	for (auto loop{ 0 }; loop < loops; loop+=1)
 	{

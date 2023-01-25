@@ -16,15 +16,6 @@
     <Filter Include="Source Files\Persistence">
       <UniqueIdentifier>{f711ef6e-15c5-4d62-9e26-9294363d6319}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Parser">
-      <UniqueIdentifier>{5814774f-c559-4a0a-bd6d-7c690241a67d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Parser\OpenGEX">
-      <UniqueIdentifier>{78418995-340c-465a-88b1-6fa92b7e9eae}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Parser\OpenDDL">
-      <UniqueIdentifier>{582a7444-b44e-4bc4-90a0-b2de64a38272}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Persistence\MDB">
       <UniqueIdentifier>{a5649458-1e17-4c0d-b316-241fa2594783}</UniqueIdentifier>
     </Filter>
@@ -64,70 +55,79 @@
     <Filter Include="Header Files\EXPERIMENTAL\Communication">
       <UniqueIdentifier>{230d1035-43dd-4e05-84d6-ba3a5cd008c5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\EXPERIMENTAL\Parser">
+      <UniqueIdentifier>{5814774f-c559-4a0a-bd6d-7c690241a67d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\EXPERIMENTAL\Parser\OpenGEX">
+      <UniqueIdentifier>{78418995-340c-465a-88b1-6fa92b7e9eae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\EXPERIMENTAL\Parser\OpenDDL">
+      <UniqueIdentifier>{582a7444-b44e-4bc4-90a0-b2de64a38272}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ManifestGLParser\OpenDDL\DDL_Buffers.cpp">
-      <Filter>Source Files\Parser\OpenDDL</Filter>
+      <Filter>Source Files\EXPERIMENTAL\Parser\OpenDDL</Filter>
     </ClCompile>
     <ClCompile Include="ManifestGLParser\OpenDDL\DDL_Primitives.cpp">
-      <Filter>Source Files\Parser\OpenDDL</Filter>
+      <Filter>Source Files\EXPERIMENTAL\Parser\OpenDDL</Filter>
     </ClCompile>
     <ClCompile Include="ManifestGLParser\OpenDDL\DDL_Reference.cpp">
-      <Filter>Source Files\Parser\OpenDDL</Filter>
+      <Filter>Source Files\EXPERIMENTAL\Parser\OpenDDL</Filter>
     </ClCompile>
     <ClCompile Include="ManifestGLParser\OpenDDL\DDL_Structure.cpp">
-      <Filter>Source Files\Parser\OpenDDL</Filter>
+      <Filter>Source Files\EXPERIMENTAL\Parser\OpenDDL</Filter>
     </ClCompile>
     <ClCompile Include="ManifestGLParser\OpenGEX\GEX_Color.cpp">
-      <Filter>Source Files\Parser\OpenGEX</Filter>
+      <Filter>Source Files\EXPERIMENTAL\Parser\OpenGEX</Filter>
     </ClCompile>
     <ClCompile Include="ManifestGLParser\OpenGEX\GEX_GeometryObject.cpp">
-      <Filter>Source Files\Parser\OpenGEX</Filter>
+      <Filter>Source Files\EXPERIMENTAL\Parser\OpenGEX</Filter>
     </ClCompile>
     <ClCompile Include="ManifestGLParser\OpenGEX\GEX_Mesh.cpp">
-      <Filter>Source Files\Parser\OpenGEX</Filter>
+      <Filter>Source Files\EXPERIMENTAL\Parser\OpenGEX</Filter>
     </ClCompile>
     <ClCompile Include="ManifestGLParser\OpenGEX\GEX_Metric.cpp">
-      <Filter>Source Files\Parser\OpenGEX</Filter>
+      <Filter>Source Files\EXPERIMENTAL\Parser\OpenGEX</Filter>
     </ClCompile>
     <ClCompile Include="ManifestGLParser\OpenGEX\GEX_Morph.cpp">
-      <Filter>Source Files\Parser\OpenGEX</Filter>
+      <Filter>Source Files\EXPERIMENTAL\Parser\OpenGEX</Filter>
     </ClCompile>
     <ClCompile Include="ManifestGLParser\OpenGEX\GEX_Name.cpp">
-      <Filter>Source Files\Parser\OpenGEX</Filter>
+      <Filter>Source Files\EXPERIMENTAL\Parser\OpenGEX</Filter>
     </ClCompile>
     <ClCompile Include="ManifestGLParser\OpenGEX\GEX_Node.cpp">
-      <Filter>Source Files\Parser\OpenGEX</Filter>
+      <Filter>Source Files\EXPERIMENTAL\Parser\OpenGEX</Filter>
     </ClCompile>
     <ClCompile Include="ManifestGLParser\OpenGEX\GEX_ObjectRef.cpp">
-      <Filter>Source Files\Parser\OpenGEX</Filter>
+      <Filter>Source Files\EXPERIMENTAL\Parser\OpenGEX</Filter>
     </ClCompile>
     <ClCompile Include="ManifestGLParser\OpenGEX\GEX_Param.cpp">
-      <Filter>Source Files\Parser\OpenGEX</Filter>
+      <Filter>Source Files\EXPERIMENTAL\Parser\OpenGEX</Filter>
     </ClCompile>
     <ClCompile Include="ManifestGLParser\OpenGEX\GEX_skin.cpp">
-      <Filter>Source Files\Parser\OpenGEX</Filter>
+      <Filter>Source Files\EXPERIMENTAL\Parser\OpenGEX</Filter>
     </ClCompile>
     <ClCompile Include="ManifestGLParser\OpenGEX\GEX_Texture.cpp">
-      <Filter>Source Files\Parser\OpenGEX</Filter>
+      <Filter>Source Files\EXPERIMENTAL\Parser\OpenGEX</Filter>
     </ClCompile>
     <ClCompile Include="ManifestGLParser\OpenGEX\GEX_Transform.cpp">
-      <Filter>Source Files\Parser\OpenGEX</Filter>
+      <Filter>Source Files\EXPERIMENTAL\Parser\OpenGEX</Filter>
     </ClCompile>
     <ClCompile Include="ManifestGLParser\FileFilter.cpp">
-      <Filter>Source Files\Parser</Filter>
+      <Filter>Source Files\EXPERIMENTAL\Parser</Filter>
     </ClCompile>
     <ClCompile Include="ManifestGLParser\OpenDDL_Parser.cpp">
-      <Filter>Source Files\Parser</Filter>
+      <Filter>Source Files\EXPERIMENTAL\Parser</Filter>
     </ClCompile>
     <ClCompile Include="ManifestGLParser\OpenGEX_Parser.cpp">
-      <Filter>Source Files\Parser</Filter>
+      <Filter>Source Files\EXPERIMENTAL\Parser</Filter>
     </ClCompile>
     <ClCompile Include="ManifestGLParser\RegisteredGeneraters.cpp">
-      <Filter>Source Files\Parser</Filter>
+      <Filter>Source Files\EXPERIMENTAL\Parser</Filter>
     </ClCompile>
     <ClCompile Include="ManifestGLPersistence\MDB\MDB_Texture.cpp">
       <Filter>Source Files\Persistence\MDB</Filter>
@@ -172,7 +172,7 @@
       <Filter>Source Files\EXPERIMENTAL</Filter>
     </ClCompile>
     <ClCompile Include="ManifestGLParser\OpenGEX\GEX_Material.cpp">
-      <Filter>Source Files\Parser\OpenGEX</Filter>
+      <Filter>Source Files\EXPERIMENTAL\Parser\OpenGEX</Filter>
     </ClCompile>
     <ClCompile Include="EXPERIMENTAL\RNG.cpp">
       <Filter>Source Files\EXPERIMENTAL</Filter>
@@ -192,8 +192,8 @@
     <ClCompile Include="EXPERIMENTAL\ManifestCommunication\Observer.cpp">
       <Filter>Source Files\EXPERIMENTAL\Communication</Filter>
     </ClCompile>
-    <ClCompile Include="EXPERIMENTAL\RCU.cpp">
-      <Filter>Source Files\EXPERIMENTAL</Filter>
+    <ClCompile Include="ManifestGLPersistence\Runtime_Table.cpp">
+      <Filter>Source Files\Persistence</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -391,6 +391,12 @@
     </ClInclude>
     <ClInclude Include="EXPERIMENTAL\RCU.h">
       <Filter>Header Files\EXPERIMENTAL</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestGLPersistence\Runtime_Table.h">
+      <Filter>Header Files\Persistence</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestGLPersistence\Runtime_TableIterator.h">
+      <Filter>Header Files\Persistence</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

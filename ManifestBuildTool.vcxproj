@@ -145,7 +145,6 @@
     <ClCompile Include="EXPERIMENTAL\ManifestCommunication\Message.cpp" />
     <ClCompile Include="EXPERIMENTAL\ManifestCommunication\FileSystem.cpp" />
     <ClCompile Include="EXPERIMENTAL\ManifestCommunication\Observer.cpp" />
-    <ClCompile Include="EXPERIMENTAL\RCU.cpp" />
     <ClCompile Include="EXPERIMENTAL\RNG.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ManifestGLParser\FileFilter.cpp" />
@@ -181,6 +180,7 @@
     <ClCompile Include="ManifestGLPersistence\MDB\MDB_Mesh.cpp" />
     <ClCompile Include="ManifestGLPersistence\MDB\MDB_VertexArray.cpp" />
     <ClCompile Include="ManifestGLPersistence\Runtime_Database.cpp" />
+    <ClCompile Include="ManifestGLPersistence\Runtime_Table.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EXPERIMENTAL\EXPERIMENTAL_RUNTIME_DATA_STRUCTURES.h" />
@@ -247,6 +247,8 @@
     <ClInclude Include="ManifestGLPersistence\MDB\MDB_VertexArray.h" />
     <ClInclude Include="ManifestGLPersistence\ResourceFlags.h" />
     <ClInclude Include="ManifestGLPersistence\Runtime_Database.h" />
+    <ClInclude Include="ManifestGLPersistence\Runtime_Table.h" />
+    <ClInclude Include="ManifestGLPersistence\Runtime_TableIterator.h" />
     <ClInclude Include="ManifestGLUtility\GLDefinitions.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
