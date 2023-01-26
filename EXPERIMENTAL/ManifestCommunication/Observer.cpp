@@ -1,4 +1,4 @@
-#include "Observer.h"
+﻿#include "Observer.h"
 
 using namespace Manifest_Communication;
 ///UNIQUE OBSERVER REGISTER
@@ -12,7 +12,7 @@ bool UniqueObserverRegister::RegisterObserver(const Observer& observer)
 	while (!registeredObservationTokens.compare_exchange_strong(expected, desired, std::memory_order_release, std::memory_order_relaxed))
 	{		
 		if (expected & observationToken)
-			return false;
+			return false;//someone else registered... erroneously
 		desired = expected | observationToken;
 	}
 

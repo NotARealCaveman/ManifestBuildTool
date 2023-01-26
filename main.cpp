@@ -202,16 +202,62 @@ struct paddedInt
 	char padding[64 - sizeof(int)];
 };
 
-void MyReadFunc()
+Table<int, std::default_delete<int>> textureTable{ 3 };
+Table<int, std::default_delete<int>> materialTable{ 3 };
+
+template<typename T, typename Deleter>
+void MyReadFunc(const typename RCU<T, Deleter>::Handle& generationHandle, const T& search)
 {
-	DLOG(32, "I read this thing!");
+	if (search == *generationHandle.handle)
+		DLOG(34, "Search for: " << search << " found at location: " << (void*)generationHandle.handle);
+}
+
+
+ProcessMessage MyProcFunc(std::vector<Message>& messages)
+{	
+	std::vector<int> fileTextures;
+	std::vector<int> fileMaterials;
+	for (auto& message : messages)
+	{		
+		switch (message.messageToken)
+		{
+			case UnderlyingType(FileSystemMessageType::MBD_MATERIAL):
+				fileMaterials.emplace_back(message.GetMessageContent<int>());
+				break;
+			case UnderlyingType(FileSystemMessageType::MBD_TEXTURE):
+				fileTextures.emplace_back(message.GetMessageContent<int>());
+				break;
+		}
+	}
+	int* textures = new int[fileTextures.size()];
+	*textures = fileTextures[0];
+	textureTable.Push(textures);
+	int* materials = new int[fileMaterials.size()];
+	*materials = fileMaterials[0];
+	materialTable.Push(materials);
+	
+	return nullptr;
+}
+
+ObservableEvent FakeFSEvent()
+{
+	return {};
 }
 
 int main()
 {		
-	Table<int, std::default_delete<int>> table{ 3 };
-	auto myReadId = table.ReserveTableReadFlag();
-	table.Pull(myReadId,MyReadFunc);
+	FileSystemEventSpace fsEventSpace;
+	FileSystemObservationToken observationToken = UnderlyingType(FileSystemMessageType::MBD_MATERIAL | FileSystemMessageType::MBD_TEXTURE);
+	FileSystemObserver fsObserver(observationToken, fsEventSpace.observerRegister);
+	MFu32 readerId = materialTable.ReserveTableReadFlag();
+	FileSystemEvent fsEvent;
+	fsEvent.eventToken = UnderlyingType(FileSystemMessageType::MBD_MATERIAL | FileSystemMessageType::MBD_TEXTURE);
+	fsEvent.messages.emplace_back(Message{ UnderlyingType(FileSystemMessageType::MBD_MATERIAL),int(5) });
+	fsEvent.messages.emplace_back(Message{ UnderlyingType(FileSystemMessageType::MBD_TEXTURE),int(7) });
+	fsEventSpace.NotifyRegisteredObservers(std::move(fsEvent));
+	ProcessMessage procMessage = fsObserver.ProcessEvents(MyProcFunc);
+	materialTable.Pull(readerId, MyReadFunc<int,std::default_delete<int>>, 5);
+	
 
 	auto loops = 20;
 	for (auto loop{ 0 }; loop < loops; loop+=1)
@@ -269,3 +315,4 @@ int main()
 	std::getchar();
 	return 0;
 }
+

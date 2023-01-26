@@ -16,15 +16,19 @@ namespace Manifest_Communication
 		struct MessageBase{};
 		template<typename Content>
 		struct ContentWrapper : MessageBase
-		{				
+		{	
+			ContentWrapper(const ContentWrapper& other) = delete;
 			ContentWrapper(const Content& _content)
 				: content{ _content } {};
 			ContentWrapper(Content&& _content)
 				: content{ std::move(_content) } {};
 			ContentWrapper(ContentWrapper&& other)
-				: content{ std::move(other.content) } {};
-			ContentWrapper(const ContentWrapper& other) = delete;			
-			const Content content;
+				: content{ std::move(other.content) }
+			{
+				other.content = nullptr;
+			};
+
+			Content content;
 		};				
 		template<typename Content>
 		Message(const ObservationToken& _messageToken, const Content& content)
@@ -34,14 +38,13 @@ namespace Manifest_Communication
 			: messageToken{ _messageToken }, messageBase{ new ContentWrapper{std::move(content)} } {};
 		Message(Message&& other) noexcept;
 		Message(const Message& other) = delete;		
-		~Message();		
-		//transfers ownserhip of the resource - new owner MUST delete
+		~Message();				
 		template<typename Content>
-		ContentWrapper<Content>* GetMessageContentWrapper()
+		Content GetMessageContent()
 		{
-			ContentWrapper<Content>* result = reinterpret_cast<ContentWrapper<Content>*>(messageBase);			
-			messageBase = nullptr;
-			return result;
+			ContentWrapper<Content>* contentWrapper = reinterpret_cast<ContentWrapper<Content>*>(messageBase);
+			Content& content = contentWrapper->content;
+			return std::move(content);
 		}
 				
 		const ObservationToken messageToken;				

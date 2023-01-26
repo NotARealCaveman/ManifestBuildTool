@@ -31,7 +31,7 @@ namespace Manifest_Persistence
 		void Pull(const MFu32 readerId, const ReadFunction& readFunction, Params... params)
 		{
 			typename RCU::Handle handle = rcu.rcu_read_lock(readerId);
-			readFunction(params...);
+			readFunction(handle,params...);
 			rcu.rcu_read_unlock(handle, readerId);
 		};
 	};
