@@ -173,29 +173,6 @@ using Milliseconds = std::chrono::duration<double, std::milli>;
 using Nanoseconds = std::chrono::duration<double, std::nano>;
 using Timepoint = std::chrono::time_point<std::chrono::steady_clock,Nanoseconds>;
 
-void readfunc(const Timepoint& begin, const Timepoint& end, int& read, intRCU2& rcu2)
-{
-	auto readerID = rcu2.RegisterReader();	
-	std::this_thread::sleep_until(begin);	
-	while (std::chrono::high_resolution_clock::now() < end)	
-	{
-		auto readGeneration = rcu2.rcu_read_lock(readerID);
-		++read;		
-		rcu2.rcu_read_unlock(readGeneration, readerID);
-	}
-}
-
-void writefunc(const Timepoint& begin, const Timepoint& end, intRCU2& rcu2)
-{
-	std::this_thread::sleep_until(begin);
-	while (std::chrono::high_resolution_clock::now() < end)		
-	{
-		auto newData = new int{ ++globalInt };
-		rcu2.synchronize_rcu(newData);				
-		//std::this_thread::sleep_for(Milliseconds{ 1 });
-	}	
-}
-
 struct paddedInt
 {
 	int i;
@@ -206,12 +183,10 @@ Table<int, std::default_delete<int>> textureTable{ 3 };
 Table<int, std::default_delete<int>> materialTable{ 3 };
 
 template<typename T, typename Deleter>
-void MyReadFunc(const typename RCU<T, Deleter>::Handle& generationHandle, const T& search)
-{
-	if (search == *generationHandle.handle)
-		DLOG(34, "Search for: " << search << " found at location: " << (void*)generationHandle.handle);
+void MyReadFunc(const typename RCU<T, Deleter>::Handle& generationHandle)
+{	
+	DLOG(34, "*generationHandle.handle: " << *generationHandle.handle);
 }
-
 
 ProcessMessage MyProcFunc(std::vector<Message>& messages)
 {	
@@ -239,49 +214,62 @@ ProcessMessage MyProcFunc(std::vector<Message>& messages)
 	return nullptr;
 }
 
-ObservableEvent FakeFSEvent()
+void readfunc(const Timepoint& begin, const Timepoint& end, int& read)
 {
-	return {};
+	auto readerID = materialTable.ReserveTableReadFlag();
+	std::this_thread::sleep_until(begin);
+	while (std::chrono::high_resolution_clock::now() < end)
+	{
+		materialTable.Pull(readerID,MyReadFunc<int,std::default_delete<int>>);
+		std::this_thread::sleep_for(Milliseconds{ 6.95 });
+		++read;		
+	}
 }
+
+void writefunc(const Timepoint& begin, const Timepoint& end)
+{
+	std::this_thread::sleep_until(begin);
+	while (std::chrono::high_resolution_clock::now() < end)
+	{
+		auto newData = new int{ ++globalInt };
+		materialTable.Push(newData);
+		std::this_thread::sleep_for(Milliseconds{ 16.6 });
+	}
+}
+
 
 int main()
 {		
 	FileSystemEventSpace fsEventSpace;
 	FileSystemObservationToken observationToken = UnderlyingType(FileSystemMessageType::MBD_MATERIAL | FileSystemMessageType::MBD_TEXTURE);
-	FileSystemObserver fsObserver(observationToken, fsEventSpace.observerRegister);
-	MFu32 readerId = materialTable.ReserveTableReadFlag();
+	FileSystemObserver fsObserver(observationToken, fsEventSpace.observerRegister);	
 	FileSystemEvent fsEvent;
 	fsEvent.eventToken = UnderlyingType(FileSystemMessageType::MBD_MATERIAL | FileSystemMessageType::MBD_TEXTURE);
 	fsEvent.messages.emplace_back(Message{ UnderlyingType(FileSystemMessageType::MBD_MATERIAL),int(5) });
 	fsEvent.messages.emplace_back(Message{ UnderlyingType(FileSystemMessageType::MBD_TEXTURE),int(7) });
-	fsEventSpace.NotifyRegisteredObservers(std::move(fsEvent));
-	ProcessMessage procMessage = fsObserver.ProcessEvents(MyProcFunc);
-	materialTable.Pull(readerId, MyReadFunc<int,std::default_delete<int>>, 5);
+	//fsEventSpace.NotifyRegisteredObservers(std::move(fsEvent));
+	//ProcessMessage procMessage = fsObserver.ProcessEvents(MyProcFunc);
+	//MFu32 readerId = materialTable.ReserveTableReadFlag();
+	//materialTable.Pull(readerId, MyReadFunc<int,std::default_delete<int>>, 5);
 	
 
 	auto loops = 20;
 	for (auto loop{ 0 }; loop < loops; loop+=1)
-	{
-		intRCU2 rcu2(3);
+	{		
 		Seconds beginDelay{ .1 };
-		Seconds executionTime{ 1 };
+		Seconds executionTime{ 100 };
 		Timepoint beginTime = std::chrono::high_resolution_clock::now() + beginDelay;
 		Timepoint endTime = beginTime + executionTime;
 		paddedInt reads[6];
 		for (auto& read : reads)
 			read.i = 0;
-		std::thread rthread1{ readfunc,std::cref(beginTime),std::cref(endTime),std::ref(reads[0].i),std::ref(rcu2)};
-		std::thread rthread2{ readfunc,std::cref(beginTime),std::cref(endTime),std::ref(reads[1].i),std::ref(rcu2) };
-		std::thread rthread3{ readfunc,std::cref(beginTime),std::cref(endTime),std::ref(reads[2].i),std::ref(rcu2) };		
-		//std::thread rthread5{ readfunc,std::cref(beginTime),std::cref(endTime),std::ref(reads[4].i) };
-		//std::thread rthread6{ readfunc,std::cref(beginTime),std::cref(endTime),std::ref(reads[5].i) };
-		writefunc(beginTime, endTime, std::ref(rcu2));
+		std::thread rthread1{ readfunc,std::cref(beginTime),std::cref(endTime),std::ref(reads[0].i)};
+		//std::thread rthread2{ readfunc,std::cref(beginTime),std::cref(endTime),std::ref(reads[1].i)};
+		//std::thread rthread3{ readfunc,std::cref(beginTime),std::cref(endTime),std::ref(reads[2].i)};
+		writefunc(beginTime, endTime);
 		rthread1.join();
-		rthread2.join();
-		rthread3.join();
-		//rthread4.join();
-		//rthread5.join();
-		//rthread6.join();
+		//rthread2.join();
+		//rthread3.join();
 		auto wAvg = globalInt / executionTime.count();
 		int readInt{ 0 };
 		for (const auto& read : reads)
