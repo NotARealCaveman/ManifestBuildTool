@@ -2,7 +2,8 @@
 
 #include <ManifestParser/OpenGEX/GEX_Color.h>
 #include <ManifestParser/OpenGEX/GEX_Texture.h>
-#include <ManifestPersistence/Manifest_Table.h>
+
+#include "MDB_Table.h"
 
 using namespace Manifest_Parser;
 

@@ -8,8 +8,8 @@
 #include <ManifestMemory/Manifest_Allocator.h>
 #include <EXPERIMENTAL/EXPERIMENTAL_RUNTIME_DATA_STRUCTURES.h>
 
+#include <ManifestPersistence/Runtime/Runtime_Table.h>
 #include "Binary_Database.h"
-#include "Runtime_Table.h"
 
 using namespace Manifest_Memory;
 using namespace Manifest_Experimental;

@@ -85,6 +85,12 @@
     <Filter Include="Source Files\Parser\OpenGEX">
       <UniqueIdentifier>{9c6ebf05-ca82-4839-ac91-7438bf44db94}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Persistence\Runtime">
+      <UniqueIdentifier>{86709693-cc00-46d1-aca1-f0a5219252d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Persistence\Runtime">
+      <UniqueIdentifier>{c12ad877-1766-48b4-bd60-85df94194eab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -156,9 +162,6 @@
     <ClCompile Include="ManifestPersistence\Runtime_Database.cpp">
       <Filter>Source Files\Persistence</Filter>
     </ClCompile>
-    <ClCompile Include="ManifestPersistence\Runtime_Table.cpp">
-      <Filter>Source Files\Persistence</Filter>
-    </ClCompile>
     <ClCompile Include="ManifestParser\OpenGEX\GEX_Color.cpp">
       <Filter>Source Files\Parser\OpenGEX</Filter>
     </ClCompile>
@@ -221,6 +224,9 @@
     </ClCompile>
     <ClCompile Include="ManifestParser\RegisteredGeneraters.cpp">
       <Filter>Source Files\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestPersistence\Runtime\Runtime_Table.cpp">
+      <Filter>Source Files\Persistence\Runtime</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -293,16 +299,7 @@
     <ClInclude Include="ManifestPersistence\Manifest_DatabaseBuilder.h">
       <Filter>Header Files\Persistence</Filter>
     </ClInclude>
-    <ClInclude Include="ManifestPersistence\Manifest_Table.h">
-      <Filter>Header Files\Persistence</Filter>
-    </ClInclude>
     <ClInclude Include="ManifestPersistence\Runtime_Database.h">
-      <Filter>Header Files\Persistence</Filter>
-    </ClInclude>
-    <ClInclude Include="ManifestPersistence\Runtime_Table.h">
-      <Filter>Header Files\Persistence</Filter>
-    </ClInclude>
-    <ClInclude Include="ManifestPersistence\Runtime_TableIterator.h">
       <Filter>Header Files\Persistence</Filter>
     </ClInclude>
     <ClInclude Include="ManifestPersistence\MDB\MDB_GeometryNode.h">
@@ -430,6 +427,15 @@
     </ClInclude>
     <ClInclude Include="ManifestParser\OpenGEX\GEX_Transform.h">
       <Filter>Header Files\Parser\OpenGEX</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestPersistence\MDB\MDB_Table.h">
+      <Filter>Header Files\Persistence\MDB</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestPersistence\Runtime\Runtime_Table.h">
+      <Filter>Header Files\Persistence\Runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestPersistence\Runtime\Runtime_TableIterator.h">
+      <Filter>Header Files\Persistence\Runtime</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

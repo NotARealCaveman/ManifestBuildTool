@@ -181,8 +181,8 @@
     <ClCompile Include="ManifestPersistence\MDB\MDB_Mesh.cpp" />
     <ClCompile Include="ManifestPersistence\MDB\MDB_Texture.cpp" />
     <ClCompile Include="ManifestPersistence\MDB\MDB_VertexArray.cpp" />
+    <ClCompile Include="ManifestPersistence\Runtime\Runtime_Table.cpp" />
     <ClCompile Include="ManifestPersistence\Runtime_Database.cpp" />
-    <ClCompile Include="ManifestPersistence\Runtime_Table.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EXPERIMENTAL\EXPERIMENTAL_RUNTIME_DATA_STRUCTURES.h" />
@@ -232,7 +232,6 @@
     <ClInclude Include="ManifestPersistence\DatabaseTypes.h" />
     <ClInclude Include="ManifestPersistence\Database_Flags.h" />
     <ClInclude Include="ManifestPersistence\Manifest_DatabaseBuilder.h" />
-    <ClInclude Include="ManifestPersistence\Manifest_Table.h" />
     <ClInclude Include="ManifestPersistence\MDB\Binary\Binary_GeometryNode.h" />
     <ClInclude Include="ManifestPersistence\MDB\Binary\Binary_GeometryObject.h" />
     <ClInclude Include="ManifestPersistence\MDB\Binary\Binary_Material.h" />
@@ -245,11 +244,12 @@
     <ClInclude Include="ManifestPersistence\MDB\MDB_IndexArray.h" />
     <ClInclude Include="ManifestPersistence\MDB\MDB_Material.h" />
     <ClInclude Include="ManifestPersistence\MDB\MDB_Mesh.h" />
+    <ClInclude Include="ManifestPersistence\MDB\MDB_Table.h" />
     <ClInclude Include="ManifestPersistence\MDB\MDB_Texture.h" />
     <ClInclude Include="ManifestPersistence\MDB\MDB_VertexArray.h" />
+    <ClInclude Include="ManifestPersistence\Runtime\Runtime_Table.h" />
+    <ClInclude Include="ManifestPersistence\Runtime\Runtime_TableIterator.h" />
     <ClInclude Include="ManifestPersistence\Runtime_Database.h" />
-    <ClInclude Include="ManifestPersistence\Runtime_Table.h" />
-    <ClInclude Include="ManifestPersistence\Runtime_TableIterator.h" />
     <ClInclude Include="ManifestUtility\Console_Color.h" />
     <ClInclude Include="ManifestUtility\DebugLogger.h" />
     <ClInclude Include="ManifestUtility\GLDefinitions.h" />

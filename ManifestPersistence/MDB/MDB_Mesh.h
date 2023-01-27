@@ -1,7 +1,6 @@
 #pragma once
 
-#include <ManifestPersistence/Manifest_Table.h>
-
+#include "MDB_Table.h"
 #include "MDB_VertexArray.h"
 #include "MDB_IndexArray.h"
 

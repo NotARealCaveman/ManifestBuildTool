@@ -159,13 +159,20 @@ struct paddedInt
 	char padding[64 - sizeof(int)];
 };
 
-Table<Texture, std::default_delete<int>> textureTable{ 3 };
+Table<int, std::default_delete<int>> intTable{ 3 };
+Table<Texture, std::default_delete<Texture>> textureTable{ 3 };
 Table<Material, std::default_delete<Material>> materialTable{ 3 };
 
 template<typename T, typename Deleter>
-void MyReadFunc(const typename RCU<T, Deleter>::Handle& generationHandle)
-{	
-	DLOG(34, "*generationHandle.handle: " << *generationHandle.handle);
+void MyReadFunc(const typename RCU<T, Deleter>::Handle& generationHandle, T* copyReadToAddress)
+{
+	*copyReadToAddress = *generationHandle.handle;
+}
+
+template<typename T, typename... Params>
+T* MyWriteFunc(const Params& ...data)
+{
+	return new T{ data... };
 }
 
 ProcessMessage MyProcFunc(std::vector<Message>& messages)
@@ -196,12 +203,14 @@ ProcessMessage MyProcFunc(std::vector<Message>& messages)
 
 void readfunc(const Timepoint& begin, const Timepoint& end, int& read)
 {
-	auto readerID = materialTable.ReserveTableReadFlag();
+	auto readerID = intTable.ReserveTableReadFlag();
 	std::this_thread::sleep_until(begin);
 	while (std::chrono::high_resolution_clock::now() < end)
 	{
-		//materialTable.Pull(readerID,MyReadFunc<int,std::default_delete<int>>);
+		int copyInt;
+		intTable.Pull(readerID,MyReadFunc<int,std::default_delete<int>>,&copyInt);
 		std::this_thread::sleep_for(Milliseconds{ 6.95 });
+		DLOG(34, "Pulled int: " << copyInt);
 		++read;		
 	}
 }
@@ -211,18 +220,14 @@ void writefunc(const Timepoint& begin, const Timepoint& end)
 	std::this_thread::sleep_until(begin);
 	while (std::chrono::high_resolution_clock::now() < end)
 	{
-		auto newData = new Material;
-		newData->materialIDs[0] = 1;
-		newData->materialIDs[1] = 2;
-		newData->materialIDs[2] = 3;
-		//materialTable.Push(newData);
+		intTable.Push(MyWriteFunc<int,int>, ++globalInt);
 		std::this_thread::sleep_for(Milliseconds{ 16.6 });
 	}
 }
 
-
 int main()
-{		
+{	
+
 	FileSystemEventSpace fsEventSpace;
 	FileSystemObservationToken observationToken = UnderlyingType(FileSystemMessageType::MBD_MATERIAL | FileSystemMessageType::MBD_TEXTURE);
 	FileSystemObserver fsObserver(observationToken, fsEventSpace.observerRegister);	
@@ -236,7 +241,7 @@ int main()
 	//materialTable.Pull(readerId, MyReadFunc<int,std::default_delete<int>>, 5);
 	
 
-	auto loops = 0;
+	auto loops = 1;
 	for (auto loop{ 0 }; loop < loops; loop+=1)
 	{		
 		Seconds beginDelay{ .1 };

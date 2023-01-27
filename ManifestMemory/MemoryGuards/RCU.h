@@ -13,7 +13,7 @@ namespace Manifest_Memory
 	template<typename T, typename Deleter>
 	class RCU
 	{
-	private:
+	private:		
 		static constexpr Generation MAX_RCU_GENERATION{ 2 };
 		static constexpr MFu32 RCU_MODULO{ MAX_RCU_GENERATION - 1 };
 		struct ReadFlag

@@ -1,8 +1,8 @@
 #pragma once
 
 #include <ManifestParser/OpenGEX/GEX_Material.h>
-#include <ManifestPersistence/Manifest_Table.h>
 
+#include "MDB_Table.h"
 #include "MDB_Texture.h"
 
 namespace Manifest_Persistence

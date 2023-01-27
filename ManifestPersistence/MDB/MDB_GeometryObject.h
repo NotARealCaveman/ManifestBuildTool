@@ -1,8 +1,8 @@
 #pragma once
 
 #include <ManifestParser/OpenGEX/GEX_GeometryObject.h>
-#include <ManifestPersistence/Manifest_Table.h>
 
+#include "MDB_Table.h"
 #include "MDB_Mesh.h" 
 
 using namespace Manifest_Parser;
