@@ -10,4 +10,5 @@ x64/
 Deprecated/*.*
 *.suo
 *.vsidx
-/yoinked/*
+*.sln
+*.vcxproj
