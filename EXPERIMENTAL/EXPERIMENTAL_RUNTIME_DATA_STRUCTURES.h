@@ -2,22 +2,25 @@
 #include <atomic>
 #include <thread>
 
-#include "Typenames.h"
-#include <ManifestGLUtility/DebugLogger.h>
+#include "ManifestUtility/Typenames.h"
+#include <ManifestUtility/DebugLogger.h>
 
+using namespace Manifest_Utility;
 
 namespace Manifest_Experimental
 {	
-	//loop on exchange while lock is held(1) until released(0)
-	constexpr MFbool LOCKED{ 1 };
-	constexpr MFbool UNLOCKED{ 0 };
-	struct ExchangeLock
+	struct Texture
 	{
-	protected:
-		std::atomic<MFbool> lock{ UNLOCKED };
-	public:
-		//attempts to lock, spins on exchange until locked
-		void Lock();
-		//restores lock to unlocked state
-		void Unlock();
-	};}
+		MFu32  textureId;
+	};
+
+	struct Material
+	{
+		MFu32 materialIDs[3];
+		const MFu32& operator[](const MFu32& index) 
+		{
+			assert(index < 3);
+			return materialIDs[index]; 
+		};
+	};
+}

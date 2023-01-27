@@ -2,10 +2,9 @@
 #include <atomic>
 #include <array>
 
+#include <EXPERIMENTAL/EXPERIMENTAL_RUNTIME_DATA_STRUCTURES.h>
 #include <ManifestUtility/Typenames.h>
 #include <ManifestUtility/DebugLogger.h>
-
-using namespace Manifest_Utility;
 
 namespace Manifest_Memory
 {	

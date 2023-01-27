@@ -1,14 +1,14 @@
 #pragma once
 
-#include <ManifestGLParser/OpenGEX_Parser.h>
-#include <ManifestGLPersistence/BuildTool.h>
-#include <ManifestGLUtility/Console_Color.h>
-#include <ManifestGLPersistence/Manifest_DatabaseBuilder.h>
-#include <ManifestGLPersistence/Runtime_Database.h>
+#include <ManifestParser/OpenGEX_Parser.h>
+#include <ManifestPersistence/BuildTool.h>
+#include <ManifestUtility/Console_Color.h>
+#include <ManifestPersistence/Manifest_DatabaseBuilder.h>
+#include <ManifestPersistence/Runtime_Database.h>
 
-#include <EXPERIMENTAL/Manifest_Allocator.h>
+#include <ManifestMemory/Manifest_Allocator.h>
 #include <EXPERIMENTAL/EXPERIMENTAL_RUNTIME_DATA_STRUCTURES.h>
-#include <EXPERIMENTAL/ManifestCommunication/FileSystem.h>
+#include <ManifestCommunication/FileSystem.h>
 
 #include <thread>
 #include <chrono>
@@ -125,26 +125,6 @@ void BuildAndExport()
 	}			
 }
 
-void ThreadTest()
-{	
-}
-
-
-void MessageTest()
-{
-
-	//set up event space and observers	
-	FileSystemEventSpace fsEventSpace;
-	FileSystemObservationToken fsToken{ UnderlyingType(FileSystemMessageType::MBD_MATERIAL | FileSystemMessageType::MBD_TEXTURE) };
-	FileSystemObserver fsObserver{ fsToken,fsEventSpace.observerRegister };
-	//create observed system
-	FileSystem fileSystem;
-	//load database and send fs messages
-	fileSystem.LoadMBD(TEST_PATH + TEST_MDB, fsEventSpace);
-	auto processMessage = fsObserver.ProcessEvents(TEST_PROCESS_FUNC);
-	//push commited information to database
-}
-
 template<typename T>
 struct Deleter
 {
@@ -157,7 +137,7 @@ struct Deleter
 
 using stdIntDelete = Deleter<int>;
 
-#include <EXPERIMENTAL/RCU.h>
+#include <ManifestMemory/MemoryGuards/RCU.h>
 
 using intRCU2 = RCU<int, stdIntDelete>;
 
@@ -179,8 +159,8 @@ struct paddedInt
 	char padding[64 - sizeof(int)];
 };
 
-Table<int, std::default_delete<int>> textureTable{ 3 };
-Table<int, std::default_delete<int>> materialTable{ 3 };
+Table<Texture, std::default_delete<int>> textureTable{ 3 };
+Table<Material, std::default_delete<Material>> materialTable{ 3 };
 
 template<typename T, typename Deleter>
 void MyReadFunc(const typename RCU<T, Deleter>::Handle& generationHandle)
@@ -190,26 +170,26 @@ void MyReadFunc(const typename RCU<T, Deleter>::Handle& generationHandle)
 
 ProcessMessage MyProcFunc(std::vector<Message>& messages)
 {	
-	std::vector<int> fileTextures;
-	std::vector<int> fileMaterials;
+	std::vector<Texture> fileTextures;
+	std::vector<Material> fileMaterials;
 	for (auto& message : messages)
 	{		
 		switch (message.messageToken)
-		{
-			case UnderlyingType(FileSystemMessageType::MBD_MATERIAL):
-				fileMaterials.emplace_back(message.GetMessageContent<int>());
-				break;
+		{			
 			case UnderlyingType(FileSystemMessageType::MBD_TEXTURE):
-				fileTextures.emplace_back(message.GetMessageContent<int>());
+				fileTextures.emplace_back(message.GetMessageContent<Texture>());
+				break;
+			case UnderlyingType(FileSystemMessageType::MBD_MATERIAL):
+				fileMaterials.emplace_back(message.GetMessageContent<Material>());
 				break;
 		}
 	}
-	int* textures = new int[fileTextures.size()];
+	Texture* textures = new Texture[fileTextures.size()];
 	*textures = fileTextures[0];
-	textureTable.Push(textures);
-	int* materials = new int[fileMaterials.size()];
+	//textureTable.Push(textures);
+	Material* materials = new Material[fileMaterials.size()];
 	*materials = fileMaterials[0];
-	materialTable.Push(materials);
+	//materialTable.Push(materials);
 	
 	return nullptr;
 }
@@ -220,7 +200,7 @@ void readfunc(const Timepoint& begin, const Timepoint& end, int& read)
 	std::this_thread::sleep_until(begin);
 	while (std::chrono::high_resolution_clock::now() < end)
 	{
-		materialTable.Pull(readerID,MyReadFunc<int,std::default_delete<int>>);
+		//materialTable.Pull(readerID,MyReadFunc<int,std::default_delete<int>>);
 		std::this_thread::sleep_for(Milliseconds{ 6.95 });
 		++read;		
 	}
@@ -231,8 +211,11 @@ void writefunc(const Timepoint& begin, const Timepoint& end)
 	std::this_thread::sleep_until(begin);
 	while (std::chrono::high_resolution_clock::now() < end)
 	{
-		auto newData = new int{ ++globalInt };
-		materialTable.Push(newData);
+		auto newData = new Material;
+		newData->materialIDs[0] = 1;
+		newData->materialIDs[1] = 2;
+		newData->materialIDs[2] = 3;
+		//materialTable.Push(newData);
 		std::this_thread::sleep_for(Milliseconds{ 16.6 });
 	}
 }
@@ -253,11 +236,11 @@ int main()
 	//materialTable.Pull(readerId, MyReadFunc<int,std::default_delete<int>>, 5);
 	
 
-	auto loops = 20;
+	auto loops = 0;
 	for (auto loop{ 0 }; loop < loops; loop+=1)
 	{		
 		Seconds beginDelay{ .1 };
-		Seconds executionTime{ 100 };
+		Seconds executionTime{ 10 };
 		Timepoint beginTime = std::chrono::high_resolution_clock::now() + beginDelay;
 		Timepoint endTime = beginTime + executionTime;
 		paddedInt reads[6];
@@ -279,6 +262,7 @@ int main()
 		LOG(33, "Avg reads/s: " << rAvg << " executionTime: " << executionTime);
 		globalInt = 0;
 	}
+
 	RegisterProgramExecutiveThread();
 	//create data stores
 	INIT_MEMORY_RESERVES();	
@@ -286,11 +270,6 @@ int main()
 	status.dwLength = sizeof(status);
 	GlobalMemoryStatusEx(&status);
 
-	//db threading
-	DISABLE
-		MessageTest();
-	DISABLE
-		ThreadTest();
 	//persistence tests
 	DISABLE
 		BuildAndExport();
