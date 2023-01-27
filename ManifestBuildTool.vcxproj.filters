@@ -437,5 +437,8 @@
     <ClInclude Include="ManifestPersistence\Runtime\Runtime_TableIterator.h">
       <Filter>Header Files\Persistence\Runtime</Filter>
     </ClInclude>
+    <ClInclude Include="ManifestPersistence\Runtime\Runtime_TableTypes.h">
+      <Filter>Header Files\Persistence\Runtime</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

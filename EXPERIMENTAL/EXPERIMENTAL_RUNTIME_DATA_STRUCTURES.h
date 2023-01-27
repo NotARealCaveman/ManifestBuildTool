@@ -16,11 +16,24 @@ namespace Manifest_Experimental
 
 	struct Material
 	{
-		MFu32 materialIDs[3];
+		Texture materialTextures[3];
 		const MFu32& operator[](const MFu32& index) 
 		{
 			assert(index < 3);
-			return materialIDs[index]; 
+			return materialTextures[index].textureId;
 		};
+	};
+
+	struct Mesh
+	{
+		MFu32 VAO;
+		MFu32 VBO;
+		MFu32 EBO;
+		MFu32 indexCount;
+	};
+
+	struct GeometryObject
+	{
+		MFu32 meshId;
 	};
 }

@@ -18,6 +18,11 @@ void ObersvableFileSystem::LoadMBD(const std::string& mbd, EventSpace& eventSpac
 		event.eventToken |= UnderlyingType(MessageTypes::MBD_TEXTURE);
 		event.messages.emplace_back(Message {UnderlyingType(MessageTypes::MBD_TEXTURE), Texture{}});
 	}	
+	for (auto objectIndex{ 0 }; objectIndex < binaryDatabase.binaryGeometryObjectTable.header.totalEntries; ++objectIndex)
+	{			
+		event.eventToken |= UnderlyingType(MessageTypes::MBD_GEOMETRYOBJECT);
+		event.messages.emplace_back(Message {UnderlyingType(MessageTypes::MBD_GEOMETRYOBJECT), Texture{}});
+	}
 	ScratchPad<Byte>{}.Unwind();
 	eventSpace.NotifyRegisteredObservers(std::move(event));
 }

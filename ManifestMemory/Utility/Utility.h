@@ -5,9 +5,8 @@
 #include <algorithm>
 #include <atomic>
 
-#include <ManifestGLUtility/DebugLogger.h>
+#include <ManifestUtility/DebugLogger.h>
 
-#include "Iterator.h"
 #include "Thread.h"
 
 namespace Manifest_Memory

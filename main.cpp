@@ -20,8 +20,8 @@ using namespace Manifest_Experimental;
 using namespace Manifest_Communication;
 
 const std::string TEST_PATH{ "C:\\Users\\Droll\\Desktop\\Game\\testing\\" };
-const std::string TEST_GEX{ "Test2.gex" };
-const std::string TEST_MDB{ "Test2.mdb" };
+const std::string TEST_GEX{ "Test1.gex" };
+const std::string TEST_MDB{ "Test1.mdb" };
 
 void RuntimeTest()
 {
@@ -245,7 +245,7 @@ int main()
 	for (auto loop{ 0 }; loop < loops; loop+=1)
 	{		
 		Seconds beginDelay{ .1 };
-		Seconds executionTime{ 10 };
+		Seconds executionTime{ 1 };
 		Timepoint beginTime = std::chrono::high_resolution_clock::now() + beginDelay;
 		Timepoint endTime = beginTime + executionTime;
 		paddedInt reads[6];
@@ -276,9 +276,9 @@ int main()
 	GlobalMemoryStatusEx(&status);
 
 	//persistence tests
-	DISABLE
+	//DISABLE
 		BuildAndExport();
-	DISABLE
+	//DISABLE
 		ImportAndTest();
 	//final
 	DISABLE
