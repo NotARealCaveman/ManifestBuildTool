@@ -1,4 +1,5 @@
 #pragma once
+#include <cassert>
 #include <type_traits>
 
 #include <ManifestUtility/Typenames.h>

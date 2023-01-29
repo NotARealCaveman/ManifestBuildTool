@@ -39,8 +39,9 @@ namespace Manifest_Communication
 		Message(Message&& other) noexcept;
 		Message(const Message& other) = delete;		
 		~Message();				
-		template<typename Content>
-		Content GetMessageContent()
+		//dynamic allocations in content are not cleaned up by ~Message(), only messageBase itself
+		template<typename Content>		
+		Content&& GetMessageContent()
 		{
 			ContentWrapper<Content>* contentWrapper = reinterpret_cast<ContentWrapper<Content>*>(messageBase);
 			Content& content = contentWrapper->content;

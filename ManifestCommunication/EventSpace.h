@@ -12,7 +12,7 @@ namespace Manifest_Communication
 	{			
 		public:		
 			//Doles out event messages based on observer tokens
-			void NotifyRegisteredObservers(Event&& event);
+			void NotifyRegisteredObservers(Event&& event) const;
 
 			UniqueObserverRegister observerRegister;
 	};

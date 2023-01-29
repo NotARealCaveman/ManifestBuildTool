@@ -5,7 +5,6 @@
 #include "Message.h"
 
 #include <ManifestUtility/Typenames.h>
-#include <ManifestUtility/DebugLogger.h>
 
 using namespace Manifest_Utility;
 

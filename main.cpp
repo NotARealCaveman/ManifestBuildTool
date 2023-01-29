@@ -20,8 +20,8 @@ using namespace Manifest_Experimental;
 using namespace Manifest_Communication;
 
 const std::string TEST_PATH{ "C:\\Users\\Droll\\Desktop\\Game\\testing\\" };
-const std::string TEST_GEX{ "Test2.gex" };
-const std::string TEST_MDB{ "Test2.mdb" };
+const std::string TEST_GEX{ "Test1.gex" };
+const std::string TEST_MDB{ "Test1.mdb" };
 
 void RuntimeTest()
 {
@@ -160,8 +160,6 @@ struct paddedInt
 };
 
 Table<int, std::default_delete<int>> intTable{ 3 };
-Table<Texture, std::default_delete<Texture>> textureTable{ 3 };
-Table<Material, std::default_delete<Material>> materialTable{ 3 };
 
 template<typename T, typename Deleter>
 void MyReadFunc(const typename RCU<T, Deleter>::Handle& generationHandle, T* copyReadToAddress)

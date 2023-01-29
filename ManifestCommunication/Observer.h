@@ -5,7 +5,6 @@
 #include "Event.h"
 
 #include <ManifestUtility/Typenames.h>
-#include <ManifestUtility/DebugLogger.h>
 #include <ManifestMemory/MemoryGuards/ExchangeLock.h>
 
 using namespace Manifest_Memory;
@@ -31,8 +30,9 @@ namespace Manifest_Communication
 		std::atomic<MFu64> registeredObservationTokens{ 0 };
 	};
 	//allows meta messages to be generated		
-	using ProcessMessage = Message*;	
-	using MessageProcessingFunction = ProcessMessage(*)(std::vector<Message>&);
+	using VOID = void*;
+	template<typename T = VOID,typename... Args>
+	using MessageProcessingFunction = T*(*)(std::vector<Message>&, Args&...);
 
 	//Observer is an independent broker
 	//the observer object is created with an observation token providing guaranteed, exclusive access to the message types of the event it is observing	
@@ -48,9 +48,16 @@ namespace Manifest_Communication
 		ExchangeLock messageLock;
 	public:
 		Observer(const ObservationToken& observationToken);		
-		//Processes messages - spins if writing for observation
-		ProcessMessage ProcessEvents(const MessageProcessingFunction& processFunction);
+		//Processes messages - spins if writing for observation	
+		template<typename T = VOID, typename... Args>
+		T* ProcessEvents(const MessageProcessingFunction<T,Args...> processFunction,Args&... args)
+		{
+			messageLock.Lock();
+			std::vector<Message> messages = std::move(observedEventMessages);
+			messageLock.Unlock();
 
+			return processFunction(messages,args...);
+		}
 		const ObservationToken observationToken;			
 	};
 }
