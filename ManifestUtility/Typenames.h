@@ -1,8 +1,11 @@
 #pragma once
 #include <stdint.h>
+#include <string>
 
 namespace Manifest_Utility
 {	
+	//tbd
+	using MFstring = std::string;
 	///single character types
 	using MFbool = bool;
 	using MFchar = char;	

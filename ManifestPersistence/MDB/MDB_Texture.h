@@ -33,7 +33,7 @@ namespace Manifest_Persistence
 	struct MDB_Texture
 	{
 		PrimaryKey textureID = KEY_NOT_PRESENT;
-		ForeignKey materialID = KEY_NOT_PRESENT;
+		//ForeignKey materialID = KEY_NOT_PRESENT;
 		CompositeKey textureInfo = KEY_NOT_PRESENT;//represents size(b:0-60) and nChannels(b:61-63)
 		CompositeKey textureDimensions;//represents width(b:0-31) and height(b:32-63)
 		MFu8 textureType;
@@ -41,5 +41,5 @@ namespace Manifest_Persistence
 	};
 
 	typedef DatabaseBuildTable<MDB_Texture> TextureBuildTable;
-	void TableEntry(const DDL_Structure& structure,  const ForeignKey& materialID, TextureBuildTable& textureBuildTable);
+	void TableEntry(const DDL_Structure& structure, ForeignKey(&textureIDs)[3], TextureBuildTable& textureBuildTable);
 }

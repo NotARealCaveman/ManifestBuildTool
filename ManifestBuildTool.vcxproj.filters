@@ -1,0 +1,438 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Persistence">
+      <UniqueIdentifier>{f711ef6e-15c5-4d62-9e26-9294363d6319}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Persistence\MDB">
+      <UniqueIdentifier>{a5649458-1e17-4c0d-b316-241fa2594783}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Persistence\MDB\Binary">
+      <UniqueIdentifier>{75a51fea-bc84-4b2b-9bad-15e9133c11a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Parser">
+      <UniqueIdentifier>{392ee99c-566a-47cc-b115-f7d6ea41b6f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Parser\OpenGEX">
+      <UniqueIdentifier>{f59814c3-b40a-4c05-b014-a2da2a28f49c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Parser\OpenDDL">
+      <UniqueIdentifier>{a80887ff-bf63-4ea1-a14a-52b8a760f9b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Persistence">
+      <UniqueIdentifier>{e2d1cba5-3191-4030-86e6-410dacbe507c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Persistence\MDB">
+      <UniqueIdentifier>{849da0b8-56c0-41d1-a01d-630d24ef43c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Persistence\MDB\Binary">
+      <UniqueIdentifier>{1f74ed3c-86ae-4329-bac5-e4806cf5b596}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\EXPERIMENTAL">
+      <UniqueIdentifier>{19278a86-00b8-4e95-ae4c-45ecb2f3763d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\EXPERIMENTAL">
+      <UniqueIdentifier>{75a16a27-9329-47a2-a2e0-984d70f87ca4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Utility">
+      <UniqueIdentifier>{e35e8723-40c2-4d8d-8fec-f7479d98ce13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Communication">
+      <UniqueIdentifier>{230d1035-43dd-4e05-84d6-ba3a5cd008c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Communication">
+      <UniqueIdentifier>{2339ccaf-af1e-4686-b134-dbcf061831b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Memory">
+      <UniqueIdentifier>{8c7cae7a-96b2-4034-bb26-9ca114910f0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Memory\Utility">
+      <UniqueIdentifier>{1a04fff4-09d8-4596-b3c6-b96b10edccc7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Memory\MemoryGuards">
+      <UniqueIdentifier>{2abedd19-2142-4557-beb1-a0bb0ffb3f2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Memory">
+      <UniqueIdentifier>{b6302b27-340b-4759-a0b1-7b900933ec3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Memory\MemoryGuards">
+      <UniqueIdentifier>{4d0497d7-2c54-4716-8ae9-632931b7c27b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Memory\Utility">
+      <UniqueIdentifier>{1f578e8a-e95e-45e9-8fd6-0ac2ca7a9575}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Memory\Containers">
+      <UniqueIdentifier>{14837fbe-a259-495d-a406-b61e776a01ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Parser">
+      <UniqueIdentifier>{97db5fc3-12a6-40e6-9c99-e810d64ca6d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Parser\OpenDDL">
+      <UniqueIdentifier>{ecd632e3-2446-4bec-bc21-cba5ca1e3986}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Parser\OpenGEX">
+      <UniqueIdentifier>{9c6ebf05-ca82-4839-ac91-7438bf44db94}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Persistence\Runtime">
+      <UniqueIdentifier>{86709693-cc00-46d1-aca1-f0a5219252d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Persistence\Runtime">
+      <UniqueIdentifier>{c12ad877-1766-48b4-bd60-85df94194eab}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EXPERIMENTAL\EXPERIMENTAL_RUNTIME_DATA_STRUCTURES.cpp">
+      <Filter>Source Files\EXPERIMENTAL</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestCommunication\Event.cpp">
+      <Filter>Source Files\Communication</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestCommunication\EventSpace.cpp">
+      <Filter>Source Files\Communication</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestCommunication\Message.cpp">
+      <Filter>Source Files\Communication</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestCommunication\Observer.cpp">
+      <Filter>Source Files\Communication</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestMemory\Utility\Thread.cpp">
+      <Filter>Source Files\Memory\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestMemory\Utility\ThreadPool.cpp">
+      <Filter>Source Files\Memory\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestMemory\MemoryGuards\ExchangeLock.cpp">
+      <Filter>Source Files\Memory\MemoryGuards</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestMemory\Manifect_Allocator.cpp">
+      <Filter>Source Files\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestPersistence\MDB\Binary\Binary_Types.cpp">
+      <Filter>Source Files\Persistence\MDB\Binary</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestPersistence\MDB\MDB_GeometryNode.cpp">
+      <Filter>Source Files\Persistence\MDB</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestPersistence\MDB\MDB_GeometryObject.cpp">
+      <Filter>Source Files\Persistence\MDB</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestPersistence\MDB\MDB_IndexArray.cpp">
+      <Filter>Source Files\Persistence\MDB</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestPersistence\MDB\MDB_Material.cpp">
+      <Filter>Source Files\Persistence\MDB</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestPersistence\MDB\MDB_Mesh.cpp">
+      <Filter>Source Files\Persistence\MDB</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestPersistence\MDB\MDB_Texture.cpp">
+      <Filter>Source Files\Persistence\MDB</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestPersistence\MDB\MDB_VertexArray.cpp">
+      <Filter>Source Files\Persistence\MDB</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestPersistence\Binary_Database.cpp">
+      <Filter>Source Files\Persistence</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestPersistence\BuildTool.cpp">
+      <Filter>Source Files\Persistence</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestPersistence\Manifest_DatabaseBuilder.cpp">
+      <Filter>Source Files\Persistence</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestPersistence\Runtime_Database.cpp">
+      <Filter>Source Files\Persistence</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestParser\OpenGEX\GEX_Color.cpp">
+      <Filter>Source Files\Parser\OpenGEX</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestParser\OpenGEX\GEX_GeometryObject.cpp">
+      <Filter>Source Files\Parser\OpenGEX</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestParser\OpenGEX\GEX_Material.cpp">
+      <Filter>Source Files\Parser\OpenGEX</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestParser\OpenGEX\GEX_Mesh.cpp">
+      <Filter>Source Files\Parser\OpenGEX</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestParser\OpenGEX\GEX_Metric.cpp">
+      <Filter>Source Files\Parser\OpenGEX</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestParser\OpenGEX\GEX_Morph.cpp">
+      <Filter>Source Files\Parser\OpenGEX</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestParser\OpenGEX\GEX_Name.cpp">
+      <Filter>Source Files\Parser\OpenGEX</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestParser\OpenGEX\GEX_Node.cpp">
+      <Filter>Source Files\Parser\OpenGEX</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestParser\OpenGEX\GEX_ObjectRef.cpp">
+      <Filter>Source Files\Parser\OpenGEX</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestParser\OpenGEX\GEX_Param.cpp">
+      <Filter>Source Files\Parser\OpenGEX</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestParser\OpenGEX\GEX_skin.cpp">
+      <Filter>Source Files\Parser\OpenGEX</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestParser\OpenGEX\GEX_Texture.cpp">
+      <Filter>Source Files\Parser\OpenGEX</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestParser\OpenGEX\GEX_Transform.cpp">
+      <Filter>Source Files\Parser\OpenGEX</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestParser\OpenDDL\DDL_Buffers.cpp">
+      <Filter>Source Files\Parser\OpenDDL</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestParser\OpenDDL\DDL_Primitives.cpp">
+      <Filter>Source Files\Parser\OpenDDL</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestParser\OpenDDL\DDL_Reference.cpp">
+      <Filter>Source Files\Parser\OpenDDL</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestParser\OpenDDL\DDL_Structure.cpp">
+      <Filter>Source Files\Parser\OpenDDL</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestParser\FileFilter.cpp">
+      <Filter>Source Files\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestParser\OpenDDL_Parser.cpp">
+      <Filter>Source Files\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestParser\OpenGEX_Parser.cpp">
+      <Filter>Source Files\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestParser\RegisteredGeneraters.cpp">
+      <Filter>Source Files\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestPersistence\Runtime\Runtime_Table.cpp">
+      <Filter>Source Files\Persistence\Runtime</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="EXPERIMENTAL\EXPERIMENTAL_RUNTIME_DATA_STRUCTURES.h">
+      <Filter>Header Files\EXPERIMENTAL</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestCommunication\Event.h">
+      <Filter>Header Files\Communication</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestCommunication\EventSpace.h">
+      <Filter>Header Files\Communication</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestCommunication\Message.h">
+      <Filter>Header Files\Communication</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestCommunication\MessageOperators.h">
+      <Filter>Header Files\Communication</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestCommunication\Observer.h">
+      <Filter>Header Files\Communication</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestMemory\Manifest_Allocator.h">
+      <Filter>Header Files\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestMemory\Manifest_Memory.h">
+      <Filter>Header Files\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestMemory\MemoryGuards\ExchangeLock.h">
+      <Filter>Header Files\Memory\MemoryGuards</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestMemory\MemoryGuards\RCU.h">
+      <Filter>Header Files\Memory\MemoryGuards</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestMemory\Utility\FunctionWrapper.h">
+      <Filter>Header Files\Memory\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestMemory\Utility\Thread.h">
+      <Filter>Header Files\Memory\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestMemory\Utility\ThreadPool.h">
+      <Filter>Header Files\Memory\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestUtility\Console_Color.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestUtility\DebugLogger.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestUtility\GLDefinitions.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestUtility\Typenames.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestPersistence\Binary_Database.h">
+      <Filter>Header Files\Persistence</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestPersistence\BuildTool.h">
+      <Filter>Header Files\Persistence</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestPersistence\Database_Flags.h">
+      <Filter>Header Files\Persistence</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestPersistence\DatabaseTypes.h">
+      <Filter>Header Files\Persistence</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestPersistence\Manifest_DatabaseBuilder.h">
+      <Filter>Header Files\Persistence</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestPersistence\Runtime_Database.h">
+      <Filter>Header Files\Persistence</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestPersistence\MDB\MDB_GeometryNode.h">
+      <Filter>Header Files\Persistence\MDB</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestPersistence\MDB\MDB_GeometryObject.h">
+      <Filter>Header Files\Persistence\MDB</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestPersistence\MDB\MDB_IndexArray.h">
+      <Filter>Header Files\Persistence\MDB</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestPersistence\MDB\MDB_Material.h">
+      <Filter>Header Files\Persistence\MDB</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestPersistence\MDB\MDB_Mesh.h">
+      <Filter>Header Files\Persistence\MDB</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestPersistence\MDB\MDB_Texture.h">
+      <Filter>Header Files\Persistence\MDB</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestPersistence\MDB\MDB_VertexArray.h">
+      <Filter>Header Files\Persistence\MDB</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestPersistence\MDB\Binary\Binary_GeometryNode.h">
+      <Filter>Header Files\Persistence\MDB\Binary</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestPersistence\MDB\Binary\Binary_GeometryObject.h">
+      <Filter>Header Files\Persistence\MDB\Binary</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestPersistence\MDB\Binary\Binary_Material.h">
+      <Filter>Header Files\Persistence\MDB\Binary</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestPersistence\MDB\Binary\Binary_Mesh.h">
+      <Filter>Header Files\Persistence\MDB\Binary</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestPersistence\MDB\Binary\Binary_Table.h">
+      <Filter>Header Files\Persistence\MDB\Binary</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestPersistence\MDB\Binary\Binary_Texture.h">
+      <Filter>Header Files\Persistence\MDB\Binary</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestPersistence\MDB\Binary\Binary_Types.h">
+      <Filter>Header Files\Persistence\MDB\Binary</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestMemory\Containers\Queue.h">
+      <Filter>Header Files\Memory\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestParser\DDL_ExtendedTypes.h">
+      <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestParser\FileFilter.h">
+      <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestParser\OpenDDL_Parser.h">
+      <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestParser\OpenGEX_Parser.h">
+      <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestParser\RegisteredBuilders.h">
+      <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestParser\RegisteredGenerators.h">
+      <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestParser\OpenDDL\DDL_Buffers.h">
+      <Filter>Header Files\Parser\OpenDDL</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestParser\OpenDDL\DDL_File.h">
+      <Filter>Header Files\Parser\OpenDDL</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestParser\OpenDDL\DDL_Primitives.h">
+      <Filter>Header Files\Parser\OpenDDL</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestParser\OpenDDL\DDL_Reference.h">
+      <Filter>Header Files\Parser\OpenDDL</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestParser\OpenDDL\DDL_Structure.h">
+      <Filter>Header Files\Parser\OpenDDL</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestParser\OpenGEX\GEX_Bone.h">
+      <Filter>Header Files\Parser\OpenGEX</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestParser\OpenGEX\GEX_Buffers.h">
+      <Filter>Header Files\Parser\OpenGEX</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestParser\OpenGEX\GEX_Color.h">
+      <Filter>Header Files\Parser\OpenGEX</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestParser\OpenGEX\GEX_GeometryObject.h">
+      <Filter>Header Files\Parser\OpenGEX</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestParser\OpenGEX\GEX_Material.h">
+      <Filter>Header Files\Parser\OpenGEX</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestParser\OpenGEX\GEX_Mesh.h">
+      <Filter>Header Files\Parser\OpenGEX</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestParser\OpenGEX\GEX_Metric.h">
+      <Filter>Header Files\Parser\OpenGEX</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestParser\OpenGEX\GEX_Morph.h">
+      <Filter>Header Files\Parser\OpenGEX</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestParser\OpenGEX\GEX_Name.h">
+      <Filter>Header Files\Parser\OpenGEX</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestParser\OpenGEX\GEX_Node.h">
+      <Filter>Header Files\Parser\OpenGEX</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestParser\OpenGEX\GEX_ObjectRef.h">
+      <Filter>Header Files\Parser\OpenGEX</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestParser\OpenGEX\GEX_Param.h">
+      <Filter>Header Files\Parser\OpenGEX</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestParser\OpenGEX\GEX_Skeleton.h">
+      <Filter>Header Files\Parser\OpenGEX</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestParser\OpenGEX\GEX_Skin.h">
+      <Filter>Header Files\Parser\OpenGEX</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestParser\OpenGEX\GEX_Texture.h">
+      <Filter>Header Files\Parser\OpenGEX</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestParser\OpenGEX\GEX_Transform.h">
+      <Filter>Header Files\Parser\OpenGEX</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestPersistence\MDB\MDB_Table.h">
+      <Filter>Header Files\Persistence\MDB</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestPersistence\Runtime\Runtime_Table.h">
+      <Filter>Header Files\Persistence\Runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestPersistence\Runtime\Runtime_TableIterator.h">
+      <Filter>Header Files\Persistence\Runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestPersistence\Runtime\Runtime_TableTypes.h">
+      <Filter>Header Files\Persistence\Runtime</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

@@ -8,7 +8,7 @@
 
 #include <ManifestMemory/Manifest_Allocator.h>
 #include <EXPERIMENTAL/EXPERIMENTAL_RUNTIME_DATA_STRUCTURES.h>
-#include <ManifestCommunication/FileSystem.h>
+#include <ManifestCommunication/EventSpace.h>
 
 #include <thread>
 #include <chrono>
@@ -20,8 +20,8 @@ using namespace Manifest_Experimental;
 using namespace Manifest_Communication;
 
 const std::string TEST_PATH{ "C:\\Users\\Droll\\Desktop\\Game\\testing\\" };
-const std::string TEST_GEX{ "Test1.gex" };
-const std::string TEST_MDB{ "Test1.mdb" };
+const std::string TEST_GEX{ "Test2.gex" };
+const std::string TEST_MDB{ "Test2.mdb" };
 
 void RuntimeTest()
 {
@@ -175,32 +175,6 @@ T* MyWriteFunc(const Params& ...data)
 	return new T{ data... };
 }
 
-ProcessMessage MyProcFunc(std::vector<Message>& messages)
-{	
-	std::vector<Texture> fileTextures;
-	std::vector<Material> fileMaterials;
-	for (auto& message : messages)
-	{		
-		switch (message.messageToken)
-		{			
-			case UnderlyingType(FileSystemMessageType::MBD_TEXTURE):
-				fileTextures.emplace_back(message.GetMessageContent<Texture>());
-				break;
-			case UnderlyingType(FileSystemMessageType::MBD_MATERIAL):
-				fileMaterials.emplace_back(message.GetMessageContent<Material>());
-				break;
-		}
-	}
-	Texture* textures = new Texture[fileTextures.size()];
-	*textures = fileTextures[0];
-	//textureTable.Push(textures);
-	Material* materials = new Material[fileMaterials.size()];
-	*materials = fileMaterials[0];
-	//materialTable.Push(materials);
-	
-	return nullptr;
-}
-
 void readfunc(const Timepoint& begin, const Timepoint& end, int& read)
 {
 	auto readerID = intTable.ReserveTableReadFlag();
@@ -225,23 +199,10 @@ void writefunc(const Timepoint& begin, const Timepoint& end)
 	}
 }
 
+
 int main()
 {	
-
-	FileSystemEventSpace fsEventSpace;
-	FileSystemObservationToken observationToken = UnderlyingType(FileSystemMessageType::MBD_MATERIAL | FileSystemMessageType::MBD_TEXTURE);
-	FileSystemObserver fsObserver(observationToken, fsEventSpace.observerRegister);	
-	FileSystemEvent fsEvent;
-	fsEvent.eventToken = UnderlyingType(FileSystemMessageType::MBD_MATERIAL | FileSystemMessageType::MBD_TEXTURE);
-	fsEvent.messages.emplace_back(Message{ UnderlyingType(FileSystemMessageType::MBD_MATERIAL),int(5) });
-	fsEvent.messages.emplace_back(Message{ UnderlyingType(FileSystemMessageType::MBD_TEXTURE),int(7) });
-	//fsEventSpace.NotifyRegisteredObservers(std::move(fsEvent));
-	//ProcessMessage procMessage = fsObserver.ProcessEvents(MyProcFunc);
-	//MFu32 readerId = materialTable.ReserveTableReadFlag();
-	//materialTable.Pull(readerId, MyReadFunc<int,std::default_delete<int>>, 5);
-	
-
-	auto loops = 1;
+	auto loops = 0;
 	for (auto loop{ 0 }; loop < loops; loop+=1)
 	{		
 		Seconds beginDelay{ .1 };

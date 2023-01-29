@@ -26,14 +26,14 @@ namespace Manifest_Communication
 		ExchangeLock registrationLock;
 		std::vector<Observer*> registeredObservers;		
 	public:
-		bool RegisterObserver(const Observer& observer);
+		MFbool RegisterObserver(const Observer& observer);
 
 		std::atomic<MFu64> registeredObservationTokens{ 0 };
 	};
-
 	//allows meta messages to be generated		
 	using ProcessMessage = Message*;	
 	using MessageProcessingFunction = ProcessMessage(*)(std::vector<Message>&);
+
 	//Observer is an independent broker
 	//the observer object is created with an observation token providing guaranteed, exclusive access to the message types of the event it is observing	
 	//the exclusivity is provided by UniqueObserverRegister
@@ -47,7 +47,7 @@ namespace Manifest_Communication
 		std::vector<Message> observedEventMessages;
 		ExchangeLock messageLock;
 	public:
-		Observer(const ObservationToken& observationToken, UniqueObserverRegister& uniqueObserverRegister);		
+		Observer(const ObservationToken& observationToken);		
 		//Processes messages - spins if writing for observation
 		ProcessMessage ProcessEvents(const MessageProcessingFunction& processFunction);
 

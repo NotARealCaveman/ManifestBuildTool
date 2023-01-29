@@ -8,7 +8,7 @@ namespace Manifest_Communication
 {
 	//Eventspaces are simply event brokers
 	//they have the cavet that they must be fully subscribed to the degree of the event token they're recving before they may notify of an event
-	struct EventSpace
+	class EventSpace
 	{			
 		public:		
 			//Doles out event messages based on observer tokens
@@ -16,5 +16,6 @@ namespace Manifest_Communication
 
 			UniqueObserverRegister observerRegister;
 	};
+	MFbool RegisterObserverToEventSpaces(const Observer& observer, EventSpace& eventSpace);
 
 }

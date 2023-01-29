@@ -34,23 +34,9 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_GeometryNode& geometryNode, c
 size_t Manifest_Persistence::Convert_MDB(const MDB_Material& material, const TextureBuildTable& textureBuildTable, Binary_Material& binaryMaterial)
 {	
 	binaryMaterial.header.materialID = material.materialID;
-	for (const auto& texture : textureBuildTable.entries)
-		if (texture.materialID == material.materialID)
-		{
-			switch (texture.textureType)
-			{
-				case TextureTypes::DIFFUSE_TEXTURE:
-					binaryMaterial.header.diffuseID = texture.textureID;
-					break;
-				case TextureTypes::NORMAL_TEXTURE:
-					binaryMaterial.header.normalID = texture.textureID;
-					break;
-				case TextureTypes::PARALLAX_TEXTURE:
-					binaryMaterial.header.parallaxID = texture.textureID;
-					break;
-				DEFAULT_BREAK
-			}
-		}
+	binaryMaterial.header.diffuseID = material.textureIDs[TextureTypes::DIFFUSE_TEXTURE];
+	binaryMaterial.header.normalID = material.textureIDs[TextureTypes::NORMAL_TEXTURE];
+	binaryMaterial.header.parallaxID = material.textureIDs[TextureTypes::PARALLAX_TEXTURE];	
 	DLOG(33, "Converting mdb_mtl with mtlID, tdID, tnID, tpID: " << material.materialID << " " << binaryMaterial.header.diffuseID << " " << binaryMaterial.header.normalID << " "<< binaryMaterial.header.parallaxID);
 	return EntrySize(binaryMaterial);
 }

@@ -25,12 +25,8 @@ bool UniqueObserverRegister::RegisterObserver(const Observer& observer)
 
 
 ///OBSERVER
-Observer::Observer(const ObservationToken& observationToken, UniqueObserverRegister& uniqueObserverRegister)
-	:observationToken{ observationToken }
-{
-	auto isUnique = uniqueObserverRegister.RegisterObserver(*this);
-	assert(("Failed to assert Unique Observation Token", isUnique));
-}
+Observer::Observer(const ObservationToken& observationToken)
+	:observationToken{ observationToken } {};
 
 void Observer::ObserveEvent(Message&& message)
 {

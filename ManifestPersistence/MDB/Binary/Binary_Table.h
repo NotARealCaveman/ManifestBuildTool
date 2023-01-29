@@ -33,11 +33,9 @@ namespace Manifest_Persistence
 			return *this;
 		}
 		//to change - eventually a look up table with byte offsets will also be ex/imported with the table and the index request will query the table and return the binary record at the offset from entries
-		const Binary_TableType& operator[](const int32_t& index) const
+		Binary_TableType& operator[](const int32_t& index) const
 		{
-			if (index < 0 || index > header.totalEntries - 1)
-				return {};
-
+			assert(((index < header.totalEntries) && (index >= 0)));
 			size_t byteOffset{ 0 };
 			Binary_TableType* result = nullptr;
 			for (int32_t entry = 0; entry <= index; ++entry)

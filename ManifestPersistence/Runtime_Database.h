@@ -4,7 +4,6 @@
 #include <functional>
 #include <string>
 
-#include <ManifestCommunication/FileSystem.h>
 #include <ManifestMemory/Manifest_Allocator.h>
 #include <EXPERIMENTAL/EXPERIMENTAL_RUNTIME_DATA_STRUCTURES.h>
 
@@ -13,7 +12,6 @@
 
 using namespace Manifest_Memory;
 using namespace Manifest_Experimental;
-using namespace Manifest_Communication;
 
 namespace Manifest_Persistence
 {
