@@ -17,7 +17,7 @@ namespace Manifest_Persistence
 			MFu8 nChannels;
 			MFu8 textureType;//type of texture the map represents			
 		}header;
-		float* payload;
+		Byte* payload;
 	};
 	//see Buffer_Types.cpp for details
 	size_t Convert_MDB(const MDB_Texture& texture, Binary_Texture& binaryTexture);

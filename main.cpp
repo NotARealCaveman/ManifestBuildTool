@@ -73,9 +73,9 @@ void ImportAndTest()
 		DLOG(31, "Material: " << importMaterial.header.materialID << " MTL(Diffuse): " << importMaterial.header.diffuseID << " MTL(Normal) : " << importMaterial.header.normalID << " MTL(Parllax) : " << importMaterial.header.parallaxID);
 		DLOG(35, "Texture info - w: " << importTexture.header.width << " h: " << importTexture.header.height << " nChannels: " << +importTexture.header.nChannels << " size: " << importTexture.header.payloadSize);		
 		DLOG(33,"Texture Data: ");	
-		auto nTextureElements{ importTexture.header.payloadSize / sizeof(MFfloat)};
+		auto nTextureElements{ importTexture.header.payloadSize};
 		for (auto data{ 0 }; data < nTextureElements; ++data)
-			std::cout << importTexture.payload[data] << ", ";
+			std::cout << +importTexture.payload[data] << ", ";
 		std::cout << std::endl;
 		DLOG(32, "Worldspace Data: ");
 		for (auto index{ 0 };index <16;++index)

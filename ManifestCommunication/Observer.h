@@ -30,8 +30,8 @@ namespace Manifest_Communication
 		std::atomic<MFu64> registeredObservationTokens{ 0 };
 	};
 	//allows meta messages to be generated		
-	using VOID = void*;
-	template<typename T = VOID,typename... Args>
+	using VOID_ = void*;
+	template<typename T = VOID_,typename... Args>
 	using MessageProcessingFunction = T*(*)(std::vector<Message>&, Args&...);
 
 	//Observer is an independent broker
@@ -55,6 +55,9 @@ namespace Manifest_Communication
 			messageLock.Lock();
 			std::vector<Message> messages = std::move(observedEventMessages);
 			messageLock.Unlock();
+
+			if (!messages.size())
+				return nullptr;
 
 			return processFunction(messages,args...);
 		}

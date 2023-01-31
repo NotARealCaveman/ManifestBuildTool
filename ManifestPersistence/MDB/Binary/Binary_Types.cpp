@@ -70,9 +70,10 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_Texture& texture, Binary_Text
 	baseTexture.height = GetCompositeBow(texture.textureDimensions, TEXTURE_DIMENSION_BOW_BITOFFSET);
 	//store texture payload information
 	binaryTexture.header.payloadSize = GetCompositeWard(texture.textureInfo, TEXTURE_INFO_BOW_BITOFFSET);
-	binaryTexture.payload = New<MFfloat,ScratchPad<MFfloat>>(binaryTexture.header.payloadSize);	
-	memcpy(binaryTexture.payload, texture.channelData, (binaryTexture.header.payloadSize*=sizeof(float)));
-
+	binaryTexture.payload = New<Byte, ScratchPad<Byte>>(binaryTexture.header.payloadSize);
+	for (auto element{ 0 }; element < binaryTexture.header.payloadSize; ++element)			
+		binaryTexture.payload[element] = texture.channelData[element] * 255;	
+	binaryTexture.header.payloadSize;
 	DLOG(34, "Converting mdb_texture with tID: " << texture.textureID);
 	return EntrySize(binaryTexture);
 }
@@ -97,7 +98,7 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_Mesh& mesh, const VertexBuild
 	}
 	//uvs
 	const MDB_VertexArray* uvs = nullptr;
-	ScratchPadVector<float> tempUVs;
+	ScratchPadVector<float> tempUVs;	
 	if (vertexTableIndices.uvID != KEY_NOT_PRESENT)
 	{
 		uvs = &vertexBuildTables.uvTable.entries[vertexTableIndices.uvID];
@@ -109,7 +110,7 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_Mesh& mesh, const VertexBuild
 	}
 	//normals
 	const MDB_VertexArray* normals = nullptr;
-	ScratchPadVector<float> tempNormals;
+	ScratchPadVector<float> tempNormals;		
 	if (vertexTableIndices.normalID != KEY_NOT_PRESENT)
 	{
 		normals = &vertexBuildTables.normalTable.entries[vertexTableIndices.normalID];
