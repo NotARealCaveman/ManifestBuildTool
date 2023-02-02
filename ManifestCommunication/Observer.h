@@ -49,7 +49,7 @@ namespace Manifest_Communication
 	public:
 		Observer(const ObservationToken& observationToken);		
 		//Processes messages - spins if writing for observation	
-		template<typename T = VOID, typename... Args>
+		template<typename T = VOID_, typename... Args>
 		T* ProcessEvents(const MessageProcessingFunction<T,Args...> processFunction,Args&... args)
 		{
 			messageLock.Lock();

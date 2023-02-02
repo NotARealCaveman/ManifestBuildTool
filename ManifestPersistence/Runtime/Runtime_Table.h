@@ -2,7 +2,8 @@
 
 #include <ManifestMemory/MemoryGuards/RCU.h>
 #include <ManifestMemory/MemoryGuards/ExchangeLock.h>
-#include <EXPERIMENTAL/EXPERIMENTAL_RUNTIME_DATA_STRUCTURES.h>
+#include <ManifestPhysics/State.h>
+
 
 #include "Runtime_TableIterator.h"
 
@@ -17,7 +18,7 @@ namespace Manifest_Persistence
 	private:
 		using RCU = RCU<T, Deleter>;
 		template<typename... Params>
-		using WriteFunction = T*(*)(const Params&...);			
+		using WriteFunction = T * (*)(Params&...);		
 		using ReadFunction = void(*)(const typename RCU::Handle&, T*);
 
 		RCU rcu;	
@@ -25,8 +26,11 @@ namespace Manifest_Persistence
 	public:			
 		Table(const MFsize maxConcurrentReaders)
 			: rcu{ maxConcurrentReaders } {};
-		template<typename... Params>		
-		inline void Push(WriteFunction<Params...> writeFunction, const Params&... params)
+		Table(Table&& other)
+			: rcu{ std::move(other.rcu) } {};
+		//params are taken by reference - be careful to not make unwated alterations to parameter data
+		template<typename... Params>	
+		inline void Push(WriteFunction<Params...> writeFunction, Params&... params)
 		{			
 			writeLock.Lock();
 			rcu.synchronize_rcu(writeFunction(params...));

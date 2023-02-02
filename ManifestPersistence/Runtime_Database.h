@@ -18,11 +18,9 @@ namespace Manifest_Persistence
 	//Currently exploring a push/pull paradigm for updating and centralizing shared game state in the runtime database
 	class ManifestRuntimeDatabase
 	{
-
-	};	
-
-	void SimThread(ManifestRuntimeDatabase& runtimeDatabase);
-	void RenderThread(ManifestRuntimeDatabase& runtimeDatabase);
-	void MessageThread();	
+		public:
+			ManifestRuntimeDatabase(NodeStateTable&& _nodeStateTable);
+			NodeStateTable nodeStateTable;
+	};
 }
 

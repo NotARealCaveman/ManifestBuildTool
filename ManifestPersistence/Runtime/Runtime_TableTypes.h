@@ -7,5 +7,6 @@
 using namespace Manifest_Experimental;
 
 namespace Manifest_Persistence
-{
+{	
+	using NodeStateTable = Table<Manifest_Experimental::StatePair_EXPERIMENTAL, std::default_delete< Manifest_Experimental::StatePair_EXPERIMENTAL>>;	
 }

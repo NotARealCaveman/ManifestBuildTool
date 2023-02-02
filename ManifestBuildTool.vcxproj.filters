@@ -434,5 +434,8 @@
     <ClInclude Include="ManifestPersistence\Runtime\Runtime_TableTypes.h">
       <Filter>Header Files\Persistence\Runtime</Filter>
     </ClInclude>
+    <ClInclude Include="ManifestMemory\Containers\ResourceTable.h">
+      <Filter>Header Files\Memory\Containers</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

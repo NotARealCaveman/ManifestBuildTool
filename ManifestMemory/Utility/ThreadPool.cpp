@@ -19,7 +19,7 @@ void ThreadPool::Worker()
 		if (queue.TryPop(task))
 			task();
 		else
-			std::this_thread::yield();
+			std::this_thread::sleep_for(std::chrono::duration<float, std::milli>{20});
 	}
 }
 

@@ -46,6 +46,20 @@ namespace Manifest_Memory
 				auto& readFlag = generationReadFlags[generation];
 				readFlag = new ReadFlag[maxReaders];				memset(readFlag, 0, sizeof(ReadFlag) * maxReaders);
 			}
+		}		
+		RCU(RCU&& other)
+			:maxReaders{ other.maxReaders }, deleter{ Deleter{ } }
+		{
+			registeredReaders.store(other.registeredReaders.load(std::memory_order_relaxed));
+			globalGeneration.store(other.globalGeneration.load(std::memory_order_relaxed));
+			generationHandles[0] = other.generationHandles[0];
+			generationHandles[1] = other.generationHandles[1];
+			generationReadFlags = other.generationReadFlags;
+			for (Generation generation{ 0 }; generation < MAX_RCU_GENERATION; ++generation)
+			{
+				other.generationHandles[generation].handle = nullptr;
+				generationReadFlags[generation] = nullptr;
+			}
 		}
 		~RCU()
 		{
