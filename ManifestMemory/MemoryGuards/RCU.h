@@ -36,7 +36,7 @@ namespace Manifest_Memory
 		std::atomic<MFu32> registeredReaders;
 	public:
 		using Handle = GenerationHandle;
-
+		RCU() = default;
 		RCU(const MFsize _maxReaders)
 			: maxReaders(_maxReaders), registeredReaders{ 0 }, deleter{ Deleter{} }, globalGeneration{ 0 }
 		{
@@ -47,31 +47,7 @@ namespace Manifest_Memory
 				readFlag = new ReadFlag[maxReaders];				memset(readFlag, 0, sizeof(ReadFlag) * maxReaders);
 			}
 		}		
-		RCU(RCU&& other)
-			:maxReaders{ other.maxReaders }, deleter{ Deleter{ } }
-		{
-			registeredReaders.store(other.registeredReaders.load(std::memory_order_relaxed));
-			globalGeneration.store(other.globalGeneration.load(std::memory_order_relaxed));
-			generationHandles[0] = other.generationHandles[0];
-			generationHandles[1] = other.generationHandles[1];
-			generationReadFlags = other.generationReadFlags;
-			for (Generation generation{ 0 }; generation < MAX_RCU_GENERATION; ++generation)
-			{
-				other.generationHandles[generation].handle = nullptr;
-				generationReadFlags[generation] = nullptr;
-			}
-		}
-		~RCU()
-		{
-			for (Generation generation{ 0 }; generation < MAX_RCU_GENERATION; ++generation)
-			{
-				if (generationHandles[generation].handle)
-					delete generationHandles[generation].handle;
-				auto& readFlag = generationReadFlags[generation];
-				delete[] readFlag;
-			}
-		}
-		Handle rcu_read_lock(const MFu32& readerId)
+		GenerationHandle rcu_read_lock(const MFu32& readerId)
 		{
 			//use current generation as guess
 			Generation currentGeneration = globalGeneration.load(std::memory_order_relaxed);
@@ -82,6 +58,7 @@ namespace Manifest_Memory
 			//if guess was invalid - remove block and try again
 			while (oldGeneration != (currentGeneration = globalGeneration.load(std::memory_order_acquire)))
 			{
+				DLOG(33, "inconsistent state detected!");
 				MFu32 oldIndex = generationIndex;
 				generationIndex = currentGeneration & RCU_MODULO;
 				generationReadFlags[oldIndex][readerId].isReading.store(false, std::memory_order_relaxed);
@@ -111,7 +88,7 @@ namespace Manifest_Memory
 			globalGeneration.store(newGeneration, std::memory_order_release);
 			//wait for old readers
 			for (auto reader{ 0 }; reader < registeredReaders.load(std::memory_order_relaxed); ++reader)
-				while (generationReadFlags[oldIndex][reader].isReading.load(std::memory_order_acquire));
+				while (generationReadFlags[oldIndex][reader].isReading.load(std::memory_order_acquire))DLOG(32,"Waiting on reader:" << reader);
 			//release unused memory
 			deleter(generationHandles[oldIndex].handle);
 			generationHandles[oldIndex].handle = nullptr;

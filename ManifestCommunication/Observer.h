@@ -14,22 +14,19 @@ namespace Manifest_Communication
 {
 	class Observer;
 	class EventSpace;
-
-	//exclusivity checked in debug mode via assert
-	//Registration still must occur either way so returning the bool allows repurposing in relase mode to force application exit upon failure
+		
 	class UniqueObserverRegister
 	{
 	private:
 		friend EventSpace;
-
-		ExchangeLock registrationLock;
+				
 		std::vector<Observer*> registeredObservers;		
 	public:
 		MFbool RegisterObserver(const Observer& observer);
 
-		std::atomic<MFu64> registeredObservationTokens{ 0 };
+		MFu64 registeredObservationTokens{ 0 };
 	};
-	//allows meta messages to be generated		
+	//allow meta messages to be generated		
 	using VOID_ = void*;
 	template<typename T = VOID_,typename... Args>
 	using MessageProcessingFunction = T*(*)(std::vector<Message>&, Args&...);

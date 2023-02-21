@@ -4,7 +4,6 @@
 #include <ManifestPersistence/BuildTool.h>
 #include <ManifestUtility/Console_Color.h>
 #include <ManifestPersistence/Manifest_DatabaseBuilder.h>
-#include <ManifestPersistence/Runtime_Database.h>
 
 #include <ManifestMemory/Manifest_Allocator.h>
 #include <EXPERIMENTAL/EXPERIMENTAL_RUNTIME_DATA_STRUCTURES.h>
@@ -20,8 +19,8 @@ using namespace Manifest_Experimental;
 using namespace Manifest_Communication;
 
 const std::string TEST_PATH{ "C:\\Users\\Droll\\Desktop\\Game\\testing\\" };
-const std::string TEST_GEX{ "Test1.gex" };
-const std::string TEST_MDB{ "Test1.mdb" };
+const std::string TEST_GEX{ "Test2.gex" };
+const std::string TEST_MDB{ "Test2.mdb" };
 
 void RuntimeTest()
 {
@@ -125,108 +124,13 @@ void BuildAndExport()
 	}			
 }
 
-template<typename T>
-struct Deleter
-{
-	void operator()(T* p) const
-	{
-		//DLOG(31, "Deleting int*: " << p << " with value: " << *p);
-		delete p;
-	}
-};
-
-using stdIntDelete = Deleter<int>;
-
-#include <ManifestMemory/MemoryGuards/RCU.h>
-
-using intRCU2 = RCU<int, stdIntDelete>;
-
-int globalInt{ 0 };
-
-void DoSomethingWithInt(const int& myInt, int& read)
-{
-	++read;
-}
-
 using Seconds = std::chrono::duration<double>;
 using Milliseconds = std::chrono::duration<double, std::milli>;
 using Nanoseconds = std::chrono::duration<double, std::nano>;
 using Timepoint = std::chrono::time_point<std::chrono::steady_clock,Nanoseconds>;
 
-struct paddedInt
-{
-	int i;
-	char padding[64 - sizeof(int)];
-};
-
-Table<int, std::default_delete<int>> intTable{ 3 };
-
-template<typename T, typename Deleter>
-void MyReadFunc(const typename RCU<T, Deleter>::Handle& generationHandle, T* copyReadToAddress)
-{
-	*copyReadToAddress = *generationHandle.handle;
-}
-
-template<typename T, typename... Params>
-T* MyWriteFunc(const Params& ...data)
-{
-	return new T{ data... };
-}
-
-void readfunc(const Timepoint& begin, const Timepoint& end, int& read)
-{
-	auto readerID = intTable.ReserveTableReadFlag();
-	std::this_thread::sleep_until(begin);
-	while (std::chrono::high_resolution_clock::now() < end)
-	{
-		int copyInt;
-		intTable.Pull(readerID,MyReadFunc<int,std::default_delete<int>>,&copyInt);
-		std::this_thread::sleep_for(Milliseconds{ 6.95 });
-		DLOG(34, "Pulled int: " << copyInt);
-		++read;		
-	}
-}
-
-void writefunc(const Timepoint& begin, const Timepoint& end)
-{
-	std::this_thread::sleep_until(begin);
-	while (std::chrono::high_resolution_clock::now() < end)
-	{
-		intTable.Push(MyWriteFunc<int,int>, ++globalInt);
-		std::this_thread::sleep_for(Milliseconds{ 16.6 });
-	}
-}
-
-
 int main()
 {	
-	auto loops = 0;
-	for (auto loop{ 0 }; loop < loops; loop+=1)
-	{		
-		Seconds beginDelay{ .1 };
-		Seconds executionTime{ 1 };
-		Timepoint beginTime = std::chrono::high_resolution_clock::now() + beginDelay;
-		Timepoint endTime = beginTime + executionTime;
-		paddedInt reads[6];
-		for (auto& read : reads)
-			read.i = 0;
-		std::thread rthread1{ readfunc,std::cref(beginTime),std::cref(endTime),std::ref(reads[0].i)};
-		//std::thread rthread2{ readfunc,std::cref(beginTime),std::cref(endTime),std::ref(reads[1].i)};
-		//std::thread rthread3{ readfunc,std::cref(beginTime),std::cref(endTime),std::ref(reads[2].i)};
-		writefunc(beginTime, endTime);
-		rthread1.join();
-		//rthread2.join();
-		//rthread3.join();
-		auto wAvg = globalInt / executionTime.count();
-		int readInt{ 0 };
-		for (const auto& read : reads)
-			readInt += read.i;
-		auto rAvg = readInt / executionTime.count();
-		//LOG(32, "Avg writes/s: " << wAvg);
-		LOG(33, "Avg reads/s: " << rAvg << " executionTime: " << executionTime);
-		globalInt = 0;
-	}
-
 	RegisterProgramExecutiveThread();
 	//create data stores
 	INIT_MEMORY_RESERVES();	
@@ -243,7 +147,6 @@ int main()
 	DISABLE
 		RuntimeTest();
 	
-	std::getchar();
 	return 0;
 }
 

@@ -156,9 +156,6 @@
     <ClCompile Include="ManifestPersistence\Manifest_DatabaseBuilder.cpp">
       <Filter>Source Files\Persistence</Filter>
     </ClCompile>
-    <ClCompile Include="ManifestPersistence\Runtime_Database.cpp">
-      <Filter>Source Files\Persistence</Filter>
-    </ClCompile>
     <ClCompile Include="ManifestParser\OpenGEX\GEX_Color.cpp">
       <Filter>Source Files\Parser\OpenGEX</Filter>
     </ClCompile>
@@ -291,9 +288,6 @@
       <Filter>Header Files\Persistence</Filter>
     </ClInclude>
     <ClInclude Include="ManifestPersistence\Manifest_DatabaseBuilder.h">
-      <Filter>Header Files\Persistence</Filter>
-    </ClInclude>
-    <ClInclude Include="ManifestPersistence\Runtime_Database.h">
       <Filter>Header Files\Persistence</Filter>
     </ClInclude>
     <ClInclude Include="ManifestPersistence\MDB\MDB_GeometryNode.h">
@@ -429,9 +423,6 @@
       <Filter>Header Files\Persistence\Runtime</Filter>
     </ClInclude>
     <ClInclude Include="ManifestPersistence\Runtime\Runtime_TableIterator.h">
-      <Filter>Header Files\Persistence\Runtime</Filter>
-    </ClInclude>
-    <ClInclude Include="ManifestPersistence\Runtime\Runtime_TableTypes.h">
       <Filter>Header Files\Persistence\Runtime</Filter>
     </ClInclude>
     <ClInclude Include="ManifestMemory\Containers\ResourceTable.h">

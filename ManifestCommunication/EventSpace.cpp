@@ -4,8 +4,7 @@ using namespace Manifest_Communication;
 
 //requires at least the observers which make up the event token to be registered before recving the event
 void EventSpace::NotifyRegisteredObservers(Event&& event) const
-{	
-	//this is a potential race condition if an observer is regsitered at during the call - however will wait to see if an actual issue. further development required to make decision if observers will all be registered at initialization stages
+{		
 	for (auto& message : event.messages)
 	{
 		auto& observers = observerRegister.registeredObservers;

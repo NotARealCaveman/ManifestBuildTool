@@ -19,8 +19,9 @@ namespace Manifest_Persistence
 	class ManifestRuntimeDatabase
 	{
 		public:
-			ManifestRuntimeDatabase(NodeStateTable&& _nodeStateTable);
-			NodeStateTable nodeStateTable;
+			ManifestRuntimeDatabase();
+			NodeStateTable* nodeStateTable;		
+			TerrainNodeTable* terrainNodeTable;
 	};
 }
 
