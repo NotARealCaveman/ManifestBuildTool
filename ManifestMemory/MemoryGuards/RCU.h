@@ -8,6 +8,7 @@
 
 namespace Manifest_Memory
 {	
+	constexpr MFu32 DEFAULT_GENERATION{ 0 };
 	using Generation = MFu32;
 
 	template<typename T, typename Deleter>
@@ -23,7 +24,7 @@ namespace Manifest_Memory
 		};
 		struct GenerationHandle
 		{
-			Generation generation;
+			Generation generation{ DEFAULT_GENERATION };
 			T* handle;
 		};
 		//rcu				
@@ -38,11 +39,11 @@ namespace Manifest_Memory
 		using Handle = GenerationHandle;
 		RCU() = default;
 		RCU(const MFsize _maxReaders)
-			: maxReaders(_maxReaders), registeredReaders{ 0 }, deleter{ Deleter{} }, globalGeneration{ 0 }
+			: maxReaders(_maxReaders), registeredReaders{ 0 }, deleter{ Deleter{} }, globalGeneration{ DEFAULT_GENERATION }
 		{
 			for (Generation generation{ 0 }; generation < MAX_RCU_GENERATION; ++generation)
 			{
-				generationHandles[generation] = GenerationHandle{ 0,new T };
+				generationHandles[generation] = GenerationHandle{ DEFAULT_GENERATION,new T };
 				auto& readFlag = generationReadFlags[generation];
 				readFlag = new ReadFlag[maxReaders];				memset(readFlag, 0, sizeof(ReadFlag) * maxReaders);
 			}
