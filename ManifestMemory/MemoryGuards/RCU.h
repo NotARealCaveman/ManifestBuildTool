@@ -47,7 +47,8 @@ namespace Manifest_Memory
 				auto& readFlag = generationReadFlags[generation];
 				readFlag = new ReadFlag[maxReaders];				memset(readFlag, 0, sizeof(ReadFlag) * maxReaders);
 			}
-		}		
+		}	
+		//ideally this can be changed to an if statement instead of the while loop shoudl the guarantee of a single writer be held. once the read flag is taken on a generation that gets updated, the new generation flag is now taken which keeps the writer locked in the wait loop until the store of the false on the old generation. ordering should also prevent the old from being set before the current. This should make the readers of any generation wait free 
 		GenerationHandle rcu_read_lock(const MFu32& readerId)
 		{
 			//use current generation as guess
@@ -56,14 +57,14 @@ namespace Manifest_Memory
 			//block writer from deleting from index
 			generationReadFlags[generationIndex][readerId].isReading.store(true, std::memory_order_release);
 			Generation oldGeneration = currentGeneration;
-			//if guess was invalid - remove block and try again
+			//if guess was invalid - remove block and try again			
 			while (oldGeneration != (currentGeneration = globalGeneration.load(std::memory_order_acquire)))
 			{
 				DLOG(33, "inconsistent state detected!");
 				MFu32 oldIndex = generationIndex;
-				generationIndex = currentGeneration & RCU_MODULO;
-				generationReadFlags[oldIndex][readerId].isReading.store(false, std::memory_order_relaxed);
+				generationIndex = currentGeneration & RCU_MODULO;				
 				generationReadFlags[generationIndex][readerId].isReading.store(true, std::memory_order_release);
+				generationReadFlags[oldIndex][readerId].isReading.store(false, std::memory_order_relaxed);
 				oldGeneration = currentGeneration;
 			}
 			//return a handle to the read-locked generation 
@@ -88,8 +89,15 @@ namespace Manifest_Memory
 			generationHandles[newIndex] = newHandle;
 			globalGeneration.store(newGeneration, std::memory_order_release);
 			//wait for old readers
+			MFu32 waitCount{ 0 };
 			for (auto reader{ 0 }; reader < registeredReaders.load(std::memory_order_relaxed); ++reader)
-				while (generationReadFlags[oldIndex][reader].isReading.load(std::memory_order_acquire))DLOG(32,"Waiting on reader:" << reader);
+				while (generationReadFlags[oldIndex][reader].isReading.load(std::memory_order_acquire))
+				{
+					_mm_pause();
+					++waitCount;		
+				}
+			if(waitCount)
+				DLOG(32, "Waiting("<<waitCount<<")");
 			//release unused memory
 			deleter(generationHandles[oldIndex].handle);
 			generationHandles[oldIndex].handle = nullptr;

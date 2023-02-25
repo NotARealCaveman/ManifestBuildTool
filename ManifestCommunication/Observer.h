@@ -27,8 +27,8 @@ namespace Manifest_Communication
 		MFu64 registeredObservationTokens{ 0 };
 	};
 	//allow meta messages to be generated		
-	using VOID_ = void*;
-	template<typename T = VOID_,typename... Args>
+	using VOIDPTR = void*;
+	template<typename T = VOIDPTR,typename... Args>
 	using MessageProcessingFunction = T*(*)(std::vector<Message>&, Args&...);
 
 	//Observer is an independent broker
@@ -46,7 +46,7 @@ namespace Manifest_Communication
 	public:
 		Observer(const ObservationToken& observationToken);		
 		//Processes messages - spins if writing for observation	
-		template<typename T = VOID_, typename... Args>
+		template<typename T = VOIDPTR, typename... Args>
 		T* ProcessEvents(const MessageProcessingFunction<T,Args...> processFunction,Args&... args)
 		{
 			messageLock.Lock();

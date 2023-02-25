@@ -20,8 +20,8 @@ namespace Manifest_Persistence
 	{
 		public:
 			ManifestRuntimeDatabase();
-			NodeStateTable* nodeStateTable;		
-			TerrainNodeTable* terrainNodeTable;
+			NodeStateTable* nodeStateTable;					
+			VoxelBlockTable* voxelBlockTable;
 	};
 }
 
