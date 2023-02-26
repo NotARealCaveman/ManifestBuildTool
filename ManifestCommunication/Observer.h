@@ -58,6 +58,7 @@ namespace Manifest_Communication
 
 			return processFunction(messages,args...);
 		}
+		inline const MFbool HasPendingMessages() { return observedEventMessages.size(); };
 		const ObservationToken observationToken;			
 	};
 }

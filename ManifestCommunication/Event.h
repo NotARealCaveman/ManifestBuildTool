@@ -10,7 +10,7 @@ using namespace Manifest_Utility;
 
 namespace Manifest_Communication
 {		
-	//ObservableEvent is a snapshot of all the messages created during an event
+	//ObservableEvent is a snapshot of all the messages created during an event action
 	//When observing an event an observer may opt out of the event all together if any of the message types they are observing are not present 
 	struct ObservableEvent
 	{			
