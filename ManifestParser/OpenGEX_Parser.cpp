@@ -4,11 +4,17 @@ using namespace Manifest_Parser;
 
 void Manifest_Parser::Initialize_GEXGenerators()
 {	
+	InitializeExtendedGenerators();
 	//init generators
 	RegisteredGenerator::registeredGenerators.insert({ "Metric",new Generator<GEX_Metric> });
 	RegisteredGenerator::registeredGenerators.insert({ "GeometryNode",new Generator<GEX_GeometryNode> });
 	RegisteredGenerator::registeredGenerators.insert({ "GeometryObject",new Generator<GEX_GeometryObject> });
-	RegisteredGenerator::registeredGenerators.insert({ "Material",new Generator<GEX_Material> });
+	RegisteredGenerator::registeredGenerators.insert({ "Material",new Generator<GEX_Material> });	
+}
+
+void Manifest_Parser::InitializeExtendedGenerators()
+{
+	RegisteredGenerator::registeredGenerators.insert({ "Terrain",new Generator<MDD_Terrain> });
 }
 
 void Manifest_Parser::InitializeExtendedTypes()
@@ -19,7 +25,7 @@ void Manifest_Parser::InitializeExtendedTypes()
 	DDL_BufferTypes::DDL_BufferTypeMap.insert({ "float[4]",DDL_BufferTypes::DDL_float });
 	DDL_BufferTypes::DDL_BufferTypeMap.insert({ "float[12]",DDL_BufferTypes::DDL_float });
 	//add support for true extended types here
-	DDL_BufferTypes::DDL_BufferTypeMap.insert({ "Terrain",DDL_ExtendedTypes::MDB_TERRAIN });
+	DDL_BufferTypes::DDL_BufferTypeMap.insert({ "Terrain",DDL_ExtendedTypes::MDD_TERRAIN });	
 }
 
 

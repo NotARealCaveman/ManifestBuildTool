@@ -1,6 +1,7 @@
 #pragma once
 
 #include "OpenDDL_Parser.h"
+#include "ManifestDataDescriptor.h"
 #include "OpenGEX/GEX_Metric.h"
 #include "OpenGEX/GEX_GeometryObject.h"
 
@@ -9,6 +10,7 @@
 namespace Manifest_Parser
 {	
 	void InitializeExtendedTypes();
+	void InitializeExtendedGenerators();
 	void Initialize_GEXTypes();
 	void Initialize_GEXGenerators();		
 }

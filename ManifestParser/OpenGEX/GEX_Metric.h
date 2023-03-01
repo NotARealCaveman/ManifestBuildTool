@@ -7,8 +7,7 @@
 #include <ManifestParser/DDL_ExtendedTypes.h>
 
 namespace Manifest_Parser
-{		
-	
+{			
 
 	struct GEX_Metric : public RegisteredBuilder
 	{
@@ -19,7 +18,7 @@ namespace Manifest_Parser
 		DDL_Structure* Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap) final;
 
 		//structures
-		std::variant<DDL_Float, DDL_String> metric;
+		std::variant<DDL_Float, DDL_String,DDL_Uint8,DDL_Uint32> metric;
 		DDL_BufferType metricType;
 		//properties
 		ScratchPadString key;			

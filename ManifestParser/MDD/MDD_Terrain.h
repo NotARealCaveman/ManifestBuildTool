@@ -13,9 +13,7 @@ namespace Manifest_Parser
 		};
 		DDL_Structure* Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap)final;//tbd
 		//substructures
-		DDL_Uint32 xBlocks;
-		DDL_Uint32 zBlocks;
-		DDL_Uint32 yBlocks;
+		DDL_Uint8 index;
 		DDL_Int8 field;
 	};
 }

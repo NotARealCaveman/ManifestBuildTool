@@ -22,10 +22,12 @@ using namespace Manifest_Persistence;
 using namespace Manifest_Memory;
 using namespace Manifest_Experimental;
 using namespace Manifest_Communication;
+using namespace Manifest_Terrain;
 
 const std::string TEST_PATH{ "C:\\Users\\Droll\\Desktop\\Game\\testing\\" };
 const std::string TEST_GEX{ "Test2.gex" };
 const std::string TEST_MDB{ "Test2.mdb" };
+const std::string TEST_TERRAIN{ "Terrain Files\\0Terrain.mdd" };
 
 void RuntimeTest()
 {
@@ -94,7 +96,9 @@ void ImportAndTest()
 void BuildAndExport()
 {
 	//for printing purposes
-	auto file = LoadFileContents(TEST_PATH + TEST_GEX);
+	auto fileName = TEST_PATH + TEST_TERRAIN;
+	fileName.insert(fileName.find_first_of('.'), std::to_string(0));
+	auto file = LoadFileContents(fileName);
 	//DLOG(31, file);
 	auto filtered = FilterFile(file);
 	//DLOG(32, filtered);	
@@ -134,8 +138,6 @@ using Milliseconds = std::chrono::duration<double, std::milli>;
 using Nanoseconds = std::chrono::duration<double, std::nano>;
 using Timepoint = std::chrono::time_point<std::chrono::steady_clock,Nanoseconds>;
 
-using namespace Manifest_Terrain;
-const std::string TEST_TERRAIN{ "Terrain1.mdd" };
 void CreateTerrainMDD()
 {
 	auto nBlocks{ 1 };
@@ -143,6 +145,16 @@ void CreateTerrainMDD()
 	auto hBlocks{ 1 };
 	auto lod{ 0 };
 	auto map{ GenerateVoxelMap(0,lod,nBlocks,mBlocks,hBlocks,{0}) };
+	const MFu32& nVoxels = (19 + (nBlocks - 1) * 17) << lod;
+	const MFu32& mVoxels = (19 + (mBlocks - 1) * 17) << lod;
+	const MFu32& hVoxels = (19 + (hBlocks - 1) * 17) << lod;	
+	const auto voxelCount{ nVoxels + mVoxels + hVoxels };
+	for (MFu32 k = 0; k < hVoxels; ++k)
+		for (MFu32 j = 0; j < mVoxels; ++j)
+			for (MFu32 i = 0; i < nVoxels; ++i)
+			{
+				//DLOG(34, "Index: " << i + nVoxels * (j + mVoxels * k) <<" Value: " << +map.field[i + nVoxels * (j + mVoxels * k)]);
+			}
 	ExportTerrain(TEST_PATH + TEST_TERRAIN, nBlocks, mBlocks, hBlocks, lod, map.field);
 }
 
@@ -158,7 +170,7 @@ int main()
 	GlobalMemoryStatusEx(&status);
 
 	//persistence tests
-	DISABLE
+	//DISABLE
 		BuildAndExport();
 	DISABLE
 		ImportAndTest();
