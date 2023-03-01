@@ -9,6 +9,11 @@
 #include <EXPERIMENTAL/EXPERIMENTAL_RUNTIME_DATA_STRUCTURES.h>
 #include <ManifestCommunication/EventSpace.h>
 
+//currently testing terrain exports
+#include <ManifestParser/ManifestDataDescriptor.h>
+#include <ManifestTerrainCOPY/Voxel.h>
+
+
 #include <thread>
 #include <chrono>
 
@@ -42,7 +47,7 @@ void ImportAndTest()
 	nLoops = 1;
 	for(int i = 0 ; i < nLoops;++i)
 	{
-		ManifestBinaryDatabase binaryDatabase = ImportBinaryDatabase(bImport);	
+		ManifestBinaryDatabase binaryDatabase = ImportGameDatabase(bImport);
 		DLOG(45, "Printing Imported Database:");
 	for (auto i = 0; i < binaryDatabase.binaryGeometryNodeTable.header.totalEntries; ++i)
 	{
@@ -129,8 +134,22 @@ using Milliseconds = std::chrono::duration<double, std::milli>;
 using Nanoseconds = std::chrono::duration<double, std::nano>;
 using Timepoint = std::chrono::time_point<std::chrono::steady_clock,Nanoseconds>;
 
+using namespace Manifest_Terrain;
+const std::string TEST_TERRAIN{ "Terrain1.mdd" };
+void CreateTerrainMDD()
+{
+	auto nBlocks{ 1 };
+	auto mBlocks{ 1 };
+	auto hBlocks{ 1 };
+	auto lod{ 0 };
+	auto map{ GenerateVoxelMap(0,lod,nBlocks,mBlocks,hBlocks,{0}) };
+	ExportTerrain(TEST_PATH + TEST_TERRAIN, nBlocks, mBlocks, hBlocks, lod, map.field);
+}
+
 int main()
 {	
+	CreateTerrainMDD();
+
 	RegisterProgramExecutiveThread();
 	//create data stores
 	INIT_MEMORY_RESERVES();	
@@ -139,9 +158,9 @@ int main()
 	GlobalMemoryStatusEx(&status);
 
 	//persistence tests
-	//DISABLE
+	DISABLE
 		BuildAndExport();
-	//DISABLE
+	DISABLE
 		ImportAndTest();
 	//final
 	DISABLE

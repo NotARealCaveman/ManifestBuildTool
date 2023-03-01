@@ -1,8 +1,6 @@
 #pragma once
 #include <vector>
 #include <algorithm>
-#include <ranges>
-#include <type_traits>
 
 #include "Observer.h"
 

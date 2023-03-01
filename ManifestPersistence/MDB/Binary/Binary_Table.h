@@ -6,6 +6,7 @@
 #include "Binary_GeometryObject.h"
 #include "Binary_GeometryNode.h"
 #include "Binary_Material.h"
+#include "Binary_Terrain.h"
 
 
 namespace Manifest_Persistence

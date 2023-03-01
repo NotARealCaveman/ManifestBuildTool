@@ -28,7 +28,7 @@ namespace Manifest_Parser
 		static constexpr DDL_BufferType DDL_double{ DDL_float + 1 };
 		static constexpr DDL_BufferType DDL_string{ DDL_double + 1 };
 		//reserve for extended types - extension will supply a next buffer for further file formats
-		static constexpr DDL_BufferType NEXT_BUFFER_ID = DDL_string + 1;
+		static constexpr DDL_BufferType NEXT_BUFFER_ID{ DDL_string + 1 };
 		//Maps literal types to their ddl symbols
 		static std::map<std::string, DDL_BufferType> DDL_BufferTypeMap;
 	};	

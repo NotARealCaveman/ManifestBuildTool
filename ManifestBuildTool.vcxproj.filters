@@ -91,6 +91,12 @@
     <Filter Include="Source Files\Persistence\Runtime">
       <UniqueIdentifier>{c12ad877-1766-48b4-bd60-85df94194eab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Parser\MDD">
+      <UniqueIdentifier>{54a020dd-f7a4-47ed-b39c-c3379bfcc483}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Parser\MDD">
+      <UniqueIdentifier>{da24076d-a5ab-4bd7-9e9a-2235328c4693}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -221,6 +227,18 @@
     </ClCompile>
     <ClCompile Include="ManifestPersistence\Runtime\Runtime_Table.cpp">
       <Filter>Source Files\Persistence\Runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestPersistence\MDB\MDB_Terrain.cpp">
+      <Filter>Source Files\Persistence\MDB</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestParser\ManifestDataDescriptor.cpp">
+      <Filter>Source Files\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestParser\MDD\MDD_Terrain.cpp">
+      <Filter>Source Files\Parser\MDD</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestTerrainCOPY\Voxel.cpp">
+      <Filter>Source Files\EXPERIMENTAL</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -427,6 +445,21 @@
     </ClInclude>
     <ClInclude Include="ManifestMemory\Containers\ResourceTable.h">
       <Filter>Header Files\Memory\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestPersistence\MDB\Binary\Binary_Terrain.h">
+      <Filter>Header Files\Persistence\MDB\Binary</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestPersistence\MDB\MDB_Terrain.h">
+      <Filter>Header Files\Persistence\MDB</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestParser\ManifestDataDescriptor.h">
+      <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestParser\MDD\MDD_Terrain.h">
+      <Filter>Header Files\Parser\MDD</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestTerrainCOPY\Voxel.h">
+      <Filter>Header Files\EXPERIMENTAL</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -16,5 +16,11 @@ namespace Manifest_Persistence
 		BinaryGeometryObjectTable binaryGeometryObjectTable;
 		BinaryGeometryNodeTable binaryGeometryNodeTable;
 	};
-	ManifestBinaryDatabase ImportBinaryDatabase(std::ifstream& importFile);
+	ManifestBinaryDatabase ImportGameDatabase(std::ifstream& importFile);
+
+	struct ManifestBinaryTerrain
+	{
+
+	};
+	ManifestBinaryDatabase ImportGameTerrain(std::ifstream& importFile);
 }

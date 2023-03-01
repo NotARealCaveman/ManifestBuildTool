@@ -2,7 +2,7 @@
 
 using namespace Manifest_Persistence;
 
-ManifestBinaryDatabase Manifest_Persistence::ImportBinaryDatabase(std::ifstream& importFile)
+ManifestBinaryDatabase Manifest_Persistence::ImportGameDatabase(std::ifstream& importFile)
 {
 	ManifestBinaryDatabase result;
 

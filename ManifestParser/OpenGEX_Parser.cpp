@@ -18,6 +18,8 @@ void Manifest_Parser::InitializeExtendedTypes()
 	DDL_BufferTypes::DDL_BufferTypeMap.insert({ "float[3]",DDL_BufferTypes::DDL_float });
 	DDL_BufferTypes::DDL_BufferTypeMap.insert({ "float[4]",DDL_BufferTypes::DDL_float });
 	DDL_BufferTypes::DDL_BufferTypeMap.insert({ "float[12]",DDL_BufferTypes::DDL_float });
+	//add support for true extended types here
+	DDL_BufferTypes::DDL_BufferTypeMap.insert({ "Terrain",DDL_ExtendedTypes::MDB_TERRAIN });
 }
 
 
