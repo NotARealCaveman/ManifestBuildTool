@@ -188,3 +188,16 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_Mesh& mesh, const VertexBuild
 	DLOG(35, "Converting mdb_mesh with mID: " << mesh.meshID);
 	return EntrySize(binaryMesh);
 }
+
+//Terrain
+size_t Manifest_Persistence::Convert_MDB(const MDB_Terrain& terrain, Binary_Terrain& binaryTerrain)
+{
+	auto& header{ binaryTerrain.header };
+	header.payloadSize = terrain.SDFSampleSize;
+	header.terrainIndex = terrain.terrainID;
+	binaryTerrain.payload = New<MFint8, ScratchPad<MFint8>>(header.payloadSize);
+	memcpy(binaryTerrain.payload, terrain.terrainSDF, header.payloadSize);
+
+	DLOG(36, "Converting mdb_terrain terrainID: " << terrain.terrainID);
+	return EntrySize(binaryTerrain);
+}

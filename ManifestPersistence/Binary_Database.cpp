@@ -2,23 +2,34 @@
 
 using namespace Manifest_Persistence;
 
-ManifestBinaryDatabase Manifest_Persistence::ImportGameDatabase(std::ifstream& importFile)
+ManifestBinaryResourceDatabase Manifest_Persistence::ImportGameResources(std::ifstream& resourceFile)
 {
-	ManifestBinaryDatabase result;
+	ManifestBinaryResourceDatabase result;
 
-	result.binaryMeshTable = ImportBinaryTable<Binary_Mesh>(importFile);
-	result.binaryMaterialTable = ImportBinaryTable<Binary_Material>(importFile);
-	result.binaryTextureTable = ImportBinaryTable<Binary_Texture>(importFile);
-	result.binaryGeometryObjectTable = ImportBinaryTable<Binary_GeometryObject>(importFile);
-	result.binaryGeometryNodeTable = ImportBinaryTable<Binary_GeometryNode>(importFile);
+	result.binaryMeshTable = ImportBinaryTable<Binary_Mesh>(resourceFile);
+	result.binaryMaterialTable = ImportBinaryTable<Binary_Material>(resourceFile);
+	result.binaryTextureTable = ImportBinaryTable<Binary_Texture>(resourceFile);
+	result.binaryGeometryObjectTable = ImportBinaryTable<Binary_GeometryObject>(resourceFile);
+	result.binaryGeometryNodeTable = ImportBinaryTable<Binary_GeometryNode>(resourceFile);
 
 	return result;
 }
 
-ManifestBinaryDatabase::ManifestBinaryDatabase(ManifestBinaryDatabase&& other)
+ManifestBinaryTerrainDatabase Manifest_Persistence::ImportGameTerrain(std::ifstream& terrainFile)
+{
+	return {};
+}
+
+
+//move constructors for importing
+ManifestBinaryResourceDatabase::ManifestBinaryResourceDatabase(ManifestBinaryResourceDatabase&& other)
 	: binaryMeshTable{ std::move(other.binaryMeshTable) },
 	binaryMaterialTable{ std::move(other.binaryMaterialTable) },
 	binaryTextureTable{ std::move(other.binaryTextureTable) },
 	binaryGeometryNodeTable{ std::move(other.binaryGeometryNodeTable) },
 	binaryGeometryObjectTable{ std::move(other.binaryGeometryObjectTable) }
+{}
+
+ManifestBinaryTerrainDatabase::ManifestBinaryTerrainDatabase(ManifestBinaryTerrainDatabase&& other)
+	: binaryTerrainTable{ std::move(other.binaryTerrainTable) }
 {}

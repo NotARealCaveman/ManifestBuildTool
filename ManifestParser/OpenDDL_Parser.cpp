@@ -2,6 +2,7 @@
 
 using namespace Manifest_Parser;
 
+//sets the identifier and name of the ddl structure
 std::string Manifest_Parser::ParseStructureHeader(const std::string& partitionedStructure, DDL_Structure& structure)
 {
 	auto payloadIdentifier = partitionedStructure.find_first_of('{');
@@ -15,6 +16,7 @@ std::string Manifest_Parser::ParseStructureHeader(const std::string& partitioned
 	return result;
 }
 
+//sets all the asupplied optional properties of the structure
 PropertyList Manifest_Parser::PartitionStructureProperties(const std::string& properties)
 {	
 	auto temp = properties;
@@ -173,13 +175,8 @@ void Manifest_Parser::ParseDDLFile(const std::vector<std::string>& fileContents,
 		auto identifier = structure.substr(0, structure.find_first_of("$%({"));
 		auto registeredGenerator = RegisteredGenerator::registeredGenerators.find(identifier);
 		auto generator = registeredGenerator->second;
-		//DISABLE		
-		{
-			//DLOG(31, registeredGenerator->first);			
-			DDL_Structure* primaryStructure = nullptr;
-			//DISABLE
-			primaryStructure = generator->GenerateType(structure, fileObject.referenceMap);			
-			fileObject.primaryStructures.push_back(primaryStructure);
-		}
+		DDL_Structure* primaryStructure = nullptr;
+		primaryStructure = generator->GenerateType(structure, fileObject.referenceMap);
+		fileObject.primaryStructures.push_back(primaryStructure);
 	}
 }

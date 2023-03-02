@@ -3,12 +3,12 @@
 using namespace Manifest_Persistence;
 
 
-void Manifest_Persistence::ExportBinaryDatabase(const ManifestDatabaseBuilder& databaseBuild, std::ofstream& exportFile)
+void Manifest_Persistence::ExportBinaryResourceDatabase(const ManifestResourceDatabaseBuilder& databaseBuild, std::ofstream& exportFile)
 {
 	//TODO: ADD TABLE HEADER FOR QUICK LOOK UP - SEE [] OVERLOAD IN TABLE FOR AN EXAMPLE
 	//--		
-	//convert mdbs into binary records
-	ManifestBinaryDatabase exportDatabase;
+	//convert mdbs into binary records	
+	ManifestBinaryResourceDatabase exportDatabase;
 	exportDatabase.binaryMeshTable =  BinaryTableConversion<Binary_Mesh>(databaseBuild.meshBuildTable, databaseBuild.vertexBuildTables, databaseBuild.indexBuildTable);
 	exportDatabase.binaryMaterialTable = BinaryTableConversion<Binary_Material>(databaseBuild.materialBuildTable, databaseBuild.textureBuildTable);
 	exportDatabase.binaryTextureTable = BinaryTableConversion<Binary_Texture>(databaseBuild.textureBuildTable);
@@ -21,4 +21,11 @@ void Manifest_Persistence::ExportBinaryDatabase(const ManifestDatabaseBuilder& d
 	ExportBinaryTable(exportDatabase.binaryTextureTable, exportFile);
 	ExportBinaryTable(exportDatabase.binaryGeometryObjectTable, exportFile);
 	ExportBinaryTable(exportDatabase.binaryGeometryNodeTable, exportFile);
+}
+
+void Manifest_Persistence::ExportBinaryTerrainDatabase(const ManifestTerrainDatabaseBuilder& databaseBuild, std::ofstream& exportFile)
+{
+	ManifestBinaryTerrainDatabase exportDatabase;
+	exportDatabase.binaryTerrainTable = BinaryTableConversion<Binary_Terrain>(databaseBuild.terrainBuildTable);
+	ExportBinaryTable(exportDatabase.binaryTerrainTable, exportFile);
 }

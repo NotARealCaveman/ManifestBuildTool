@@ -7,5 +7,7 @@ using namespace Manifest_Parser;
 
 namespace Manifest_Persistence
 {	
-	void BuildOfflineDatabase(const DDL_File& file, ManifestDatabaseBuilder& database);
+	void BuildResourceDatabase(const DDL_File& file, ManifestResourceDatabaseBuilder& database);
+
+	void BuildTerrainDatabase(const DDL_File& file, ManifestTerrainDatabaseBuilder& database);
 }

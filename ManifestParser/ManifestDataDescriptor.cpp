@@ -3,7 +3,7 @@
 using namespace Manifest_Parser;
 
 
-void Manifest_Parser::ExportTerrain(const std::string& terrainFile, const MFu32& xChunks, const MFu32& zChunks, const MFu32& yChunks, const MFu8& lod, const MFint8* field)
+void Manifest_Parser::ExportTerrainMDD(const std::string& terrainFile, const MFu32& xChunks, const MFu32& zChunks, const MFu32& yChunks, const MFu8& lod, const MFint8* field)
 {
 	const auto nVoxels{ 19 << lod };
 	const auto mVoxels{ 19 << lod };

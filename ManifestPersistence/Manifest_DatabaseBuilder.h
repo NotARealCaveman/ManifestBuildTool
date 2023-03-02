@@ -4,7 +4,7 @@
 
 namespace Manifest_Persistence
 {
-	struct ManifestDatabaseBuilder
+	struct ManifestResourceDatabaseBuilder
 	{
 		GeometryObjectBuildTable geometryObjectBuildTable;
 		MeshBuildTable meshBuildTable;
@@ -16,6 +16,12 @@ namespace Manifest_Persistence
 		MaterialBuildTable materialBuildTable;
 		TextureBuildTable textureBuildTable;
 	};	
+	void ExportBinaryResourceDatabase(const ManifestResourceDatabaseBuilder& databaseBuild, std::ofstream& exportFile);
 
-	void ExportBinaryDatabase(const ManifestDatabaseBuilder& databaseBuild, std::ofstream& exportFile);
+	struct ManifestTerrainDatabaseBuilder
+	{
+		TerrainBuildTable terrainBuildTable;
+	};
+
+	void ExportBinaryTerrainDatabase(const ManifestTerrainDatabaseBuilder& databaseBuild, std::ofstream& exportFile);
 }

@@ -16,8 +16,8 @@ namespace Manifest_Parser
 
 	struct DDL_Structure
 	{
-		DDL_Identifier identifier;
-		DDL_Name name;		
+		DDL_Identifier identifier;//set when header is parsed
+		DDL_Name name; //set when header is parsed
 		ScratchPadVector<DDL_Structure*> subSutructres;
 		void* typeHeap;
 	};		

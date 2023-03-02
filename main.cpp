@@ -24,10 +24,15 @@ using namespace Manifest_Experimental;
 using namespace Manifest_Communication;
 using namespace Manifest_Terrain;
 
+//MDD = MANIFEST DATA DESCRIPTOR FILE
+//MBD = MANIFEST BINARY DATABASE
+//MDB = MANIFEST DATABASE BUILDER STRUCTURE
+
 const std::string TEST_PATH{ "C:\\Users\\Droll\\Desktop\\Game\\testing\\" };
 const std::string TEST_GEX{ "Test2.gex" };
-const std::string TEST_MDB{ "Test2.mdb" };
 const std::string TEST_TERRAIN{ "Terrain Files\\0Terrain.mdd" };
+const std::string TEST_MBD{ "Test2.mbd" };
+const std::string TEST_TERRAIN_BINARY{ "Terrain Files\\0Terrain.mbd" };
 
 void RuntimeTest()
 {
@@ -41,15 +46,15 @@ void PrintInfo(const DDL_Structure& structure)
 		PrintInfo(*substructure);
 };
 	
-void ImportAndTest()
+void ImportAndTestResourceDatabase()
 {
 
-	std::ifstream bImport{ TEST_PATH + TEST_MDB, std::ios::in | std::ios::binary };
+	std::ifstream bImport{ TEST_PATH + TEST_MBD, std::ios::in | std::ios::binary };
 	auto nLoops = 100000000;
 	nLoops = 1;
 	for(int i = 0 ; i < nLoops;++i)
 	{
-		ManifestBinaryDatabase binaryDatabase = ImportGameDatabase(bImport);
+		ManifestBinaryResourceDatabase binaryDatabase = ImportGameResources(bImport);
 		DLOG(45, "Printing Imported Database:");
 	for (auto i = 0; i < binaryDatabase.binaryGeometryNodeTable.header.totalEntries; ++i)
 	{
@@ -93,11 +98,11 @@ void ImportAndTest()
 	}
 }
 
-void BuildAndExport()
+void BuildAndExportResourceDatabase()
 {
 	//for printing purposes
-	auto fileName = TEST_PATH + TEST_TERRAIN;
-	fileName.insert(fileName.find_first_of('.'), std::to_string(0));
+	auto fileName = TEST_PATH + TEST_GEX;
+	//fileName.insert(fileName.find_first_of('.'), std::to_string(0));
 	auto file = LoadFileContents(fileName);
 	//DLOG(31, file);
 	auto filtered = FilterFile(file);
@@ -119,18 +124,61 @@ void BuildAndExport()
 
 			//build offline database	
 			
-			ManifestDatabaseBuilder databaseBuilder;
-			BuildOfflineDatabase(fileObject, databaseBuilder);		
-			std::ofstream bExport{ TEST_PATH + TEST_MDB, std::ios::out | std::ios::binary };			
+			ManifestResourceDatabaseBuilder databaseBuilder;
+			BuildResourceDatabase(fileObject, databaseBuilder);
+
+			std::ofstream bExport{ TEST_PATH + TEST_MBD, std::ios::out | std::ios::binary };
 			if (bExport.is_open())
 			{
 				DLOG(45, "Printing Exported Database:");
-				ExportBinaryDatabase(databaseBuilder, bExport);
+				ExportBinaryResourceDatabase(databaseBuilder, bExport);
 				bExport.close();
 			}
 		}
 		ScratchPad<Byte>{}.Unwind();
 	}			
+}
+void BuildAndExportTerrainDatabase()
+{
+	//for printing purposes
+	auto fileName = TEST_PATH + TEST_TERRAIN;
+	fileName.insert(fileName.find_first_of('.'), std::to_string(0));
+	auto file = LoadFileContents(fileName);
+	//DLOG(31, file);
+	auto filtered = FilterFile(file);
+	//DLOG(32, filtered);	
+	auto fileContents = PartitionDDLFile(filtered);
+	//begin actual parse
+	//ddl start up
+	Initialize_GEXTypes();
+	Initialize_GEXGenerators();
+	auto nLoops = 1950000;
+	nLoops = 1;
+	for (auto loop = 0; loop < nLoops; ++loop)
+	{
+		{
+			DDL_File fileObject;
+			//performs load and filter and begins parse - writes to scratch pad allocator - must unwind when finished with parsed data
+			ParseDDLFile(fileContents, fileObject);
+			//prints primary and substructure information per top level sturcture
+
+			//build offline database	
+
+			ManifestTerrainDatabaseBuilder databaseBuilder;
+			BuildTerrainDatabase(fileObject, databaseBuilder);
+
+			auto fileName = TEST_PATH + TEST_TERRAIN_BINARY;
+			fileName.insert(fileName.find_first_of('.'), std::to_string(0));
+			std::ofstream bExport{ fileName, std::ios::out | std::ios::binary };
+			if (bExport.is_open())
+			{
+				DLOG(45, "Printing Exported Database:");
+				ExportBinaryTerrainDatabase(databaseBuilder, bExport);
+				bExport.close();
+			}
+		}
+		ScratchPad<Byte>{}.Unwind();
+	}
 }
 
 using Seconds = std::chrono::duration<double>;
@@ -148,19 +196,13 @@ void CreateTerrainMDD()
 	const MFu32& nVoxels = (19 + (nBlocks - 1) * 17) << lod;
 	const MFu32& mVoxels = (19 + (mBlocks - 1) * 17) << lod;
 	const MFu32& hVoxels = (19 + (hBlocks - 1) * 17) << lod;	
-	const auto voxelCount{ nVoxels + mVoxels + hVoxels };
-	for (MFu32 k = 0; k < hVoxels; ++k)
-		for (MFu32 j = 0; j < mVoxels; ++j)
-			for (MFu32 i = 0; i < nVoxels; ++i)
-			{
-				//DLOG(34, "Index: " << i + nVoxels * (j + mVoxels * k) <<" Value: " << +map.field[i + nVoxels * (j + mVoxels * k)]);
-			}
-	ExportTerrain(TEST_PATH + TEST_TERRAIN, nBlocks, mBlocks, hBlocks, lod, map.field);
+	const auto voxelCount{ nVoxels + mVoxels + hVoxels };	
+	ExportTerrainMDD(TEST_PATH + TEST_TERRAIN, nBlocks, mBlocks, hBlocks, lod, map.field);	
+	BuildAndExportTerrainDatabase();
 }
 
 int main()
-{	
-	CreateTerrainMDD();
+{		
 
 	RegisterProgramExecutiveThread();
 	//create data stores
@@ -170,10 +212,11 @@ int main()
 	GlobalMemoryStatusEx(&status);
 
 	//persistence tests
-	//DISABLE
-		BuildAndExport();
+	CreateTerrainMDD();
 	DISABLE
-		ImportAndTest();
+		BuildAndExportResourceDatabase();
+	DISABLE
+		ImportAndTestResourceDatabase();
 	//final
 	DISABLE
 		RuntimeTest();

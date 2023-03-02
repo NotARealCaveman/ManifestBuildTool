@@ -65,10 +65,16 @@ namespace Manifest_Memory
 
     void INIT_MEMORY_RESERVES();
         
-    template<typename T,typename Alloc,typename... Args>
-    inline T* New(const MFsize& count, Args&&... args)
+    template<typename T,typename Alloc>
+    inline T* New(const MFsize& count)
     {        
-        return new(Alloc{}.allocate(count))T[count]{std::forward<Args>(args)...};
+        return new(Alloc{}.allocate(count))T[count];
+    }
+
+    template<typename T, typename Alloc>
+    inline T* New(const MFsize& count, const T&& value)
+    {
+        return new(Alloc{}.allocate(count))T[count]{ std::forward<T>(value) };
     }
 
     template<typename T,typename Alloc>

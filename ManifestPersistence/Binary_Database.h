@@ -4,11 +4,11 @@
 
 namespace Manifest_Persistence
 {
-	struct ManifestBinaryDatabase
+	struct ManifestBinaryResourceDatabase
 	{
-		ManifestBinaryDatabase() = default;
-		ManifestBinaryDatabase(const ManifestBinaryDatabase&) = delete;
-		ManifestBinaryDatabase(ManifestBinaryDatabase&& other);
+		ManifestBinaryResourceDatabase() = default;
+		ManifestBinaryResourceDatabase(const ManifestBinaryResourceDatabase&) = delete;
+		ManifestBinaryResourceDatabase(ManifestBinaryResourceDatabase&& other);
 
 		BinaryMeshTable binaryMeshTable;
 		BinaryMaterialTable binaryMaterialTable;
@@ -16,11 +16,15 @@ namespace Manifest_Persistence
 		BinaryGeometryObjectTable binaryGeometryObjectTable;
 		BinaryGeometryNodeTable binaryGeometryNodeTable;
 	};
-	ManifestBinaryDatabase ImportGameDatabase(std::ifstream& importFile);
+	ManifestBinaryResourceDatabase ImportGameResources(std::ifstream& resourceFile);
 
-	struct ManifestBinaryTerrain
+	struct ManifestBinaryTerrainDatabase
 	{
-
+		ManifestBinaryTerrainDatabase() = default;
+		ManifestBinaryTerrainDatabase(const ManifestBinaryTerrainDatabase&) = delete;
+		ManifestBinaryTerrainDatabase(ManifestBinaryTerrainDatabase&& other);
+		
+		BinaryTerrainTable binaryTerrainTable;
 	};
-	ManifestBinaryDatabase ImportGameTerrain(std::ifstream& importFile);
+	ManifestBinaryTerrainDatabase ImportGameTerrain(std::ifstream& terrainFile);
 }
