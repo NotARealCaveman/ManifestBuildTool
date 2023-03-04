@@ -18,11 +18,11 @@ namespace Manifest_Persistence
 	};	
 	void ExportBinaryResourceDatabase(const ManifestResourceDatabaseBuilder& databaseBuild, std::ofstream& exportFile);
 
-	struct ManifestTerrainDatabaseBuilder
+	struct ManifestWorldDatabaseBuilder
 	{
 		TerrainBuildTable terrainBuildTable;
 		VoxelMapBuildTable voxelMapBuildTable;
 	};
 
-	void ExportBinaryTerrainDatabase(const ManifestTerrainDatabaseBuilder& databaseBuild, std::ofstream& exportFile);
+	void ExportBinaryTerrainDatabase(const ManifestWorldDatabaseBuilder& databaseBuild, std::ofstream& exportFile);
 }

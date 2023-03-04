@@ -2,12 +2,16 @@
 
 using namespace Manifest_Persistence;
 
-ForeignKey Manifest_Persistence::TableEntry(const DDL_Structure& structure, VoxelMapBuildTable& voxelMapBuildTable)
+ForeignKey Manifest_Persistence::TableEntry(const DDL_Structure& structure, VoxelMapBuildTable& voxelMapBuildTable, const MFu32& xChunks, const MFu32& zChunks, const MFu8& worldLOD)
 {
 	MDB_VoxelMap& entry = voxelMapBuildTable.entries.emplace_back();
 	entry.mapID = voxelMapBuildTable.nextTableIndex++;
 	voxelMapBuildTable.mappedEntryKeys.insert({ structure.name.c_str(), entry.mapID });	
 
+	//to be moved to world config type structure
+	entry.xChunks = xChunks;
+	entry.zChunks = zChunks;
+	entry.worldLOD = worldLOD;
 	//prepare properties
 	const auto& voxelMap = HeapData<MDD_VoxelMap>(structure);
 	entry.nVoxels = voxelMap.nVoxels;

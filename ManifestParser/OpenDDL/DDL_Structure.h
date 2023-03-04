@@ -27,12 +27,14 @@ namespace Manifest_Parser
 		return *reinterpret_cast<Type*>(structure.typeHeap);
 	}
 
-	struct DDL_ReferenceMap
+	using  DDL_ReferenceMap = MFu32;
+	/*struct DDL_ReferenceMap
 	{		
 		//std::map<DDL_Name,const DDL_Structure> referenceMap;
-		ScratchPadUMap<DDL_Name, const DDL_Structure> referenceMap;
+		ScratchPadUMap<DDL_Name, DDL_Structure*> referenceMap;
 		uint32_t unnamedStructureCount{ 0 };
 	};
+	*/
 	void MapStructureName(DDL_Structure& structure, DDL_ReferenceMap& referenceMap);
 	
 	struct DDL_Property

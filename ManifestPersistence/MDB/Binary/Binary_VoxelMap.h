@@ -9,9 +9,11 @@ namespace Manifest_Persistence
 		struct Entry_Header
 		{
 			MFsize payloadSize{ 0 };//stores size of terrain data - to be done in rle	
+			MFu32 xChunks;
+			MFu32 zChunks;
 			MFu32 nVoxels;
 			MFu32 mVoxels;
-			MFu32 hVoxels;
+			MFu32 hVoxels;			
 		}header;
 		MFint8* payload;//terrain SDF
 	};

@@ -39,10 +39,11 @@ void Manifest_Persistence::BuildResourceDatabase(const DDL_File& file, ManifestR
 		TableEntry(*geometryNode, database.geometryObjectBuildTable, database.materialBuildTable, database.geometryNodeBuildTable, database.objectRefBuildTable, database.materialRefBuildTable);
 }
 
-void Manifest_Persistence::BuildTerrainDatabase(const DDL_File& file, ManifestTerrainDatabaseBuilder& database)
+void Manifest_Persistence::BuildWorldDatabase(const DDL_File& file, ManifestWorldDatabaseBuilder& database)
 {
 	ScratchPadVector<DDL_Structure*> terrainChunks;
-	ScratchPadVector<DDL_Structure*> chunkMetrics;
+	ScratchPadVector<DDL_Structure*> voxelMaps;
+	ScratchPadVector<DDL_Structure*> worldMetrics;	
 	for (const auto& structure : file.primaryStructures)
 	{
 		auto identifier = structure->identifier;
@@ -52,15 +53,40 @@ void Manifest_Persistence::BuildTerrainDatabase(const DDL_File& file, ManifestTe
 			auto bufferType = mapEntry->second;
 			switch (bufferType)
 			{
-			case DDL_ExtendedTypes::MDD_TERRAIN:
-				terrainChunks.emplace_back(structure);
-				break;
-			case GEX_BufferTypes::GEX_Metric:
-				chunkMetrics.emplace_back(structure);
-				break;
+				case DDL_ExtendedTypes::MDD_TERRAIN:
+					terrainChunks.emplace_back(structure);
+					break;
+				case DDL_ExtendedTypes::MDD_VOXELMAP:
+					voxelMaps.emplace_back(structure);
+					break;
+				case GEX_BufferTypes::GEX_Metric:
+					worldMetrics.emplace_back(structure);
+					break;
 			}
 		}
-	}
+	}	
 	for (const auto& terrainChunk : terrainChunks)
-		TableEntry(*terrainChunk, database.terrainBuildTable);
+		TableEntry(*terrainChunk, database.terrainBuildTable);	
+	//in the future metrics will be used as world config - for now combine data into voxel map	
+	MFu32 xChunks;
+	MFu32 zChunks;
+	MFu8 worldLOD;
+	for (const auto& worldMetric : worldMetrics)
+	{
+		const auto& metric{ HeapData<GEX_Metric>(*worldMetric) };
+		if (metric.key == "\"lod\"")
+		{
+			worldLOD = *reinterpret_cast<MFu8*>(std::get<DDL_Uint8>(metric.metric).data.typeHeap);
+		}
+		else if (metric.key == "\"xChunks\"")
+		{
+			worldLOD = *reinterpret_cast<MFu32*>(std::get<DDL_Uint32>(metric.metric).data.typeHeap);
+		}
+		else if (metric.key == "\"zChunks\"")
+		{
+			worldLOD = *reinterpret_cast<MFu32*>(std::get<DDL_Uint32>(metric.metric).data.typeHeap);
+		}
+	}
+	for (const auto& voxelMap : voxelMaps)
+		TableEntry(*voxelMap, database.voxelMapBuildTable,xChunks,zChunks,worldLOD);
 }

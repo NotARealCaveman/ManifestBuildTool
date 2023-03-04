@@ -208,6 +208,7 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_VoxelMap& voxelMap, Binary_Vo
 		(header.nVoxels = voxelMap.nVoxels) *
 		(header.mVoxels = voxelMap.mVoxels) *
 		(header.hVoxels = voxelMap.hVoxels);
+	binaryVoxelMap.payload = New<MFint8, ScratchPad<MFint8>>(header.payloadSize);
 	memcpy(binaryVoxelMap.payload, voxelMap.mapSDF, header.payloadSize);
 
 	DLOG(36, "Converting mdb_voxelmap mapID: " << voxelMap.mapID);

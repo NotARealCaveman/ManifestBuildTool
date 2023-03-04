@@ -10,7 +10,6 @@ namespace Manifest_Parser
 	{		
 		DDL_ReferenceMap referenceMap;		
 		ScratchPadVector<DDL_Structure*> primaryStructures;		
-		ScratchPadVector<int> test;
 		uint64_t fileId;				
 	};	
 }

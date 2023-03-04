@@ -18,14 +18,14 @@ namespace Manifest_Persistence
 	};
 	ManifestBinaryResourceDatabase ImportGameResources(std::ifstream& resourceFile);
 
-	struct ManifestBinaryTerrainDatabase
+	struct ManifestBinaryWorldDatabase
 	{
-		ManifestBinaryTerrainDatabase() = default;
-		ManifestBinaryTerrainDatabase(const ManifestBinaryTerrainDatabase&) = delete;
-		ManifestBinaryTerrainDatabase(ManifestBinaryTerrainDatabase&& other);
+		ManifestBinaryWorldDatabase() = default;
+		ManifestBinaryWorldDatabase(const ManifestBinaryWorldDatabase&) = delete;
+		ManifestBinaryWorldDatabase(ManifestBinaryWorldDatabase&& other);
 		
 		BinaryVoxelMapTable binaryVoxelMapTable;
 		BinaryTerrainTable binaryTerrainTable;		
 	};
-	ManifestBinaryTerrainDatabase ImportGameTerrain(std::ifstream& terrainFile);
+	ManifestBinaryWorldDatabase ImportGameTerrain(std::ifstream& terrainFile);
 }

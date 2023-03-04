@@ -1,4 +1,5 @@
 #pragma once
+#include <ManifestParser/OpenGEX/GEX_Metric.h>
 #include <ManifestUtility/DebugLogger.h>
 
 #include "Manifest_DatabaseBuilder.h"
@@ -9,5 +10,5 @@ namespace Manifest_Persistence
 {	
 	void BuildResourceDatabase(const DDL_File& file, ManifestResourceDatabaseBuilder& database);
 
-	void BuildTerrainDatabase(const DDL_File& file, ManifestTerrainDatabaseBuilder& database);
+	void BuildWorldDatabase(const DDL_File& file, ManifestWorldDatabaseBuilder& database);
 }

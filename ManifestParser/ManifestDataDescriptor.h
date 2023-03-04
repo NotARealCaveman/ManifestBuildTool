@@ -13,5 +13,5 @@ namespace Manifest_Parser
 
 	void ExportTerrainMDD(const std::string& terrainFile, const MFu32& xChunks, const MFu32& zChunks, const MFu32& yChunks, const MFu8& lod, const MFint8* field);
 
-	void ExportVoxelMapMDD(const std::string& voxelMapFile, const MFu32& xChunks, const MFu32& zChunks, const MFu32& yChunks, const MFu8& lod, const MFint8* field);
+	void ExportVoxelMapMDD(const std::string& voxelMapFile, const MFu32& xChunks, const MFu32& zChunks, [[maybe_unused]] const MFu32& yChunks, const MFu8& lod, const MFint8* field);
 }

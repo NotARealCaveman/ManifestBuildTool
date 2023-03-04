@@ -15,10 +15,11 @@ ManifestBinaryResourceDatabase Manifest_Persistence::ImportGameResources(std::if
 	return result;
 }
 
-ManifestBinaryTerrainDatabase Manifest_Persistence::ImportGameTerrain(std::ifstream& terrainFile)
+ManifestBinaryWorldDatabase Manifest_Persistence::ImportGameTerrain(std::ifstream& terrainFile)
 {
-	ManifestBinaryTerrainDatabase result;
+	ManifestBinaryWorldDatabase result;
 
+	result.binaryVoxelMapTable = ImportBinaryTable<Binary_VoxelMap>(terrainFile);
 	result.binaryTerrainTable = ImportBinaryTable<Binary_Terrain>(terrainFile);
 
 	return result;
@@ -34,6 +35,7 @@ ManifestBinaryResourceDatabase::ManifestBinaryResourceDatabase(ManifestBinaryRes
 	binaryGeometryObjectTable{ std::move(other.binaryGeometryObjectTable) }
 {}
 
-ManifestBinaryTerrainDatabase::ManifestBinaryTerrainDatabase(ManifestBinaryTerrainDatabase&& other)
-	: binaryTerrainTable{ std::move(other.binaryTerrainTable) }
+ManifestBinaryWorldDatabase::ManifestBinaryWorldDatabase(ManifestBinaryWorldDatabase&& other)
+	: binaryTerrainTable{ std::move(other.binaryTerrainTable) },
+	binaryVoxelMapTable{ std::move(other.binaryVoxelMapTable) }
 {}

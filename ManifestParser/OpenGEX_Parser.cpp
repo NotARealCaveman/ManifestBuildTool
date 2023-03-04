@@ -15,6 +15,7 @@ void Manifest_Parser::Initialize_GEXGenerators()
 void Manifest_Parser::InitializeExtendedGenerators()
 {
 	RegisteredGenerator::registeredGenerators.insert({ "Terrain",new Generator<MDD_Terrain> });
+	RegisteredGenerator::registeredGenerators.insert({ "VoxelMap",new Generator<MDD_VoxelMap> });
 }
 
 void Manifest_Parser::InitializeExtendedTypes()
@@ -26,6 +27,7 @@ void Manifest_Parser::InitializeExtendedTypes()
 	DDL_BufferTypes::DDL_BufferTypeMap.insert({ "float[12]",DDL_BufferTypes::DDL_float });
 	//add support for true extended types here
 	DDL_BufferTypes::DDL_BufferTypeMap.insert({ "Terrain",DDL_ExtendedTypes::MDD_TERRAIN });	
+	DDL_BufferTypes::DDL_BufferTypeMap.insert({ "VoxelMap",DDL_ExtendedTypes::MDD_VOXELMAP });
 }
 
 
