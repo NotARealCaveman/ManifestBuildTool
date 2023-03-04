@@ -198,15 +198,15 @@ using Milliseconds = std::chrono::duration<double, std::milli>;
 using Nanoseconds = std::chrono::duration<double, std::nano>;
 using Timepoint = std::chrono::time_point<std::chrono::steady_clock,Nanoseconds>;
 
-void CreateTerrainMDD()
+void CreateWorldMDD(MFbool buildMDDs)
 {
-	auto nBlocks{ 1 };
-	auto mBlocks{ 1 };
+	auto nBlocks{ 10 };
+	auto mBlocks{ 10 };
 	auto hBlocks{ 1 };
-	auto lod{ 0 };
+	auto lod{ 3 };
 	auto map{ GenerateVoxelMap(0,lod,nBlocks,mBlocks,hBlocks,{0}) };	
-	ExportVoxelMapMDD(TEST_PATH + TEST_VOXELMAP, nBlocks, mBlocks, hBlocks, lod, map.field);
-	ExportTerrainMDD(TEST_PATH + TEST_TERRAIN, nBlocks, mBlocks, hBlocks, lod, map.field);	
+	//ExportVoxelMapMDD(TEST_PATH + TEST_VOXELMAP, nBlocks, mBlocks, hBlocks, lod, map.field);
+	//ExportTerrainMDD(TEST_PATH + TEST_TERRAIN, nBlocks, mBlocks, hBlocks, lod, map.field);	
 	std::vector<std::string> mddFilenames
 	{ TEST_PATH + TEST_VOXELMAP,TEST_PATH + TEST_TERRAIN };
 	BuildAndExportWorldDatabase(mddFilenames);
@@ -228,8 +228,8 @@ int main()
 
 	//persistence tests
 	//DISABLE
-		CreateTerrainMDD();
-	//DISABLE
+		CreateWorldMDD(false);
+	DISABLE
 		ImportAndTestWorldDatabase();
 	DISABLE
 		BuildAndExportResourceDatabase();

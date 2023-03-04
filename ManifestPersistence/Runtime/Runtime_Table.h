@@ -15,7 +15,7 @@ namespace Manifest_Persistence
 	private:
 		using RCU = RCU<T, Deleter>;
 		template<typename... Params>
-		using WriteFunction = T * (*)(Params&...);
+		using WriteFunction = T * (*)(Params&...); 
 		template<typename... Params>
 		using ReadFunction = void(*)(const typename RCU::Handle&, Params&...);
 		template<typename... Params>

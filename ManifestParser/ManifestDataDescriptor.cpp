@@ -47,7 +47,7 @@ void Manifest_Parser::ExportVoxelMapMDD(const std::string& voxelMapFile, const M
 		exportString = "Metric $WORLD_Z_CHUNKS (key = \"zChunks\") {u32 {" + std::to_string(zChunks) + "}}\n\n";
 		mddExport.write(exportString.data(), sizeof(char) * exportString.size());
 		//voxel map header
-		exportString = "VoxelMap (nVoxels = "+std::to_string(nVoxels)+", mVoxels = "+ std::to_string(mVoxels) +", hVoxels = " + std::to_string(hVoxels) + ")" + "\n{\n";
+		exportString = "VoxelMap (nVoxels = " + std::to_string(nVoxels) + ", mVoxels = " + std::to_string(mVoxels) + ", hVoxels = " + std::to_string(hVoxels) + ")" + "\n{\n";
 		mddExport.write(exportString.data(), sizeof(char) * exportString.size());
 		//map sdf
 		exportString = "\ti8 %field [" + std::to_string(voxelCount) + "]{\n\t\t{";
@@ -56,6 +56,8 @@ void Manifest_Parser::ExportVoxelMapMDD(const std::string& voxelMapFile, const M
 		{
 			exportString = std::to_string(field[sample]) + ",";
 			mddExport.write(exportString.data(), sizeof(char) * exportString.size());
+			if (!(sample % 10000000))
+				DLOG(76, "Sample at: " << sample);
 		}//remove excess "," from last entry
 		mddExport.seekp(mddExport.tellp() - std::streampos{ 1 });
 		exportString = "}\n\t}\n}";

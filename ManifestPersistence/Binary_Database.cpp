@@ -25,7 +25,6 @@ ManifestBinaryWorldDatabase Manifest_Persistence::ImportGameTerrain(std::ifstrea
 	return result;
 }
 
-
 //move constructors for importing
 ManifestBinaryResourceDatabase::ManifestBinaryResourceDatabase(ManifestBinaryResourceDatabase&& other)
 	: binaryMeshTable{ std::move(other.binaryMeshTable) },

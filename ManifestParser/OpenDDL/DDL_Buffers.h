@@ -51,7 +51,7 @@ namespace Manifest_Parser
 	//prepares sub buffer data - returns the number of elements per sub buffer
 	//allocates room for buffer data on buffer::typeHeap
 	template<typename T>
-	size_t PrepareSubBuffer(const std::string& partitionedStructure,const size_t& bufferCount ,DDL_Buffer& buffer)
+	size_t PrepareSubBuffer(const ScratchPadString& partitionedStructure,const size_t& bufferCount ,DDL_Buffer& buffer)
 	{
 		auto beginSubBuffer = partitionedStructure.find_first_of('[');
 		auto endSubBuffer = partitionedStructure.find_first_of(']');						
@@ -65,7 +65,7 @@ namespace Manifest_Parser
 
 	//fills a sub buffer array with the per substructure extracted from payload information
 	template<typename T>
-	void ExtractSubBuffer(const ScratchPadVector<std::string> & subBufferData,const size_t& subBufferElementCount, const DDL_Buffer& buffer)
+	void ExtractSubBuffer(const ScratchPadVector<ScratchPadString> & subBufferData,const size_t& subBufferElementCount, const DDL_Buffer& buffer)
 	{
 		uint32_t subBuffer = 0;
 		for (const auto& bufferData : subBufferData)
@@ -75,6 +75,7 @@ namespace Manifest_Parser
 			auto payload = bufferData.substr(payloadIndex + 1, bufferData.find_first_of('}') - payloadIndex - 1);
 			for (uint32_t bufferPosition = 0; bufferPosition < subBufferElementCount; ++bufferPosition)
 			{
+				LOG(76, "BufferPositionat: " << bufferPosition);
 				T temp = static_cast<T>(std::stof
 				(payload.substr(0)));				
 				*(reinterpret_cast<T*>(buffer.typeHeap) + subBuffer++) = temp;				
@@ -84,9 +85,9 @@ namespace Manifest_Parser
 	}
 
 	template<typename T>
-	void BuildSubBuffer(const std::string& partitionedStructure, DDL_Buffer& buffer)
+	void BuildSubBuffer(const ScratchPadString& partitionedStructure, DDL_Buffer& buffer)
 	{
-		ScratchPadVector<std::string> subBufferData = PartitionDDLSubStructures(partitionedStructure);
+		ScratchPadVector<ScratchPadString> subBufferData = PartitionDDLSubStructuresV2(partitionedStructure);
 		size_t subBufferElementCount = PrepareSubBuffer<T>(partitionedStructure, subBufferData.size(), buffer);
 		ExtractSubBuffer<T>(subBufferData, subBufferElementCount, buffer);
 	}
