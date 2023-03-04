@@ -31,6 +31,7 @@ using namespace Manifest_Terrain;
 const std::string TEST_PATH{ "C:\\Users\\Droll\\Desktop\\Game\\testing\\" };
 const std::string TEST_GEX{ "Test2.gex" };
 const std::string TEST_TERRAIN{ "Terrain Files\\0Terrain.mdd" };
+const std::string TEST_VOXELMAP{ "Terrain Files\\0map.mdd" };
 const std::string TEST_MBD{ "Test2.mbd" };
 const std::string TEST_TERRAIN_BINARY{ "Terrain Files\\0Terrain.mbd" };
 
@@ -138,6 +139,31 @@ void BuildAndExportResourceDatabase()
 		ScratchPad<Byte>{}.Unwind();
 	}			
 }
+
+void ImportAndTestTerrainDatabase()
+{
+	auto fileName = TEST_PATH + TEST_TERRAIN_BINARY;
+	fileName.insert(fileName.find_first_of('.'), std::to_string(0));
+	std::ifstream bImport{ fileName, std::ios::in | std::ios::binary };
+	auto nLoops = 100000000;
+	nLoops = 1;
+	for (int i = 0; i < nLoops; ++i)
+	{
+		ManifestBinaryTerrainDatabase binaryDatabase = ImportGameTerrain(bImport);
+		DLOG(45, "Printing Imported Database:");
+		for (auto i = 0; i < binaryDatabase.binaryTerrainTable.header.totalEntries; ++i)
+		{
+			const auto& importTerrain = binaryDatabase.binaryTerrainTable[i];
+			DLOG(31, "Reading Terrain Chunk: " << i);
+			const auto& index = importTerrain.header.terrainHash;
+			DLOG(32, "Terrain index hash: " << index);
+			DLOG(32, "Terrain xIndex: " << GetCompositeWard(index,TERRAIN_Z_INDEX_HASH_OFFSET) << " zIndex: " << GetCompositeBow(index, TERRAIN_Z_INDEX_HASH_OFFSET));
+			DLOG(32, "Chunk SDF: ");
+			for (auto index{ 0 }; index < importTerrain.header.payloadSize; ++index)
+				std::cout << +importTerrain.payload[index] << ", ";
+		}
+	}
+}
 void BuildAndExportTerrainDatabase()
 {
 	//for printing purposes
@@ -197,6 +223,7 @@ void CreateTerrainMDD()
 	const MFu32& mVoxels = (19 + (mBlocks - 1) * 17) << lod;
 	const MFu32& hVoxels = (19 + (hBlocks - 1) * 17) << lod;	
 	const auto voxelCount{ nVoxels + mVoxels + hVoxels };	
+	ExportVoxelMapMDD(TEST_PATH + TEST_VOXELMAP, nBlocks, mBlocks, hBlocks, lod, map.field);
 	ExportTerrainMDD(TEST_PATH + TEST_TERRAIN, nBlocks, mBlocks, hBlocks, lod, map.field);	
 	BuildAndExportTerrainDatabase();
 }
@@ -212,7 +239,10 @@ int main()
 	GlobalMemoryStatusEx(&status);
 
 	//persistence tests
-	CreateTerrainMDD();
+	//DISABLE
+		CreateTerrainMDD();
+	//DISABLE
+		ImportAndTestTerrainDatabase();
 	DISABLE
 		BuildAndExportResourceDatabase();
 	DISABLE

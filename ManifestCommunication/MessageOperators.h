@@ -11,7 +11,7 @@ namespace Manifest_Communication
 	//there is allowed up to 64 possible flags
 	constexpr MFu64 pow2(MFu64 base)
 	{
-		return MFu64{1} << base;
+		return MFu64{ 1 } << base ;
 	}
 	constexpr MFu8 DecodeMessageBase(MFu64 pow2Base)
 	{

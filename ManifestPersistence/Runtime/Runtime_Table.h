@@ -15,7 +15,7 @@ namespace Manifest_Persistence
 	private:
 		using RCU = RCU<T, Deleter>;
 		template<typename... Params>
-		using WriteFunction = T * (*)(Params&...);		
+		using WriteFunction = T * (*)(Params&...);
 		template<typename... Params>
 		using ReadFunction = void(*)(const typename RCU::Handle&, Params&...);
 		template<typename... Params>
@@ -27,13 +27,13 @@ namespace Manifest_Persistence
 		Table(const MFsize maxConcurrentReaders)
 			: rcu{ maxConcurrentReaders } {};		
 		//params are taken by reference - be careful to not make unwated alterations to parameter data
-		template<typename... Params>	
+		template<typename... Params>
 		inline void Push(WriteFunction<Params...> writeFunction, Params&... params)
 		{			
 			writeLock.Lock();
 			rcu.synchronize_rcu(writeFunction(params...));
 			writeLock.Unlock();
-		};	
+		};
 		template<typename... Params>
 		void Pull(const MFu32& readerId, ReadFunction<Params...> readFunction, Params&... params)
 		{

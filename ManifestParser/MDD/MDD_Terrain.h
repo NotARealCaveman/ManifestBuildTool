@@ -8,12 +8,17 @@ namespace Manifest_Parser
 {
 	struct MDD_Terrain : public RegisteredBuilder
 	{		
-		struct PropertyList {			
-			static const std::map<std::string, uint32_t> typeProperties;
+		struct PropertyList 
+		{		
+			static constexpr uint32_t X_CHUNK_INDEX{ 0 };
+			static constexpr uint32_t Z_CHUNK_INDEX{ X_CHUNK_INDEX + 1 };
+			static const std::map<std::string, DDL_BufferType> typeProperties;
 		};
 		DDL_Structure* Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap)final;//tbd
 		//substructures
 		DDL_Uint8 index;
-		DDL_Int8 field;
+		//properties
+		MFu32 xChunkIndex{ UINT32_MAX };
+		MFu32 zChunkIndex{ UINT32_MAX };
 	};
 }

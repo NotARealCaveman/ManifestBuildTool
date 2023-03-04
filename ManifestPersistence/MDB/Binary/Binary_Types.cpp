@@ -193,11 +193,23 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_Mesh& mesh, const VertexBuild
 size_t Manifest_Persistence::Convert_MDB(const MDB_Terrain& terrain, Binary_Terrain& binaryTerrain)
 {
 	auto& header{ binaryTerrain.header };
-	header.payloadSize = terrain.SDFSampleSize;
-	header.terrainIndex = terrain.terrainID;
-	binaryTerrain.payload = New<MFint8, ScratchPad<MFint8>>(header.payloadSize);
-	memcpy(binaryTerrain.payload, terrain.terrainSDF, header.payloadSize);
+	header.payloadSize = 0;
+	header.terrainHash = terrain.terrainIndexHash;	
 
 	DLOG(36, "Converting mdb_terrain terrainID: " << terrain.terrainID);
 	return EntrySize(binaryTerrain);
+}
+
+//VoxelMap
+size_t Manifest_Persistence::Convert_MDB(const MDB_VoxelMap& voxelMap, Binary_VoxelMap& binaryVoxelMap)
+{
+	auto& header{ binaryVoxelMap.header };
+	header.payloadSize =
+		(header.nVoxels = voxelMap.nVoxels) *
+		(header.mVoxels = voxelMap.mVoxels) *
+		(header.hVoxels = voxelMap.hVoxels);
+	memcpy(binaryVoxelMap.payload, voxelMap.mapSDF, header.payloadSize);
+
+	DLOG(36, "Converting mdb_voxelmap mapID: " << voxelMap.mapID);
+	return EntrySize(binaryVoxelMap);
 }

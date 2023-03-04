@@ -26,6 +26,10 @@ void Manifest_Persistence::ExportBinaryResourceDatabase(const ManifestResourceDa
 void Manifest_Persistence::ExportBinaryTerrainDatabase(const ManifestTerrainDatabaseBuilder& databaseBuild, std::ofstream& exportFile)
 {
 	ManifestBinaryTerrainDatabase exportDatabase;
+	exportDatabase.binaryVoxelMapTable = BinaryTableConversion<Binary_VoxelMap>(databaseBuild.voxelMapBuildTable);
 	exportDatabase.binaryTerrainTable = BinaryTableConversion<Binary_Terrain>(databaseBuild.terrainBuildTable);
+
+
+	ExportBinaryTable(exportDatabase.binaryVoxelMapTable, exportFile);
 	ExportBinaryTable(exportDatabase.binaryTerrainTable, exportFile);
 }

@@ -17,7 +17,11 @@ ManifestBinaryResourceDatabase Manifest_Persistence::ImportGameResources(std::if
 
 ManifestBinaryTerrainDatabase Manifest_Persistence::ImportGameTerrain(std::ifstream& terrainFile)
 {
-	return {};
+	ManifestBinaryTerrainDatabase result;
+
+	result.binaryTerrainTable = ImportBinaryTable<Binary_Terrain>(terrainFile);
+
+	return result;
 }
 
 

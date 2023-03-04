@@ -46,8 +46,8 @@ namespace Manifest_Communication
 	public:
 		Observer(const ObservationToken& observationToken);		
 		//Processes messages - spins if writing for observation	
-		template<typename T = VOIDPTR, typename... Args>
-		T* ProcessEvents(const MessageProcessingFunction<T,Args...> processFunction,Args&... args)
+		template<typename T = VOIDPTR, typename... CArgs, typename... Args>
+		T* ProcessEvents(const MessageProcessingFunction<T,Args...> processFunction,const CArgs&... cargs, Args&... args)
 		{
 			messageLock.Lock();
 			std::vector<Message> messages = std::move(observedEventMessages);

@@ -4,6 +4,8 @@ using namespace Manifest_Parser;
 
 const std::map<std::string, DDL_BufferType> MDD_Terrain::PropertyList::typeProperties
 {	
+	{"xChunkIndex",PropertyList::X_CHUNK_INDEX},
+	{"zChunkIndex",PropertyList::Z_CHUNK_INDEX}
 };
 
 DDL_Structure* MDD_Terrain::Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap)
@@ -13,6 +15,12 @@ DDL_Structure* MDD_Terrain::Build(const std::string& partitionedStructure, DDL_R
 	for (const DDL_Property& property : PartitionStructureProperties(ParseStructureHeader(partitionedStructure, *result)))
 		switch (PropertyList::typeProperties.find(property.key.c_str())->second)
 		{
+			case PropertyList::X_CHUNK_INDEX:
+				xChunkIndex = std::stoi(property.value.c_str());
+				break;
+			case PropertyList::Z_CHUNK_INDEX:
+				zChunkIndex = std::stoi(property.value.c_str());
+				break;
 			DEFAULT_BREAK;
 		}
 	for (const auto& subStructure : PartitionDDLSubStructures(partitionedStructure))
@@ -20,9 +28,6 @@ DDL_Structure* MDD_Terrain::Build(const std::string& partitionedStructure, DDL_R
 		{
 			case DDL_BufferTypes::DDL_uint8:
 				result->subSutructres.emplace_back(index.Build(subStructure,referenceMap));
-				break;
-			case DDL_BufferTypes::DDL_int8:
-				result->subSutructres.emplace_back(field.Build(subStructure, referenceMap));
 				break;
 			DEFAULT_BREAK
 		}

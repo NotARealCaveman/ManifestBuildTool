@@ -240,6 +240,12 @@
     <ClCompile Include="ManifestTerrainCOPY\Voxel.cpp">
       <Filter>Source Files\EXPERIMENTAL</Filter>
     </ClCompile>
+    <ClCompile Include="ManifestParser\MDD\MDD_VoxelMap.cpp">
+      <Filter>Source Files\Parser\MDD</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestPersistence\MDB\MDB_VoxelMap.cpp">
+      <Filter>Source Files\Persistence\MDB</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EXPERIMENTAL\EXPERIMENTAL_RUNTIME_DATA_STRUCTURES.h">
@@ -460,6 +466,15 @@
     </ClInclude>
     <ClInclude Include="ManifestTerrainCOPY\Voxel.h">
       <Filter>Header Files\EXPERIMENTAL</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestParser\MDD\MDD_VoxelMap.h">
+      <Filter>Header Files\Parser\MDD</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestPersistence\MDB\MDB_VoxelMap.h">
+      <Filter>Header Files\Persistence\MDB</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestPersistence\MDB\Binary\Binary_VoxelMap.h">
+      <Filter>Header Files\Persistence\MDB\Binary</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

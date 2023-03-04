@@ -24,7 +24,8 @@ namespace Manifest_Persistence
 		ManifestBinaryTerrainDatabase(const ManifestBinaryTerrainDatabase&) = delete;
 		ManifestBinaryTerrainDatabase(ManifestBinaryTerrainDatabase&& other);
 		
-		BinaryTerrainTable binaryTerrainTable;
+		BinaryVoxelMapTable binaryVoxelMapTable;
+		BinaryTerrainTable binaryTerrainTable;		
 	};
 	ManifestBinaryTerrainDatabase ImportGameTerrain(std::ifstream& terrainFile);
 }

@@ -12,4 +12,5 @@ namespace Manifest_Persistence
 	using BinaryGeometryNodeTable = BinaryTable<Binary_GeometryNode>;
 	using BinaryTerrainTable =
 		BinaryTable<Binary_Terrain>;
+	using BinaryVoxelMapTable = BinaryTable<Binary_VoxelMap>;
 }
