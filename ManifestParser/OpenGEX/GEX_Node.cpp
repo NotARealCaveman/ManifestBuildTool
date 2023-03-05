@@ -2,22 +2,22 @@
 
 using namespace Manifest_Parser;
 
-DDL_Structure* GEX_Node::Build(const std::string& subStructure, DDL_ReferenceMap& referenceMap)
+DDL_Structure* GEX_Node::Build(const std::string_view& subStructureView, DDL_ReferenceMap& referenceMap)
 {
 	auto result = New<DDL_Structure, ScratchPad<DDL_Structure>>(1);
-	ParseStructureHeader(subStructure, *result);
+	ParseStructureHeader(subStructureView, *result);
 	
-	switch (ExtractStructureType(subStructure))
+	switch (ExtractStructureType(subStructureView))
 	{
 		case GEX_BufferTypes::GEX_Name:
 		{		
-			result = name.Build(subStructure, referenceMap);			
+			result = name.Build(subStructureView, referenceMap);
 			result->typeHeap = static_cast<void*>(&name);
 			break;
 		}
 		case GEX_BufferTypes::GEX_Transform:
 		{			
-			result = transforms.emplace_back().Build(subStructure, referenceMap);			
+			result = transforms.emplace_back().Build(subStructureView, referenceMap);
 			result->typeHeap = static_cast<void*>(&transforms.back());
 			break;
 		}

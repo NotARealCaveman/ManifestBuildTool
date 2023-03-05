@@ -13,7 +13,7 @@ ForeignKey Manifest_Persistence::TableEntry(const DDL_Structure& structure, cons
 	entry.geometryIDs = New<ForeignKey, ScratchPad<ForeignKey>>(entry.numReferences);
 	for (auto objectIndex = 0; objectIndex < entry.numReferences; ++objectIndex)
 	{
-		auto objectRef = geometryObjectBuildTable.mappedEntryKeys.find(ref.referenceNames[objectIndex].c_str());
+		auto objectRef = geometryObjectBuildTable.mappedEntryKeys.find(ScratchPadString{ static_cast<std::string>(ref.referenceNames[objectIndex]) });
 		if (objectRef != geometryObjectBuildTable.mappedEntryKeys.end())
 			entry.geometryIDs[objectIndex] = objectRef->second;
 		else
@@ -34,7 +34,7 @@ ForeignKey Manifest_Persistence::TableEntry(const DDL_Structure& structure, cons
 	entry.materialIDs = New<ForeignKey, ScratchPad<ForeignKey>>(entry.numReferences);
 	for (auto objectIndex = 0; objectIndex < entry.numReferences; ++objectIndex)
 	{
-		auto objectRef = materialBuildTable.mappedEntryKeys.find(ref.referenceNames[objectIndex].c_str());
+		auto objectRef = materialBuildTable.mappedEntryKeys.find(ScratchPadString{ static_cast<std::string>(ref.referenceNames[objectIndex]) });
 		if (objectRef != materialBuildTable.mappedEntryKeys.end())
 			*(entry.materialIDs + objectIndex) = objectRef->second;
 		else

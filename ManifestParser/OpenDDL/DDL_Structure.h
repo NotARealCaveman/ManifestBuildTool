@@ -2,6 +2,7 @@
 #include <vector>
 #include <map>
 #include <string>
+#include <string_view>
 
 #include <ManifestMemory/Manifest_Allocator.h>
 
@@ -39,9 +40,9 @@ namespace Manifest_Parser
 	
 	struct DDL_Property
 	{
-		ScratchPadString key;
-		ScratchPadString value;
+		std::string_view key;
+		std::string_view value;
 	};
 	typedef ScratchPadVector<DDL_Property> PropertyList;
-	typedef ScratchPadVector<ScratchPadString> ReferenceList;
+	typedef ScratchPadVector<std::string_view> ReferenceList;
 }

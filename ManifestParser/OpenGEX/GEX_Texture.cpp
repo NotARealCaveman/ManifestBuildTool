@@ -9,11 +9,11 @@ const std::map<std::string, DDL_BufferType> GEX_Spectrum::PropertyList::typeProp
 	{ "max", PropertyList::MAX}
 };
 
-DDL_Structure* GEX_Spectrum::Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap)
+DDL_Structure* GEX_Spectrum::Build(const std::string_view& partitionedStructureView, DDL_ReferenceMap& referenceMap)
 {
 	auto result = New<DDL_Structure, ScratchPad<DDL_Structure>>(1);
-	for (const DDL_Property& property : PartitionStructureProperties(ParseStructureHeader(partitionedStructure, *result)))	
-		switch (PropertyList::typeProperties.find(property.key.c_str())->second)
+	for (const DDL_Property& property : PartitionStructureProperties(ParseStructureHeader(partitionedStructureView, *result)))
+		switch (PropertyList::typeProperties.find(static_cast<std::string>(property.key))->second)
 		{
 			case PropertyList::ATTRIB:
 				break;
@@ -41,17 +41,17 @@ const std::map<std::string, DDL_BufferType> GEX_Texture::PropertyList::typePrope
 	{"border",BORDER}
 };
 
-DDL_Structure* GEX_Texture::Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap)
+DDL_Structure* GEX_Texture::Build(const std::string_view& partitionedStructureView, DDL_ReferenceMap& referenceMap)
 {
 	auto result = New<DDL_Structure, ScratchPad<DDL_Structure>>(1);
-	for (const DDL_Property& property : PartitionStructureProperties(ParseStructureHeader(partitionedStructure, *result)))
-		switch (PropertyList::typeProperties.find(property.key.c_str())->second)
+	for (const DDL_Property& property : PartitionStructureProperties(ParseStructureHeader(partitionedStructureView, *result)))
+		switch (PropertyList::typeProperties.find(static_cast<std::string>(property.key))->second)
 		{
 			case PropertyList::ATTRIB:
 				attrib = property.value;
 				break;
 			case PropertyList::TEXCOORD:
-				texcoord = std::stoi(property.value.c_str());
+				texcoord = std::stoi(static_cast<std::string>(property.value));
 				break;
 			case PropertyList::SWIZZLE:
 				swizzle = property.value;

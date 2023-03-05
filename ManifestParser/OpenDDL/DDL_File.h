@@ -1,7 +1,6 @@
 #pragma once
 #include <fstream>
 
-
 #include "DDL_Structure.h"
 
 namespace Manifest_Parser

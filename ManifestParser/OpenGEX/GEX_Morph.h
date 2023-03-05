@@ -7,7 +7,7 @@ namespace Manifest_Parser
 {
 	struct GEX_MorphWeight : public RegisteredBuilder
 	{
-		DDL_Structure*  Build(const std::string& partitionedSubstructure, DDL_ReferenceMap& referenceMap) final { return{}; } ;
+		DDL_Structure*  Build(const std::string_view& partitionedStructureView, DDL_ReferenceMap& referenceMap) final { return{}; } ;
 		//substructures
 		float morphWeight;
 		//properties
@@ -16,7 +16,7 @@ namespace Manifest_Parser
 
 	struct GEX_Morph : public RegisteredBuilder
 	{
-		DDL_Structure* Build(const std::string& partitionedSubstructure, DDL_ReferenceMap& referenceMap) final { return{}; };
+		DDL_Structure* Build(const std::string_view& partitionedStructureView, DDL_ReferenceMap& referenceMap) final { return{}; };
 		//substructures
 		GEX_Name name;
 		//properties

@@ -28,10 +28,10 @@ std::map<std::string, DDL_BufferType> DDL_BufferTypes::DDL_BufferTypeMap
 	{ "string",DDL_BufferTypes::DDL_string }
 };
 
-DDL_BufferType Manifest_Parser::ExtractStructureType(const std::string& partitionedStructure)
+DDL_BufferType Manifest_Parser::ExtractStructureType(const std::string_view& partitionedStructure)
 
 {
 	auto identifier = partitionedStructure.substr(0, partitionedStructure.find_first_of("$%({"));//dont include [ as sub arrays may be defined in the extended types
-	auto typeMap = DDL_BufferTypes::DDL_BufferTypeMap.find(identifier);
+	auto typeMap = DDL_BufferTypes::DDL_BufferTypeMap.find(static_cast<std::string>(identifier));
 	return typeMap->second;
 }

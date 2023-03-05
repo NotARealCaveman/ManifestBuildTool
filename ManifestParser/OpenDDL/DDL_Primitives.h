@@ -11,24 +11,24 @@ namespace Manifest_Parser
 	template<typename T, DDL_BufferType bufferType>
 	struct Primitive : public RegisteredBuilder
 	{
-		DDL_Structure* Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap) final
+		DDL_Structure* Build(const std::string_view& partitionedStructureView, DDL_ReferenceMap& referenceMap) final
 		{			
 			auto result = New<DDL_Structure,ScratchPad<DDL_Structure>>(1);
-			ParseStructureHeader(partitionedStructure, *result);
+			ParseStructureHeader(partitionedStructureView, *result);
 			data.bufferType = bufferType;
 			//check for sub buffer data
-			auto subBufferIdentifier = partitionedStructure.find_first_of("[");
+			auto subBufferIdentifier = partitionedStructureView.find_first_of("[");
 			if (subBufferIdentifier == std::string::npos)
 			{
-				auto payloadIndex = partitionedStructure.find_first_of("{");
+				auto payloadIndex = partitionedStructureView.find_first_of("{");
 				data.subBufferElements = data.subBufferCount= 1;
 				//make room for primitive buffer - will require an additional allocation from the original generation
 				//data.typeHeap = new T;				
 				data.typeHeap = New<T,ScratchPad<T>>(1);
-				*reinterpret_cast<T*>(data.typeHeap) = static_cast<T>(std::stof(partitionedStructure.substr(payloadIndex + 1)));;				
+				*reinterpret_cast<T*>(data.typeHeap) = static_cast<T>(std::stof(static_cast<std::string>(partitionedStructureView.substr(payloadIndex + 1))));;
 			}
 			else
-				BuildSubBuffer<T>(partitionedStructure, data);
+				BuildSubBuffer<T>(partitionedStructureView, data);
 			result->typeHeap = static_cast<void*>(this);
 			MapStructureName(*result, referenceMap);
 
@@ -51,7 +51,7 @@ namespace Manifest_Parser
 
 	struct DDL_String : public RegisteredBuilder
 	{
-		DDL_Structure* Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap) final;
+		DDL_Structure* Build(const std::string_view& partitionedStructure, DDL_ReferenceMap& referenceMap) final;
 
 		ScratchPadString data;
 	};

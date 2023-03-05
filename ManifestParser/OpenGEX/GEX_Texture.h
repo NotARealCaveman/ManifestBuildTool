@@ -14,7 +14,7 @@ namespace Manifest_Parser
 			static constexpr int MAX{ MIN + 1 };
 			static const std::map<std::string, uint32_t> typeProperties;
 		};
-		DDL_Structure* Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap) final;
+		DDL_Structure* Build(const std::string_view& partitionedStructureView, DDL_ReferenceMap& referenceMap) final;
 
 		//substructures
 		float distribution;
@@ -36,7 +36,7 @@ namespace Manifest_Parser
 			static constexpr int BORDER{ ZADDRESS +1 };
 			static const std::map<std::string, uint32_t> typeProperties;
 		};
-		DDL_Structure* Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap)final;
+		DDL_Structure* Build(const const std::string_view& partitionedStructureView, DDL_ReferenceMap& referenceMap)final;
 
 		//substructures
 		std::string fileName;

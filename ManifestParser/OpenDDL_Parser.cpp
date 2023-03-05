@@ -3,23 +3,23 @@
 using namespace Manifest_Parser;
 
 //sets the identifier and name of the ddl structure
-std::string Manifest_Parser::ParseStructureHeader(const std::string& partitionedStructure, DDL_Structure& structure)
+std::string_view Manifest_Parser::ParseStructureHeader(const std::string_view& partitionedStructureView, DDL_Structure& structure)
 {
-	auto payloadIdentifier = partitionedStructure.find_first_of('{');
-	const std::string header = partitionedStructure.substr(0, payloadIdentifier);
+	auto payloadIdentifier = partitionedStructureView.find_first_of('{');
+	const auto header = partitionedStructureView.substr(0, payloadIdentifier);
 	auto nameIdentifier = header.find_first_of("$%");
 	auto propertyIdentifier = header.find_first_of('(');	
 	structure.identifier = header.substr(0, std::min(nameIdentifier, std::min(propertyIdentifier, payloadIdentifier)));
 	structure.name = nameIdentifier == std::string::npos ? "" : header.substr(nameIdentifier, std::min(propertyIdentifier, payloadIdentifier) - nameIdentifier);
-	std::string result{ propertyIdentifier == std::string::npos ? "" : header.substr(propertyIdentifier,payloadIdentifier) };
+	auto result{ propertyIdentifier == std::string::npos ? "" : header.substr(propertyIdentifier,payloadIdentifier) };
 
 	return result;
 }
 
 //sets all the asupplied optional properties of the structure
-PropertyList Manifest_Parser::PartitionStructureProperties(const std::string& properties)
+PropertyList Manifest_Parser::PartitionStructureProperties(const std::string_view& propertyListView)
 {	
-	auto temp = properties;
+	auto temp = propertyListView;
 	auto next = temp.find_first_not_of('(');
 	if (next == std::string::npos)
 		return {};	
@@ -28,7 +28,7 @@ PropertyList Manifest_Parser::PartitionStructureProperties(const std::string& pr
 	while(temp[next] != ')')
 	{
 		auto equator = temp.find_first_of('=');		
-		result.emplace_back(DDL_Property{ temp.substr(next, equator-next).c_str(),temp.substr(equator + 1, end - (equator + 1)).c_str() });
+		result.emplace_back(DDL_Property{ temp.substr(next, equator - next),temp.substr(equator + 1, end - (equator + 1)) });
 		temp = temp.substr(end);
 		next = temp.find_first_not_of(',');
 		end = temp.find_first_of(",)",next);
@@ -37,7 +37,7 @@ PropertyList Manifest_Parser::PartitionStructureProperties(const std::string& pr
 	return result;
 }
 
-ReferenceList Manifest_Parser::PartitionStructureReferences(const std::string& partitionedStructure)
+ReferenceList Manifest_Parser::PartitionStructureReferences(const std::string_view& partitionedStructure)
 {	
 	auto begin = partitionedStructure.find_first_of("$%{(");
 	auto end = partitionedStructure.find_last_of('}')+1;
@@ -52,7 +52,7 @@ ReferenceList Manifest_Parser::PartitionStructureReferences(const std::string& p
 }
 
 //starting at the first identifier begins counting scope depths to determine when a sutrcture has exhausted its content 
-std::string Manifest_Parser::PartitionDDLStructures(const std::string& filteredFile, size_t& filterOffset)
+std::string_view Manifest_Parser::PartitionDDLStructures(const std::string_view& filteredFile, size_t& filterOffset)
 {
 	//determine end of structure by counting scope depth - once it reaches 0 then this is the	endpoint of the current sturcture and the file is split from that point
 	auto temp = filteredFile;
@@ -85,7 +85,7 @@ std::string Manifest_Parser::PartitionDDLStructures(const std::string& filteredF
 }
 
 
-//performs the structuer partition on an entire file or previously partitioned structure
+//performs the structuer partition on an entire file o
 std::vector<std::string> Manifest_Parser::PartitionDDLFile(const std::string& filteredFile)
 {
 	std::vector<std::string> result;//list of top level structures to be generated	
@@ -97,57 +97,14 @@ std::vector<std::string> Manifest_Parser::PartitionDDLFile(const std::string& fi
 	return  result;
 }
 
-ScratchPadVector<std::string> Manifest_Parser::PartitionDDLSubStructures(const std::string& partitionedStructure)
+ScratchPadVector<std::string_view> Manifest_Parser::PartitionDDLSubStructures(const std::string_view& partitionedStructureView)
 {
-	auto begin = partitionedStructure.find_first_of('{') + 1;
-	auto end = partitionedStructure.find_last_of('}');
-	auto payload = partitionedStructure.substr(begin, end - begin);
-	ScratchPadVector<std::string> result;
+	auto begin = partitionedStructureView.find_first_of('{') + 1;
+	auto end = partitionedStructureView.find_last_of('}');
+	auto payload = partitionedStructureView.substr(begin, end - begin);
+	ScratchPadVector<std::string_view> result;
 	for(size_t offset = 0; !payload.empty(); payload = payload.substr(offset))
 		result.emplace_back(PartitionDDLStructures(payload, offset));
-
-	return result;
-}
-
-ScratchPadString Manifest_Parser::PartitionDDLStructuresV2(const ScratchPadString& filteredFile, size_t& filterOffset)
-{
-	//determine end of structure by counting scope depth - once it reaches 0 then this is the	endpoint of the current sturcture and the file is split from that point
-	auto temp = filteredFile;
-	auto withinScope = true;
-	size_t beginScope = temp.find_first_of('{');
-	size_t endScope = temp.find_first_of('}');
-	uint32_t scopeDepth = 0;
-	filterOffset = 0;
-	while (withinScope)
-	{
-		if (beginScope < endScope)
-		{
-			++scopeDepth;
-			temp = temp.substr(beginScope + 1);
-			filterOffset += beginScope + 1;
-		}
-		else
-		{
-			--scopeDepth;
-			temp = temp.substr(endScope + 1);
-			filterOffset += endScope + 1;
-		}
-		if (!scopeDepth)
-			withinScope = false;
-		beginScope = temp.find_first_of('{');
-		endScope = temp.find_first_of('}');
-	}
-
-	return filteredFile.substr(0, filterOffset).c_str();
-}
-ScratchPadVector<ScratchPadString> Manifest_Parser::PartitionDDLSubStructuresV2(const ScratchPadString& partitionedStructure)
-{
-	auto begin = partitionedStructure.find_first_of('{') + 1;
-	auto end = partitionedStructure.find_last_of('}');
-	auto payload = partitionedStructure.substr(begin, end - begin);
-	ScratchPadVector<ScratchPadString> result;
-	for (size_t offset = 0; !payload.empty(); payload = payload.substr(offset))
-		result.emplace_back(PartitionDDLStructuresV2(payload, offset));
 
 	return result;
 }
@@ -171,12 +128,13 @@ const std::string Manifest_Parser::LoadFileContents(const std::string& fileName)
 void Manifest_Parser::ParseDDLFile(const std::vector<std::string>& fileContents, DDL_File& fileObject)
 {		
 	for (const auto& structure : fileContents)
-	{
+	{		
 		auto identifier = structure.substr(0, structure.find_first_of("$%({"));
 		auto registeredGenerator = RegisteredGenerator::registeredGenerators.find(identifier);
 		auto generator = registeredGenerator->second;
 		DDL_Structure* primaryStructure = nullptr;
-		primaryStructure = generator->GenerateType(structure, fileObject.referenceMap);
+		//does implicitly cast to string_view but static_casted here for clarity
+		primaryStructure = generator->GenerateType(static_cast<std::string>(structure), fileObject.referenceMap);
 		fileObject.primaryStructures.push_back(primaryStructure);
 	}
 }

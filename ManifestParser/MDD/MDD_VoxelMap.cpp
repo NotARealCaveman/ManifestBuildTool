@@ -9,25 +9,25 @@ const std::map<std::string, DDL_BufferType> MDD_VoxelMap::PropertyList::typeProp
 	{"hVoxels",PropertyList::H_VOXELS}
 };
 
-DDL_Structure* MDD_VoxelMap::Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap)
+DDL_Structure* MDD_VoxelMap::Build(const std::string_view& partitionedStructureView, DDL_ReferenceMap& referenceMap)
 {
 	auto result = New<DDL_Structure, ScratchPad<DDL_Structure>>(1);
 
-	for (const DDL_Property& property : PartitionStructureProperties(ParseStructureHeader(partitionedStructure, *result)))
-		switch (PropertyList::typeProperties.find(property.key.c_str())->second)
+	for (const DDL_Property& property : PartitionStructureProperties(ParseStructureHeader(partitionedStructureView, *result)))
+		switch (PropertyList::typeProperties.find(static_cast<std::string>(property.key))->second)
 		{
 			case PropertyList::N_VOXELS:
-				nVoxels = std::stoi(property.value.c_str());
+				nVoxels = std::stoi(static_cast<std::string>(property.value));
 				break;
 			case PropertyList::M_VOXELS:
-				mVoxels = std::stoi(property.value.c_str());
+				mVoxels = std::stoi(static_cast<std::string>(property.value));
 				break;
 			case PropertyList::H_VOXELS:
-				hVoxels = std::stoi(property.value.c_str());
+				hVoxels = std::stoi(static_cast<std::string>(property.value));
 				break;
 			DEFAULT_BREAK;
 		}
-	for (const auto& subStructure : PartitionDDLSubStructures(partitionedStructure))
+	for (const auto& subStructure : PartitionDDLSubStructures(partitionedStructureView))
 		switch (ExtractStructureType(subStructure))
 		{
 		case DDL_BufferTypes::DDL_int8:

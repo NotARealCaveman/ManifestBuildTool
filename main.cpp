@@ -13,7 +13,6 @@
 #include <ManifestParser/ManifestDataDescriptor.h>
 #include <ManifestTerrainCOPY/Voxel.h>
 
-
 #include <thread>
 #include <chrono>
 
@@ -101,13 +100,14 @@ void ImportAndTestResourceDatabase()
 void BuildAndExportResourceDatabase()
 {
 	//for printing purposes
-	auto fileName = TEST_PATH + TEST_GEX;
-	//fileName.insert(fileName.find_first_of('.'), std::to_string(0));
+	auto fileName = TEST_PATH + TEST_GEX;	
 	auto file = LoadFileContents(fileName);
-	//DLOG(31, file);
+	DLOG(31, file);
 	auto filtered = FilterFile(file);
-	//DLOG(32, filtered);	
+	DLOG(32, filtered);	
 	auto fileContents = PartitionDDLFile(filtered);
+	for (const auto& c : fileContents)
+		DLOG(33, c);
 	//begin actual parse	
 	auto nLoops = 1950000;	
 	nLoops = 1;
@@ -172,10 +172,10 @@ void BuildAndExportWorldDatabase(std::vector<std::string> filenames)
 	//load ddl files into file object	
 	for (const auto& filename : filenames)
 	{
-		auto fileContents = LoadFileContents(filename);
-		auto filteredFile = FilterFile(fileContents);
-		auto partitionedFiled = PartitionDDLFile(filteredFile);
-		ParseDDLFile(partitionedFiled, fileObject);
+		auto fileContents = LoadFileContents(filename);		
+		auto filteredFile = FilterFile(fileContents);		
+		auto partitionedFile = PartitionDDLFile(filteredFile);		
+		ParseDDLFile(partitionedFile, fileObject);
 	}	
 	
 	//build offline database	
@@ -229,7 +229,7 @@ int main()
 	//persistence tests
 	//DISABLE
 		CreateWorldMDD(false);
-	DISABLE
+	//DISABLE
 		ImportAndTestWorldDatabase();
 	DISABLE
 		BuildAndExportResourceDatabase();

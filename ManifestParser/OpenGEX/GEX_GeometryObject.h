@@ -18,7 +18,7 @@ namespace Manifest_Parser
 			static constexpr int MOTIONBLUR{ SHADOW + 1 };
 			static const std::map<std::string, uint32_t> typeProperties;
 		};
-		DDL_Structure* Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap) final;
+		DDL_Structure* Build(const std::string_view& partitionedStructureView, DDL_ReferenceMap& referenceMap) final;
 
 		//substructures
 		GEX_ObjectRef objectRef;
@@ -40,7 +40,7 @@ namespace Manifest_Parser
 			static constexpr int MOTIONBLUR{ SHADOW + 1 };
 			static const std::map<std::string, uint32_t> typeProperties;
 		};
-		DDL_Structure* Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap) final;
+		DDL_Structure* Build(const std::string_view& partitionedStructure, DDL_ReferenceMap& referenceMap) final;
 
 		//substructures
 		GEX_Mesh mesh;

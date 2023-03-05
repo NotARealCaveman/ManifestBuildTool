@@ -8,22 +8,22 @@ const std::map<std::string, DDL_BufferType> MDD_Terrain::PropertyList::typePrope
 	{"zChunkIndex",PropertyList::Z_CHUNK_INDEX}
 };
 
-DDL_Structure* MDD_Terrain::Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap)
+DDL_Structure* MDD_Terrain::Build(const std::string_view& partitionedStructureView, DDL_ReferenceMap& referenceMap)
 {
 	auto result = New<DDL_Structure, ScratchPad<DDL_Structure>>(1);
 
-	for (const DDL_Property& property : PartitionStructureProperties(ParseStructureHeader(partitionedStructure, *result)))
-		switch (PropertyList::typeProperties.find(property.key.c_str())->second)
+	for (const DDL_Property& property : PartitionStructureProperties(ParseStructureHeader(partitionedStructureView, *result)))
+		switch (PropertyList::typeProperties.find(static_cast<std::string>(property.key))->second)
 		{
 			case PropertyList::X_CHUNK_INDEX:
-				xChunkIndex = std::stoi(property.value.c_str());
+				xChunkIndex = std::stoi(static_cast<std::string>(property.value));
 				break;
 			case PropertyList::Z_CHUNK_INDEX:
-				zChunkIndex = std::stoi(property.value.c_str());
+				zChunkIndex = std::stoi(static_cast<std::string>(property.value));
 				break;
 			DEFAULT_BREAK;
 		}
-	for (const auto& subStructure : PartitionDDLSubStructures(partitionedStructure))
+	for (const auto& subStructure : PartitionDDLSubStructures(partitionedStructureView))
 		switch (ExtractStructureType(subStructure))
 		{
 			case DDL_BufferTypes::DDL_uint8:

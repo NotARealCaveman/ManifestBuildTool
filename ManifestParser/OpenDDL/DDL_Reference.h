@@ -7,7 +7,7 @@ namespace Manifest_Parser
 {
 	struct DDL_Reference : public RegisteredBuilder
 	{
-		virtual DDL_Structure* Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap);
+		virtual DDL_Structure* Build(const std::string_view& partitionedStructureView, DDL_ReferenceMap& referenceMap);
 
 		ReferenceList referenceNames;
 	};

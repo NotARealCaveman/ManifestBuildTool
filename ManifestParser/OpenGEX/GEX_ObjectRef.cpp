@@ -2,13 +2,13 @@
 
 using namespace Manifest_Parser;
 
-DDL_Structure* GEX_ObjectRef::Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap)
+DDL_Structure* GEX_ObjectRef::Build(const std::string_view& partitionedStructureView, DDL_ReferenceMap& referenceMap)
 {
 	ReserveReferenceContainers(*this);
 
 	auto result = New<DDL_Structure, ScratchPad<DDL_Structure>>(1);
-	ParseStructureHeader(partitionedStructure, *result);
-	for (const std::string& subStructure : PartitionDDLSubStructures(partitionedStructure))	
+	ParseStructureHeader(partitionedStructureView, *result);
+	for (const auto& subStructure : PartitionDDLSubStructures(partitionedStructureView))
 		switch (ExtractStructureType(subStructure))
 		{
 			case DDL_BufferTypes::DDL_ref:

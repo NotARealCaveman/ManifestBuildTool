@@ -7,19 +7,19 @@ const std::map<std::string, DDL_BufferType> GEX_Metric::PropertyList::typeProper
 	{ "key", PropertyList::KEY},
 };
 
-DDL_Structure* GEX_Metric::Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap)
+DDL_Structure* GEX_Metric::Build(const std::string_view& partitionedStructureView, DDL_ReferenceMap& referenceMap)
 {		
 	auto result = New<DDL_Structure, ScratchPad<DDL_Structure>>(1);
 	
-	for (const DDL_Property& property : PartitionStructureProperties(ParseStructureHeader(partitionedStructure, *result)))
-		switch (PropertyList::typeProperties.find(property.key.c_str())->second)
+	for (const DDL_Property& property : PartitionStructureProperties(ParseStructureHeader(partitionedStructureView, *result)))
+		switch (PropertyList::typeProperties.find(static_cast<std::string>(property.key))->second)
 		{
 			case PropertyList::KEY:
 				key = property.value;
 				break;
 			DEFAULT_BREAK;
 		}
-	for (const auto& subStructure : PartitionDDLSubStructures(partitionedStructure))
+	for (const auto& subStructure : PartitionDDLSubStructures(partitionedStructureView))
 		switch (metricType = ExtractStructureType(subStructure))
 		{
 			case DDL_BufferTypes::DDL_float:

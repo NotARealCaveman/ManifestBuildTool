@@ -16,7 +16,7 @@ namespace Manifest_Parser
 			static constexpr int MORPH{ INDEX + 1 };
 			static const std::map<std::string, uint32_t> typeProperties;
 		};
-		DDL_Structure* Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap) final;
+		DDL_Structure* Build(const std::string_view& partitionedStructureView, DDL_ReferenceMap& referenceMap) final;
 		//substructures
 		DDL_Float vertexArray;
 		//properties
@@ -37,7 +37,7 @@ namespace Manifest_Parser
 			static constexpr int FRONT{ RESTART + 1 };
 			static const std::map<std::string, uint32_t> typeProperties;
 		};
-		DDL_Structure* Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap) final;
+		DDL_Structure* Build(const std::string_view& partitionedStructureView, DDL_ReferenceMap& referenceMap) final;
 
 		//substructures
 		DDL_Int32 indexArray;
@@ -56,7 +56,7 @@ namespace Manifest_Parser
 			static constexpr int PRIMTIIVE{ LOD + 1 };
 			static const std::map<std::string, uint32_t> typeProperties;
 		};				
-		DDL_Structure* Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap) final;
+		DDL_Structure* Build(const std::string_view& partitionedStructureView, DDL_ReferenceMap& referenceMap) final;
 
 		//substructures
 		ScratchPadVector<GEX_VertexArray> vertexArrays;//see comment

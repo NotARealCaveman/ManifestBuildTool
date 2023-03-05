@@ -6,11 +6,11 @@ const std::map<std::string, DDL_BufferType> GEX_Color::PropertyList::typePropert
 	{ "attrib", PropertyList::ATTRIB},	
 };
 
-DDL_Structure* GEX_Color::Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap)
+DDL_Structure* GEX_Color::Build(const std::string_view& partitionedStructureView, DDL_ReferenceMap& referenceMap)
 {
 	auto result = New<DDL_Structure, ScratchPad<DDL_Structure>>(1);
-	for (const DDL_Property& property : PartitionStructureProperties(ParseStructureHeader(partitionedStructure, *result)))	
-		switch (PropertyList::typeProperties.find(property.key.c_str())->second)
+	for (const DDL_Property& property : PartitionStructureProperties(ParseStructureHeader(partitionedStructureView, *result)))
+		switch (PropertyList::typeProperties.find(static_cast<std::string>(property.key))->second)
 		{
 			case PropertyList::ATTRIB:
 				attrib = property.value;
@@ -18,7 +18,7 @@ DDL_Structure* GEX_Color::Build(const std::string& partitionedStructure, DDL_Ref
 				break;
 			DEFAULT_BREAK
 		}	
-	result->subSutructres.emplace_back(channel.Build(PartitionDDLSubStructuresV2({ partitionedStructure.c_str() }) [0].c_str(), referenceMap));
+	result->subSutructres.emplace_back(channel.Build(PartitionDDLSubStructures(partitionedStructureView)[0], referenceMap));
 	result->typeHeap = static_cast<void*>(this);
 	MapStructureName(*result, referenceMap);
 	colorType = channel.data.subBufferElements == 4 ? GEX_ColorType::RGBA : GEX_ColorType::RGB;

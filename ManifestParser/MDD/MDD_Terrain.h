@@ -14,7 +14,7 @@ namespace Manifest_Parser
 			static constexpr uint32_t Z_CHUNK_INDEX{ X_CHUNK_INDEX + 1 };
 			static const std::map<std::string, DDL_BufferType> typeProperties;
 		};
-		DDL_Structure* Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap)final;//tbd
+		DDL_Structure* Build(const std::string_view& partitionedStructureView, DDL_ReferenceMap& referenceMap)final;//tbd
 		//substructures
 		DDL_Uint8 index;
 		//properties

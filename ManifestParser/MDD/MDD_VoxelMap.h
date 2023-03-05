@@ -16,7 +16,7 @@ namespace Manifest_Parser
 			static constexpr uint32_t H_VOXELS{ M_VOXELS + 1 };
 			static const std::map<std::string, DDL_BufferType> typeProperties;
 		};
-		DDL_Structure* Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap)final;//tbd
+		DDL_Structure* Build(const std::string_view& partitionedStructureView, DDL_ReferenceMap& referenceMap)final;//tbd
 		//substructures
 		DDL_Int8 field;
 

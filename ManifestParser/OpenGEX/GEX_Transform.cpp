@@ -9,21 +9,21 @@ const std::map<std::string, DDL_BufferType> GEX_Transform::PropertyList::typePro
 };
 
 
-DDL_Structure* GEX_Transform::Build(const std::string& partitionedStructure, DDL_ReferenceMap& referenceMap)
+DDL_Structure* GEX_Transform::Build(const std::string_view& partitionedStructureView, DDL_ReferenceMap& referenceMap)
 {			
 	auto result = New<DDL_Structure, ScratchPad<DDL_Structure>>(1);
-	for (const DDL_Property& property : PartitionStructureProperties(ParseStructureHeader(partitionedStructure, *result)))
-		switch (PropertyList::typeProperties.find(property.key.c_str())->second)
+	for (const DDL_Property& property : PartitionStructureProperties(ParseStructureHeader(partitionedStructureView, *result)))
+		switch (PropertyList::typeProperties.find(static_cast<std::string>(property.key))->second)
 		{
 			case PropertyList::OBJECT:
-				std::stringstream{ property.value } >> std::boolalpha >> object;
+				std::stringstream{ static_cast<std::string>(property.value) } >> std::boolalpha >> object;
 				break;
 			case PropertyList::KIND:
 				kind = property.value;
 				break;
 			DEFAULT_BREAK
 		}	
-	result->subSutructres.emplace_back(field.Build(PartitionDDLSubStructures(partitionedStructure)[0], referenceMap));//should only have 	1	
+	result->subSutructres.emplace_back(field.Build(PartitionDDLSubStructures(partitionedStructureView)[0], referenceMap));//should only have 1	
 	FormatTransform(field.data.subBufferElements, reinterpret_cast<float**>(&field.data.typeHeap));
 	field.data.subBufferElements = TransformSize;
 	//tbd - multiple transforms
