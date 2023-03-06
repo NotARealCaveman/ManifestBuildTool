@@ -1,14 +1,16 @@
 #pragma once
 #include <map>
 #include <string>
+#include <sstream>
 #include <vector>
+#include <algorithm>
 
 #include <ManifestParser/OpenDDL_Parser.h>
 
 namespace Manifest_Parser
 {
-	
-	typedef uint32_t DDL_BufferType;	
+
+	typedef uint32_t DDL_BufferType;
 	//returns the ddl type based on the identifier	
 	DDL_BufferType ExtractStructureType(const std::string_view& partitionedStructure);
 
@@ -31,7 +33,7 @@ namespace Manifest_Parser
 		static constexpr DDL_BufferType NEXT_BUFFER_ID{ DDL_string + 1 };
 		//Maps literal types to their ddl symbols
 		static std::map<std::string, DDL_BufferType> DDL_BufferTypeMap;
-	};	
+	};
 
 	struct DDL_Buffer
 	{
@@ -40,45 +42,49 @@ namespace Manifest_Parser
 		size_t subBufferElements;//number of elements per sub buffer
 		size_t subBufferCount;//number of sub buffers
 	};
-	
+
 	//buffer is converted to type T then offset with count of Ts
 	template<typename Type>
 	const Type* BufferData(const DDL_Buffer& buffer, const uint32_t offset = 0)
 	{
-		return reinterpret_cast<Type*>(buffer.typeHeap)+offset;
+		return reinterpret_cast<Type*>(buffer.typeHeap) + offset;
 	}
 
 	//prepares sub buffer data - returns the number of elements per sub buffer
 	//allocates room for buffer data on buffer::typeHeap
 	template<typename T>
-	size_t PrepareSubBuffer(const std::string_view& partitionedStructure,const size_t& bufferCount ,DDL_Buffer& buffer)
+	size_t PrepareSubBuffer(const std::string_view& partitionedStructure, const size_t& bufferCount, DDL_Buffer& buffer)
 	{
 		auto beginSubBuffer = partitionedStructure.find_first_of('[');
-		auto endSubBuffer = partitionedStructure.find_first_of(']');						
+		auto endSubBuffer = partitionedStructure.find_first_of(']');
 		buffer.subBufferElements = std::stoi(static_cast<std::string>(partitionedStructure.substr(beginSubBuffer + 1, endSubBuffer - beginSubBuffer - 1)));
 		buffer.subBufferCount = bufferCount;
 		//buffer.typeHeap = new T[buffer.subBufferCount * buffer.subBufferElements];
-		buffer.typeHeap = New<T,ScratchPad<T>>(buffer.subBufferCount * buffer.subBufferElements);
+		buffer.typeHeap = New<T, ScratchPad<T>>(buffer.subBufferCount * buffer.subBufferElements);
 
 		return buffer.subBufferElements;
 	}
 
 	//fills a sub buffer array with the per substructure extracted from payload information
 	template<typename T>
-	void ExtractSubBuffer(const ScratchPadVector<std::string_view> & subBufferData,const size_t& subBufferElementCount, const DDL_Buffer& buffer)
+	void ExtractSubBuffer(const ScratchPadVector<std::string_view>& subBufferData, const size_t& subBufferElementCount, const DDL_Buffer& buffer)
 	{
 		uint32_t subBuffer = 0;
 		for (const auto& bufferData : subBufferData)
 		{
 			//DLOG(0, bufferData);
 			auto payloadIndex = bufferData.find_first_of("{");
-			auto payload = bufferData.substr(payloadIndex + 1, bufferData.find_first_of('}') - payloadIndex - 1);
+			auto payload = bufferData.substr(payloadIndex + 1, bufferData.find_first_of('}') - payloadIndex - 1);			
+			std::string bufferStr{ static_cast<std::string>(payload) };			
+			std::replace(bufferStr.begin(), bufferStr.end(), ',', ' ');
+			std::stringstream ss{ bufferStr };
+			std::string element;
 			for (uint32_t bufferPosition = 0; bufferPosition < subBufferElementCount; ++bufferPosition)
-			{				
-				LOG(76, "BufferPositionat: " << bufferPosition);
-				T temp = static_cast<T>(std::stof
-				(static_cast<std::string>(payload.substr(0))));		*(reinterpret_cast<T*>(buffer.typeHeap) + subBuffer++) = temp;				
-				payload = payload.substr(payload.find_first_of(',') + 1);
+			{
+				if (!(bufferPosition % 10000000))
+					LOG(76, "BufferPosition at: " << bufferPosition);
+				ss >> element;
+				*(reinterpret_cast<T*>(buffer.typeHeap) + subBuffer++) = static_cast<T>(std::stof(element));
 			}
 		}
 	}
