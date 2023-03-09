@@ -22,6 +22,7 @@ namespace Manifest_Persistence
 			ManifestRuntimeDatabase();
 			NodeStateTable* nodeStateTable;					
 			VoxelBlockTable* voxelBlockTable;
+			WorldConfigurationTable* worldConfigurationTable;
 	};
 }
 

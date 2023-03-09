@@ -13,7 +13,8 @@ namespace Manifest_Persistence
 			MFu32 zChunks;
 			MFu32 nVoxels;
 			MFu32 mVoxels;
-			MFu32 hVoxels;			
+			MFu32 hVoxels;
+			MFu8 worldLOD;
 		}header;
 		MFint8* payload;//terrain SDF
 	};

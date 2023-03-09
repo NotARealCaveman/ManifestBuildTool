@@ -17,7 +17,7 @@ namespace Manifest_Communication
 		ObservableEvent() = default;
 		ObservableEvent(ObservableEvent&& other) noexcept;
 		//encodes messages types present in event using operator|
-		std::atomic<ObservationToken> eventToken;
+		std::atomic<ObservationToken> eventToken{ 0 };
 		//holds each event message created during the event
 		std::vector<Message> messages;
 	};	

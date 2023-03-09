@@ -44,10 +44,10 @@ namespace Manifest_Communication
 		std::vector<Message> observedEventMessages;
 		ExchangeLock messageLock;
 	public:
-		Observer(const ObservationToken& observationToken);		
+		Observer(const ObservationToken& observationToken);	
 		//Processes messages - spins if writing for observation	
 		template<typename T = VOIDPTR, typename... CArgs, typename... Args>
-		T* ProcessEvents(const MessageProcessingFunction<T,Args...> processFunction,const CArgs&... cargs, Args&... args)
+		T* ProcessEvents(const MessageProcessingFunction<T,Args...> processFunction,Args&... args)
 		{
 			messageLock.Lock();
 			std::vector<Message> messages = std::move(observedEventMessages);
