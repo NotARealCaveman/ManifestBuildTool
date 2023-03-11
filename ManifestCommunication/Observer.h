@@ -39,14 +39,14 @@ namespace Manifest_Communication
 	private:
 		friend EventSpace;				
 		//Moves into messages - spins if moving for processing
-		void ObserveEvent(Message&& message);
+		void ObserveEvent(Message&& messaoge);
 
 		std::vector<Message> observedEventMessages;
 		ExchangeLock messageLock;
 	public:
 		Observer(const ObservationToken& observationToken);	
 		//Processes messages - spins if writing for observation	
-		template<typename T = VOIDPTR, typename... CArgs, typename... Args>
+		template<typename T = VOIDPTR, typename... Args>
 		T* ProcessEvents(const MessageProcessingFunction<T,Args...> processFunction,Args&... args)
 		{
 			messageLock.Lock();

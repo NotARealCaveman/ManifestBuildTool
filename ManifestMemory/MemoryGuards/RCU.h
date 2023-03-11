@@ -7,18 +7,18 @@
 #include <ManifestUtility/DebugLogger.h>
 
 namespace Manifest_Memory
-{	
-	constexpr MFu32 DEFAULT_GENERATION{ 0 };
+{		
 	using Generation = MFu32;
+	constexpr Generation DEFAULT_GENERATION{ 0 };
+	constexpr Generation MAX_RCU_GENERATION{ 2 };	
+	constexpr MFu32 RCU_MODULO{ MAX_RCU_GENERATION - 1 };
 
 
 	//ideally read_lock can be changed to an if statement instead of the while loop shoudl the guarantee of a single writer be held. once the read flag is taken on a generation that gets updated, the new generation flag is now taken which keeps the writer locked in the wait loop until the store of the false on the old generation. ordering should also prevent the old from being set before the current. This should make the readers of any generation wait free 
 	template<typename T, typename Deleter>
 	class RCU
 	{
-	private:		
-		static constexpr Generation MAX_RCU_GENERATION{ 2 };
-		static constexpr MFu32 RCU_MODULO{ MAX_RCU_GENERATION - 1 };
+	private:						
 		struct ReadFlag
 		{
 			std::atomic<MFbool> isReading{ false };
@@ -34,7 +34,7 @@ namespace Manifest_Memory
 		std::atomic<MFu32> registeredReaders;
 
 		//rcu				
-		const Deleter deleter;		
+		Deleter deleter;		
 		GenerationHandle generationHandles[MAX_RCU_GENERATION];
 		std::array<ReadFlag*, MAX_RCU_GENERATION> generationReadFlags;
 		std::atomic<Generation> globalGeneration;		
@@ -48,7 +48,8 @@ namespace Manifest_Memory
 			{
 				generationHandles[generation] = GenerationHandle{ DEFAULT_GENERATION,new T };
 				auto& readFlag = generationReadFlags[generation];
-				readFlag = new ReadFlag[maxReaders];				memset(readFlag, 0, sizeof(ReadFlag) * maxReaders);
+				readFlag = new ReadFlag[maxReaders];	
+				memset(readFlag, 0, sizeof(ReadFlag) * maxReaders);
 			}
 		}	
 		GenerationHandle rcu_read_lock(const MFu32& readerId)
