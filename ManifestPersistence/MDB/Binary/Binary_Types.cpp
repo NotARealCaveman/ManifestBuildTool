@@ -205,6 +205,8 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_VoxelMap& voxelMap, Binary_Vo
 {
 	auto& header{ binaryVoxelMap.header };
 	header.worldLOD = voxelMap.worldLOD;
+	header.xChunks = voxelMap.xChunks;
+	header.zChunks = voxelMap.zChunks;
 	header.payloadSize =
 		(header.nVoxels = voxelMap.nVoxels) *
 		(header.mVoxels = voxelMap.mVoxels) *

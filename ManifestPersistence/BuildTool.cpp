@@ -80,11 +80,11 @@ void Manifest_Persistence::BuildWorldDatabase(const DDL_File& file, ManifestWorl
 		}
 		else if (metric.key == "\"xChunks\"")
 		{
-			worldLOD = *reinterpret_cast<MFu32*>(std::get<DDL_Uint32>(metric.metric).data.typeHeap);
+			xChunks = *reinterpret_cast<MFu32*>(std::get<DDL_Uint32>(metric.metric).data.typeHeap);
 		}
 		else if (metric.key == "\"zChunks\"")
 		{
-			worldLOD = *reinterpret_cast<MFu32*>(std::get<DDL_Uint32>(metric.metric).data.typeHeap);
+			zChunks = *reinterpret_cast<MFu32*>(std::get<DDL_Uint32>(metric.metric).data.typeHeap);
 		}
 	}
 	for (const auto& voxelMap : voxelMaps)

@@ -124,7 +124,7 @@ void BuildAndExportResourceDatabase()
 			ManifestResourceDatabaseBuilder databaseBuilder;
 			BuildResourceDatabase(fileObject, databaseBuilder);
 
-			std::ofstream bExport{ TEST_PATH + TEST_WORLDMAP, std::ios::out | std::ios::binary };
+			std::ofstream bExport{ TEST_PATH + TEST_MBD, std::ios::out | std::ios::binary };
 			if (bExport.is_open())
 			{
 				DLOG(45, "Printing Exported Database:");
@@ -200,15 +200,15 @@ using Timepoint = std::chrono::time_point<std::chrono::steady_clock,Nanoseconds>
 
 void CreateWorldMDD(MFbool buildMDDs)
 {
-	auto nBlocks{ 1 };
-	auto mBlocks{ 1 };
-	auto hBlocks{ 1 };
+	auto nChunks{ 1 };
+	auto mChunks{ 1 };
+	auto hChunks{ 1 };
 	auto lod{ 0 };
-	auto map{ GenerateVoxelMap(0,lod,nBlocks,mBlocks,hBlocks,{0}) };	
+	auto map{ GenerateVoxelMap(0,lod,nChunks,mChunks,hChunks,{0}) };
 	if (buildMDDs)
 	{
-		ExportVoxelMapMDD(TEST_PATH + TEST_VOXELMAP, nBlocks, mBlocks, hBlocks, lod, map.field);
-		ExportTerrainMDD(TEST_PATH + TEST_TERRAIN, nBlocks, mBlocks, hBlocks, lod, map.field);
+		ExportVoxelMapMDD(TEST_PATH + TEST_VOXELMAP, nChunks, mChunks, hChunks, lod, map.field);
+		ExportTerrainMDD(TEST_PATH + TEST_TERRAIN, nChunks, mChunks, hChunks, lod, map.field);
 	}
 	std::vector<std::string> mddFilenames
 	{ TEST_PATH + TEST_VOXELMAP,TEST_PATH + TEST_TERRAIN };
@@ -230,13 +230,13 @@ int main()
 	Initialize_GEXGenerators();
 
 	//persistence tests
-	//DISABLE
+	DISABLE
 		CreateWorldMDD(true);
-	//DISABLE
+	DISABLE
 		ImportAndTestWorldDatabase();
-	DISABLE
+	//DISABLE
 		BuildAndExportResourceDatabase();
-	DISABLE
+	//DISABLE
 		ImportAndTestResourceDatabase();
 	//final
 	DISABLE
