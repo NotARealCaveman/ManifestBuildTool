@@ -44,5 +44,5 @@ namespace Manifest_Parser
 		std::string_view value;
 	};
 	typedef ScratchPadVector<DDL_Property> PropertyList;
-	typedef ScratchPadVector<std::string_view> ReferenceList;
+	typedef ScratchPadVector<ScratchPadString> ReferenceList;
 }

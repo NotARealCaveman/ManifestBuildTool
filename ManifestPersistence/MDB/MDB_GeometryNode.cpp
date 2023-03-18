@@ -28,12 +28,14 @@ ForeignKey Manifest_Persistence::TableEntry(const DDL_Structure& structure, cons
 	MDB_MaterialRef& entry = materialRefBuildTable.entries.emplace_back();
 	entry.materialRefID = materialRefBuildTable.nextTableIndex++;
 	materialRefBuildTable.mappedEntryKeys.insert({ structure.name.c_str(),entry.materialRefID });
+	DLOG(33, "TE::Structure: " << &structure);
 	const GEX_MaterialRef& ref{ HeapData<GEX_MaterialRef>(structure) };
 	entry.numReferences = ref.referenceNames.size();
 	//entry.materialIDs = new ForeignKey[entry.numReferences];
 	entry.materialIDs = New<ForeignKey, ScratchPad<ForeignKey>>(entry.numReferences);
 	for (auto objectIndex = 0; objectIndex < entry.numReferences; ++objectIndex)
 	{
+		const auto& view = (ref.referenceNames[objectIndex]);
 		auto objectRef = materialBuildTable.mappedEntryKeys.find(ScratchPadString{ static_cast<std::string>(ref.referenceNames[objectIndex]) });
 		if (objectRef != materialBuildTable.mappedEntryKeys.end())
 			*(entry.materialIDs + objectIndex) = objectRef->second;

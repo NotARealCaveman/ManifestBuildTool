@@ -6,9 +6,10 @@ DDL_Structure* DDL_Reference::Build(const std::string_view& partitionedStructure
 {
 	auto result = New<DDL_Structure, ScratchPad<DDL_Structure>>(1);
 	ParseStructureHeader(partitionedStructureView, *result);
-	referenceNames = PartitionStructureReferences(partitionedStructureView);
-	result->typeHeap = static_cast<void*>(&referenceNames);
+	referenceNames = PartitionStructureReferences(partitionedStructureView);	
+	result->typeHeap = static_cast<void*>(this);
 	MapStructureName(*result, referenceMap);
+	DLOG(35, "typeheap: " << result->typeHeap);
 
 	return result;
 }
