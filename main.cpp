@@ -27,7 +27,7 @@ using namespace Manifest_Terrain;
 //MBD = MANIFEST BINARY DATABASE
 //MDB = MANIFEST DATABASE BUILDER STRUCTURE
 
-const std::string TEST_PATH{ "C:\\Users\\Droll\\Desktop\\Game\\testing\\" };
+const std::string TEST_PATH{ "D:\\Users\\Droll\\Desktop\\Game\\testing\\" };
 const std::string TEST_GEX{ "Test2.gex" };
 const std::string TEST_TERRAIN{ "Terrain Files\\0Terrain.mdd" };
 const std::string TEST_VOXELMAP{ "Terrain Files\\0map.mdd" };
@@ -200,11 +200,23 @@ using Timepoint = std::chrono::time_point<std::chrono::steady_clock,Nanoseconds>
 
 void CreateWorldMDD(MFbool buildMDDs)
 {
+	auto func{ 0 };
+	auto seed{ 0 };
 	auto nChunks{ 1 };
 	auto mChunks{ 1 };
 	auto hChunks{ 1 };
-	auto lod{ 0 };
-	auto map{ GenerateVoxelMap(0,lod,nChunks,mChunks,hChunks,{0}) };
+	auto lod{ 1 };
+	std::cout << "nChunks: ";
+	std::cin >> nChunks;
+	std::cout << "mChunks: ";
+	std::cin >> mChunks;
+	std::cout << "Max LOD(0-3): ";
+	std::cin >> lod;
+	std::cout << "seed: ";
+	std::cin >> seed;
+	std::cout << "Density Function(0-3): ";
+	std::cin >> func;
+	auto map{ GenerateVoxelMap(0,lod,nChunks,mChunks,hChunks,func) };
 	if (buildMDDs)
 	{
 		ExportVoxelMapMDD(TEST_PATH + TEST_VOXELMAP, nChunks, mChunks, hChunks, lod, map.field);
@@ -230,13 +242,13 @@ int main()
 	Initialize_GEXGenerators();
 
 	//persistence tests
-	DISABLE
+	//DISABLE
 		CreateWorldMDD(true);
 	DISABLE
 		ImportAndTestWorldDatabase();
-	//DISABLE
+	DISABLE
 		BuildAndExportResourceDatabase();
-	//DISABLE
+	DISABLE
 		ImportAndTestResourceDatabase();
 	//final
 	DISABLE

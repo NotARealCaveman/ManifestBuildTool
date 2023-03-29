@@ -105,11 +105,12 @@ namespace Manifest_Memory
             template<class U>
             constexpr ScratchPad(const ScratchPad <U>&) noexcept {}
             T* allocate(const MFsize& allocation, const uintptr_t& alignment = alignof(T)) final
-            {
+            {                
                 //get thread heap information
                 auto memoryHandles = GetThreadMemoryHandles();
                 //get current heap for allocation
-                auto heap = memoryHandles->scratchPadHeap;      
+                auto heap = memoryHandles->scratchPadHeap;   if (uintptr_t(heap - memoryHandles->scratchPadBegin) > uintptr_t(memoryHandles->scratchPadEnd- memoryHandles->scratchPadBegin))
+                    LOG(43,"!!OUT OF MEMORY!!");
                 //DLOG(31, "Sending: " << (void*)heap << " for alignment. allocation request: " << sizeof(T) * allocation <<" with alignment: " << alignment);
                 auto alignedHeap = AlignAllocation(heap, alignment); 
                 if ((void*)alignedHeap == heap);
