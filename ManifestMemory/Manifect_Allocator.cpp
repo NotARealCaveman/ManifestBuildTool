@@ -25,7 +25,7 @@ ThreadMemoryHandles* Manifest_Memory::GetThreadMemoryHandles(const std::thread::
 void Manifest_Memory::INIT_MEMORY_RESERVES()
 {
 	auto& memoryHandles = PROGRAM_EXECUTIVE_THREAD_MEMORY_HANDLES[0];
-	const auto scratchPadAllocation = 3 * GIBIBYTE;
+	const auto scratchPadAllocation = 1 * GIBIBYTE + 500 * MEBIBYTE * 0;
 	memoryHandles.scratchPadBegin = memoryHandles.scratchPadHeap = static_cast<Byte*>(malloc(scratchPadAllocation));
 	memoryHandles.scratchPadEnd = memoryHandles.scratchPadBegin + scratchPadAllocation;
 };

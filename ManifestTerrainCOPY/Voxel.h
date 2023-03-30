@@ -1,4 +1,5 @@
 #pragma once
+#include <thread>
 
 #include <ManifestUtility/DebugLogger.h>
 
@@ -27,7 +28,7 @@ namespace Manifest_Terrain
 	VoxelMap GenerateVoxelMap(const MFu32& seed, const MFu8& lod, const MFu32& nBlocks, const MFu32& mBlocks, const MFu32& hBlocks, const int& DF);
 		
 	static constexpr MFint32 groundLevel = 2;	
-	static constexpr MFint32 ceilingLevel = groundLevel + 25;
+	static constexpr MFint32 ceilingLevel = groundLevel + 115;
 	//DENSITY FUNCTIONS	
 	//flat plane
 	static inline Voxel DensityFunction_0(siv::PerlinNoise& noise, const MFu32 i, const MFu32& j, const MFu32& k);	

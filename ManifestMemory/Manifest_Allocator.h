@@ -109,10 +109,11 @@ namespace Manifest_Memory
                 //get thread heap information
                 auto memoryHandles = GetThreadMemoryHandles();
                 //get current heap for allocation
-                auto heap = memoryHandles->scratchPadHeap;   if (uintptr_t(heap - memoryHandles->scratchPadBegin) > uintptr_t(memoryHandles->scratchPadEnd- memoryHandles->scratchPadBegin))
-                    LOG(43,"!!OUT OF MEMORY!!");
+                auto heap = memoryHandles->scratchPadHeap;   
                 //DLOG(31, "Sending: " << (void*)heap << " for alignment. allocation request: " << sizeof(T) * allocation <<" with alignment: " << alignment);
                 auto alignedHeap = AlignAllocation(heap, alignment); 
+                if (alignedHeap > memoryHandles->scratchPadEnd)
+                    LOG(43, "!!OUT OF MEMORY!!");
                 if ((void*)alignedHeap == heap);
                 //DLOG(32, "Heap already aligned for boundary");
                 else;
