@@ -55,7 +55,7 @@ namespace Manifest_Communication
 
 			if (!messages.size())
 				return nullptr;
-
+			//messages are cleaned up upon exiting function
 			return processFunction(messages,args...);
 		}
 		inline const MFbool HasPendingMessages() { return observedEventMessages.size(); };

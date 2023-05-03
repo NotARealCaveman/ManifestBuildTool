@@ -17,9 +17,7 @@ namespace Manifest_Persistence
 		template<typename... Params>
 		using WriteFunction = T * (*)(Params&...); 
 		template<typename... Params>
-		using ReadFunction = void(*)(const typename RCU::Handle&, Params&...);
-		template<typename... Params>
-		using ReadCopyFunction = void(*)(const typename RCU::Handle&, T*, Params&...);
+		using ReadFunction = void(*)(const typename RCU::Handle&, Params&...);		
 
 		RCU rcu;	
 		ExchangeLock writeLock;
@@ -39,13 +37,6 @@ namespace Manifest_Persistence
 		{
 			typename RCU::Handle handle = rcu.rcu_read_lock(readerId);
 			readFunction(handle,params...);
-			rcu.rcu_read_unlock(handle, readerId);
-		};
-		template<typename... Params>
-		void Pull(const MFu32& readerId, ReadCopyFunction<Params...> readCopyFunction, T* readDataTransform, Params&... params)
-		{
-			typename RCU::Handle handle = rcu.rcu_read_lock(readerId);
-			readCopyFunction(handle, readDataTransform, params...);
 			rcu.rcu_read_unlock(handle, readerId);
 		};
 		//if successful returns an index reserved for reader

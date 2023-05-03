@@ -2,7 +2,7 @@
 
 using namespace Manifest_Terrain;
 
-void ParallelMapGeneration(siv::PerlinNoise& noise, Voxel* field, int i, int j, int k, int XZStride, int cap)
+void ParallelMapGeneration(siv::PerlinNoise& noise, Voxel* field, int i, int j, int k, int XZStride, int cap, const int df)
 {		
 	for (k=0 ; k < cap; ++k)
 		for (j=0;  j < XZStride; ++j)
@@ -10,7 +10,15 @@ void ParallelMapGeneration(siv::PerlinNoise& noise, Voxel* field, int i, int j, 
 			{
 				const auto index{ (i) +XZStride * ((j)+XZStride * (k )) };
 				//LOG(32, "Index: " << index);
-				field[index] = DensityFunction_3(noise, i, j, k);
+				switch(df)
+				{
+					case 0:
+						field[index] = DensityFunction_0(noise, i, j, k);
+						break;
+					case 3:
+						field[index] = DensityFunction_3(noise, i, j, k);
+						break;
+				}
 			}	
 }
 
@@ -30,7 +38,7 @@ VoxelMap Manifest_Terrain::GenerateVoxelMap(const MFu32& seed, const MFu8& lod, 
 	for (int thread{ 0 }; thread < nThreads ; ++thread)
 	{
 		const auto k{ ((thread+1) * cap) };
-		threads.emplace_back(std::thread{ ParallelMapGeneration,std::ref(noise),result.field,0,0,0,mVoxels,k });
+		threads.emplace_back(std::thread{ ParallelMapGeneration,std::ref(noise),result.field,0,0,0,mVoxels,k,DF });
 	}
 
 	for (auto& thread : threads)
@@ -111,12 +119,12 @@ Voxel Manifest_Terrain::DensityFunction_3(siv::PerlinNoise& noise, const MFu32 i
 	if (k == groundLevel)
 		return 0;
 	MFfloat sample = 0;
-	sample += noise.noise3D(i * 0.006, j * 0.006,k*0.006);
-	sample += noise.noise2D(i * 0.006, j * 0.006);
+	sample += noise.noise3D(i * 0.009, j * 0.009,k*0.009);
+	sample += noise.noise2D(i * 0.009, j * 0.009);
 	if (k > 20)
 	{
-		sample += 0.75*noise.octave3D(i * 0.008, j * 0.008, k * 0.008, 1, .15);
-		sample -= 0.75 * noise.octave2D(i * 0.008, j * 0.008, 1, .15);
+		sample += 0.75*noise.octave3D(i * 0.01, j * 0.01, k * 0.01, 1, .15);
+		sample -= 0.75 * noise.octave2D(i * 0.01, j * 0.01, 1, .15);
 		if (k > 65)
 		{
 			sample -= 0.5*noise.octave3D_01(i * 0.01, j * 0.01, k * 0.01, 2, .25);

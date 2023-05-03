@@ -28,16 +28,11 @@ using namespace Manifest_Terrain;
 //MDB = MANIFEST DATABASE BUILDER STRUCTURE
 
 const std::string TEST_PATH{ "D:\\Users\\Droll\\Desktop\\Game\\testing\\" };
-const std::string TEST_GEX{ "Test2.gex" };
+const std::string TEST_GEX{ "Test1.gex" };
 const std::string TEST_TERRAIN{ "Terrain Files\\0Terrain.mdd" };
 const std::string TEST_VOXELMAP{ "Terrain Files\\0map.mdd" };
-const std::string TEST_MBD{ "Test2.mbd" };
+const std::string TEST_MBD{ "Test1.mbd" };
 const std::string TEST_WORLDMAP{ "0Map.mbd" };
-
-void RuntimeTest()
-{
-	
-} 
 
 void PrintInfo(const DDL_Structure& structure)
 {
@@ -220,6 +215,7 @@ void CreateWorldMDD(MFbool buildMDDs)
 	if (buildMDDs)
 	{
 		ExportVoxelMapMDD(TEST_PATH + TEST_VOXELMAP, nChunks, mChunks, hChunks, lod, map.field);
+		//currently unused
 		ExportTerrainMDD(TEST_PATH + TEST_TERRAIN, nChunks, mChunks, hChunks, lod, map.field);
 	}
 	std::vector<std::string> mddFilenames
@@ -246,13 +242,10 @@ int main()
 		CreateWorldMDD(true);
 	DISABLE
 		ImportAndTestWorldDatabase();
-	DISABLE
+	//DISABLE
 		BuildAndExportResourceDatabase();
 	DISABLE
-		ImportAndTestResourceDatabase();
-	//final
-	DISABLE
-		RuntimeTest();
+		ImportAndTestResourceDatabase();	
 	
 	return 0;
 }

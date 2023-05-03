@@ -20,7 +20,7 @@ namespace Manifest_Persistence
 	{
 		public:
 			ManifestRuntimeDatabase();
-			NodeStateTable* nodeStateTable;								
+			NodeStateTable* nodeStateTable;					
 			TerrainExtractionTable* terrainExtractionTable;
 			WorldConfigurationTable* worldConfigurationTable;
 	};
