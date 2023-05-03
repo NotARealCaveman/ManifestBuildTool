@@ -13,6 +13,7 @@ namespace Manifest_Parser
 	typedef uint32_t DDL_BufferType;
 	//returns the ddl type based on the identifier	
 	DDL_BufferType ExtractStructureType(const std::string_view& partitionedStructure);
+	const std::string_view ExtractStructureName(const std::string_view& partitionedStructure);
 
 	struct DDL_BufferTypes
 	{

@@ -246,6 +246,15 @@
     <ClCompile Include="ManifestPersistence\MDB\MDB_VoxelMap.cpp">
       <Filter>Source Files\Persistence\MDB</Filter>
     </ClCompile>
+    <ClCompile Include="ManifestParser\MDD\MDD_Collider.cpp">
+      <Filter>Source Files\Parser\MDD</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestParser\MDD\MDD_PhysicsNode.cpp">
+      <Filter>Source Files\Parser\MDD</Filter>
+    </ClCompile>
+    <ClCompile Include="ManifestParser\MDD\MDD_Rigidbody.cpp">
+      <Filter>Source Files\Parser\MDD</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EXPERIMENTAL\EXPERIMENTAL_RUNTIME_DATA_STRUCTURES.h">
@@ -475,6 +484,15 @@
     </ClInclude>
     <ClInclude Include="ManifestPersistence\MDB\Binary\Binary_VoxelMap.h">
       <Filter>Header Files\Persistence\MDB\Binary</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestParser\MDD\MDD_Collider.h">
+      <Filter>Header Files\Parser\MDD</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestParser\MDD\MDD_PhysicsNode.h">
+      <Filter>Header Files\Parser\MDD</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestParser\MDD\MDD_RigidBody.h">
+      <Filter>Header Files\Parser\MDD</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
