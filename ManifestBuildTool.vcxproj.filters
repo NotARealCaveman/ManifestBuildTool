@@ -97,6 +97,9 @@
     <Filter Include="Source Files\Parser\MDD">
       <UniqueIdentifier>{da24076d-a5ab-4bd7-9e9a-2235328c4693}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Definitions">
+      <UniqueIdentifier>{b5cb4ed0-da99-4d88-aed9-b92c8167cdde}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -493,6 +496,9 @@
     </ClInclude>
     <ClInclude Include="ManifestParser\MDD\MDD_RigidBody.h">
       <Filter>Header Files\Parser\MDD</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestDefinition\GameObject_Definitions.h">
+      <Filter>Header Files\Definitions</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

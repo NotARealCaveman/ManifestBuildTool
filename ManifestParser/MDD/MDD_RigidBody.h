@@ -6,10 +6,34 @@
 
 namespace Manifest_Parser
 {
-	struct RigidBodyParams : public RegisteredBuilder
+	static const std::map<std::string, MFu8> rigidBodyParamList;
+	namespace RIGID_BODY_PARAMS
+	{
+		static constexpr MFu8 ORIENTATION{ 1 };
+		static constexpr MFu8 POSITION{ 2 };
+		static constexpr MFu8 ACCELARATION{ 3 };
+		static constexpr MFu8 LINEAR_VELOCITY{ 4 };
+		static constexpr MFu8 ANGULAR_VELOCITY{ 5 };
+		static constexpr MFu8 APPLIED_FORCE{ 6 };
+		static constexpr MFu8 APPLIED_TORQUE{ 7 };
+		static constexpr MFu8 IMASS{ 8 };
+		static constexpr MFu8 LINEAR_DAMPING{ 9 };
+		static constexpr MFu8 ANGULAR_DAMPING{ 10 };
+	}
+
+	struct MDD_RigidBodyParams : public RegisteredBuilder
 	{
 		DDL_Structure* Build(const std::string_view& partitionedStructureView, DDL_ReferenceMap& referenceMap)final;
 		//substructures
-		
+		DDL_Float orientation;
+		DDL_Float position;
+		DDL_Float linearAccelaration;
+		DDL_Float linearVelocity;
+		DDL_Float angularVelocity;
+		DDL_Float appliedForce;
+		DDL_Float appliedTorque;
+		DDL_Float iMass;
+		DDL_Float linearDamping;
+		DDL_Float angularDamping;
 	};
 }

@@ -36,7 +36,7 @@ DDL_BufferType Manifest_Parser::ExtractStructureType(const std::string_view& par
 	return typeMap->second;
 }
 
-const std::string_view Manifest_Parser::ExtractStructurename(const std::string_view& partitionedStructure)
+const std::string_view Manifest_Parser::ExtractStructureName(const std::string_view& partitionedStructure)
 {
 	auto begin = partitionedStructure.find_first_of("$%") + 1;
 	auto name = partitionedStructure.substr(begin, partitionedStructure.find_first_of("{")-begin);//clip name between symbol and whitespace
