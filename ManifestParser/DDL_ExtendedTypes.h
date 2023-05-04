@@ -11,6 +11,7 @@ namespace Manifest_Parser
 		static constexpr DDL_BufferType MDD_PHYSICSNODE{ MDD_VOXELMAP + 1 };
 		static constexpr DDL_BufferType MDD_RIGIDBODYPARAMS{ MDD_PHYSICSNODE + 1 };
 		static constexpr DDL_BufferType MDD_COLLIDER{ MDD_RIGIDBODYPARAMS + 1 };
-		static constexpr DDL_BufferType NEXT_BUFFER_ID{ MDD_COLLIDER + 1 };
+		static constexpr DDL_BufferType MDD_GAMEOBJECT{ MDD_COLLIDER + 1 };
+		static constexpr DDL_BufferType NEXT_BUFFER_ID{ MDD_GAMEOBJECT + 1 };
 	}; 		
 }

@@ -3,7 +3,7 @@
 using namespace Manifest_Math;
 
 
-//given the line segment AB and poiint Q, and point p can be found by
+//given the line segment AB and point Q,  point p can be found by
 //P(t)=A+t(B-A) where t is the projecttion of c onto AB
 //since a line segment is used and not inifite length, t must be clamped
 MFpoint3 Manifest_Math::ClosestPointfromlineSegment(const MFpoint3& q, const MFpoint3& start, const MFpoint3& end)

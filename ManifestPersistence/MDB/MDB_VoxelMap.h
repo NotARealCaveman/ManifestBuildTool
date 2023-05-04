@@ -22,5 +22,5 @@ namespace Manifest_Persistence
 		MFu8 worldLOD;
 	};
 	using VoxelMapBuildTable = DatabaseBuildTable<MDB_VoxelMap>;
-	ForeignKey TableEntry(const DDL_Structure& structure, VoxelMapBuildTable& voxelMapBuildTable, const MFu32& xChunks, const MFu32& zChunks, const MFu8& worldLOD);	
+	ForeignKey TableEntry(const DDL_Structure& structure, VoxelMapBuildTable& voxelMapBuildTable, const MFu32& xChunks, const MFu32& zChunks, const MFu8& worldLOD);
 }
