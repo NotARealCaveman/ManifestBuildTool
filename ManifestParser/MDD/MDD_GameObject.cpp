@@ -14,9 +14,9 @@ DDL_Structure* MDD_GameObject::Build(const std::string_view& partitionedStructur
 				OBJECT_TYPE.Build(subStructure, referenceMap);
 				break;
 			}
-			case DDL_BufferTypes::DDL_uint64:
+			case DDL_BufferTypes::DDL_ref:
 			{
-				objectIndices.Build(subStructure, referenceMap);
+				objectReferences.Build(subStructure, referenceMap);
 				break;
 			}
 			DEFAULT_BREAK

@@ -19,5 +19,6 @@ ForeignKey Manifest_Persistence::TableEntry(const DDL_Structure& structure, Rigi
 	entry.iMass = reinterpret_cast<const MFfloat&>(rigidBodyParams.iMass.data.typeHeap);
 	entry.linearDamping = reinterpret_cast<const MFfloat&>(rigidBodyParams.linearDamping.data.typeHeap);
 	entry.angularDamping = reinterpret_cast<const MFfloat&>(rigidBodyParams.angularDamping.data.typeHeap);
-	return entry.mapID;
+
+	return entry.rigidBodyID;
 }

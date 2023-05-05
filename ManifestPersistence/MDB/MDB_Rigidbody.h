@@ -15,7 +15,7 @@ namespace Manifest_Persistence
 {
 	struct MDB_Rigidbody
 	{
-		PrimaryKey mapID;
+		PrimaryKey rigidBodyID;
 		MFquaternion orientation;
 		MFpoint3 position;
 		MFvec3 linearAccelaration;

@@ -74,11 +74,9 @@ DDL_Structure* GEX_MaterialRef::Build(const std::string_view& partitionedStructu
 		{
 			case DDL_BufferTypes::DDL_ref:
 			{
-				result->subSutructres.emplace_back(DDL_Reference::Build(subStructure, referenceMap));
-				MapStructureName(*(result->subSutructres.back()), referenceMap);
-				auto& structure{ result->subSutructres.back() };				
-				DLOG(34, "structure->typeHeap:" << structure->typeHeap);
-				auto& reference{ HeapData<DDL_Reference>(*structure) };
+				auto& subStrctureRef{ *result->subSutructres.emplace_back(DDL_Reference::Build(subStructure, referenceMap)) };
+				MapStructureName(subStrctureRef, referenceMap);
+				auto& reference{ HeapData<DDL_Reference>(subStrctureRef) };
 				for (const auto& refName : reference.referenceNames)
 				{
 					DLOG(35, refName);
