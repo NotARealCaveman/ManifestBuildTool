@@ -48,6 +48,7 @@ void Manifest_Persistence::BuildResourceDatabase(const DDL_File& file, ManifestR
 		TableEntry(*geometryNode, database.geometryObjectBuildTable, database.materialBuildTable, database.geometryNodeBuildTable, database.objectRefBuildTable, database.materialRefBuildTable);
 	//rigid bodies and colliders are converted into their respective game framework formats
 	TableEntry(rigidBodiesParams, database.rigidBodyBuildTable);
+	TableEntry(colliders, database.colliderBuildTable);
 }
 
 void Manifest_Persistence::BuildWorldDatabase(const DDL_File& file, ManifestWorldDatabaseBuilder& database)

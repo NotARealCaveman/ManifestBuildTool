@@ -31,5 +31,5 @@ namespace Manifest_Persistence
 	};
 	using RigidbodyBuildTable = DatabaseBuildTable<MDB_Rigidbody>;
 	//converts from AOS to SOA type data
-	ForeignKey TableEntry(const ScratchPadVector<DDL_Structure>& rigidBodyParamsStructures, RigidbodyBuildTable& rigidbodyBuildTable);
+	ForeignKey TableEntry(const ScratchPadVector<DDL_Structure*>& rigidBodyParamsStructures, RigidbodyBuildTable& rigidbodyBuildTable);
 }

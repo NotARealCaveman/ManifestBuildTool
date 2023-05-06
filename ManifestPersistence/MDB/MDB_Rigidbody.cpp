@@ -18,7 +18,7 @@ ForeignKey Manifest_Persistence::TableEntry(const ScratchPadVector<DDL_Structure
 	entry.iMass = New<MFfloat>(bodyCount);
 	entry.linearDamping = New<MFfloat>(bodyCount);
 	entry.angularDamping = New<MFfloat>(bodyCount);
-	auto& bodyIndex{ 1entry.bodyCount };
+	auto& bodyIndex{ entry.bodyCount };
 	for (const auto& structure : rigidBodyParamsStructures)
 	{		
 		const auto& rigidBodyParams{ HeapData<MDD_RigidBodyParams>(*structure) };
