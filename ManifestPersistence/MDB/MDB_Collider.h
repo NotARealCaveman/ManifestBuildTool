@@ -11,10 +11,11 @@ namespace Manifest_Persistence
 {
 	struct MDB_Collider
 	{
-		PrimaryKey colliderID;
-		MFu8 colliderType;
-		MFfloat* colliderData;
+		PrimaryKey colliderID;		
+		MFu8* colliderType;
+		MFfloat** colliderData;
+		MFsize colliderCount;
 	};
 	using ColliderBuildTable = DatabaseBuildTable<MDB_Collider>;
-	ForeignKey TableEntry(const DDL_Structure& structure, ColliderBuildTable& colliderBuildTable);
+	ForeignKey TableEntry(const ScratchPadVector<DDL_Structure*>& colliderStructures, ColliderBuildTable& colliderBuildTable);
 }

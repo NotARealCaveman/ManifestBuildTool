@@ -46,5 +46,5 @@ namespace Manifest_Persistence
 		ForeignKey graphicsNodeRefID;
 	};
 	using RigidBodyObjectBuildTable = DatabaseBuildTable<MDB_RigidBodyObject>;
-	ForeignKey TableEntry(const DDL_Structure& structure, RigidBodyObjectBuildTable& rigidBodyObjectBuildTable, PhysicsNodeBuildTable& physicsNodeBuildTable, GeometryNodeBuildTable& geometryNodeBuildTable);
+	ForeignKey TableEntry(const DDL_Structure& structure, RigidBodyObjectBuildTable& rigidBodyObjectBuildTable, PhysicsNodeBuildTable& physicsNodeBuildTable, GeometryNodeBuildTable& geometryNodeBuildTable, RefBuildTable& physicsNodeRefBuildTable, RefBuildTable& graphicsNodeRefBuildTable);
 }

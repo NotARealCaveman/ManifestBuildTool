@@ -12,21 +12,24 @@ using namespace Manifest_Parser;
 using namespace Manifest_Math;
 
 namespace Manifest_Persistence
-{
+{	
 	struct MDB_Rigidbody
 	{
 		PrimaryKey rigidBodyID;
-		MFquaternion orientation;
-		MFpoint3 position;
-		MFvec3 linearAccelaration;
-		MFvec3 linearVelocity;
-		MFvec3 angularVelocity;
-		MFvec3 appliedForce;
-		MFvec3 appliedTorque;
-		MFfloat iMass;
-		MFfloat linearDamping;
-		MFfloat angularDamping;
+		MFsize bodyCount{0};
+		MFquaternion* orientation;
+		MFpoint3* position;
+		MFvec3* linearAccelaration;
+		MFvec3* linearVelocity;
+		MFvec3* angularVelocity;
+		MFvec3* appliedForce;
+		MFvec3* appliedTorque;
+		MFfloat* iMass;
+		MFfloat* linearDamping;
+		MFfloat* angularDamping;
+
 	};
 	using RigidbodyBuildTable = DatabaseBuildTable<MDB_Rigidbody>;
-	ForeignKey TableEntry(const DDL_Structure& structure, RigidbodyBuildTable& rigidbodyBuildTable);
+	//converts from AOS to SOA type data
+	ForeignKey TableEntry(const ScratchPadVector<DDL_Structure>& rigidBodyParamsStructures, RigidbodyBuildTable& rigidbodyBuildTable);
 }

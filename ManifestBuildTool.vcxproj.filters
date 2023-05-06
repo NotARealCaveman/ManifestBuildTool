@@ -530,5 +530,17 @@
     <ClInclude Include="ManifestPersistence\MDB\MDB_Rigidbody.h">
       <Filter>Header Files\Persistence\MDB</Filter>
     </ClInclude>
+    <ClInclude Include="ManifestPersistence\MDB\Binary\Binary_Collider.h">
+      <Filter>Header Files\Persistence\MDB\Binary</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestPersistence\MDB\Binary\Binary_GameObject.h">
+      <Filter>Header Files\Persistence\MDB\Binary</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestPersistence\MDB\Binary\Binary_PhysicsNode.h">
+      <Filter>Header Files\Persistence\MDB\Binary</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestPersistence\MDB\Binary\Binary_Rigidbody.h">
+      <Filter>Header Files\Persistence\MDB\Binary</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

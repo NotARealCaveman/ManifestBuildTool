@@ -1,7 +1,6 @@
 #pragma once
 
 #include <ManifestParser/DDL_ExtendedTypes.h>
-#include <ManifestParser/OpenDDL/DDL_Reference.h>
 
 #include "MDD_Collider.h"
 #include "MDD_RigidBody.h"

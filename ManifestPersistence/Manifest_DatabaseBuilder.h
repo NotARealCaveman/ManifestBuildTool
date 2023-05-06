@@ -15,6 +15,9 @@ namespace Manifest_Persistence
 		MaterialRefBuildTable materialRefBuildTable;
 		MaterialBuildTable materialBuildTable;
 		TextureBuildTable textureBuildTable;
+		PhysicsNodeBuildTable physicsNodeBuildTable;
+		ColliderBuildTable colliderBuildTable;
+		RigidbodyBuildTable rigidBodyBuildTable;
 	};	
 	void ExportBinaryResourceDatabase(const ManifestResourceDatabaseBuilder& databaseBuild, std::ofstream& exportFile);
 

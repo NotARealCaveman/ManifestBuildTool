@@ -65,23 +65,7 @@ namespace Manifest_Memory
 
     void INIT_MEMORY_RESERVES();
         
-    template<typename T,typename Alloc>
-    inline T* New(const MFsize& count)
-    {        
-        return new(Alloc{}.allocate(count))T[count];
-    }
-
-    template<typename T, typename Alloc>
-    inline T* New(const MFsize& count, const T&& value)
-    {
-        return new(Alloc{}.allocate(count))T[count]{ std::forward<T>(value) };
-    }
-
-    template<typename T,typename Alloc>
-    inline void Delete(T* p, const MFsize& size = {})
-    {
-        Alloc{}.deallocate(p,size);
-    }
+    
         
     //returns aligned pointer to the requested alignment boundary
     inline Byte* AlignAllocation
@@ -145,4 +129,22 @@ namespace Manifest_Memory
     bool operator==(const ScratchPad<T>&, const ScratchPad<U>&) { return true; }
     template<class T, class U>
     bool operator!=(const ScratchPad<T>&, const ScratchPad<U>&) { return false; }
+
+    template<typename T, typename Alloc = ScratchPad<T>>
+    inline T* New(const MFsize& count)
+    {
+        return new(Alloc{}.allocate(count))T[count];
+    }
+
+    template<typename T, typename Alloc = ScratchPad<T>>
+    inline T* New(const MFsize& count, const T&& value)
+    {
+        return new(Alloc{}.allocate(count))T[count]{ std::forward<T>(value) };
+    }
+
+    template<typename T, typename Alloc = ScratchPad<T>>
+    inline void Delete(T* p, const MFsize& size = {})
+    {
+        Alloc{}.deallocate(p, size);
+    }
 }

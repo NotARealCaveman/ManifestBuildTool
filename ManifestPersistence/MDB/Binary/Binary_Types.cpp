@@ -3,6 +3,12 @@
 //Convert_MDB takes its resepective MDB_* datastructure and converts it into the binary format that will be stored as database records. these records and their respective tables are then exported to a .mdb(Manifest Database Binary) file which may be imported by the runtimem database program
 using namespace Manifest_Persistence;
 
+//RigidBodyObject
+
+//PhyiscsNode
+
+//Collider
+
 //GeometryObject
 size_t Manifest_Persistence::Convert_MDB(const MDB_GeometryObject& geometryObject, Binary_GeometryObject& binaryGeometryObject)
 {
