@@ -3,10 +3,10 @@
 
 #include <ManifestUtility/DebugLogger.h>
 
-#include <ManifestMathCOPY/Core.h>
-#include <ManifestMathCOPY/Point3.h>
-#include <ManifestMathCOPY/PerlinNoise.hpp>
-#include <ManifestMathCOPY/Integer3D.h>
+#include <ManifestGLFramework/ManifestMath/Core.h>
+#include <ManifestGLFramework/ManifestMath/Point3.h>
+#include <ManifestGLFramework/ManifestMath/PerlinNoise.hpp>
+#include <ManifestGLFramework/ManifestMath/Integer3D.h>
 
 using namespace Manifest_Math;
 

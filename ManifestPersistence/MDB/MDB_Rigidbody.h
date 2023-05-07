@@ -1,7 +1,7 @@
 #pragma once
 
-#include <ManifestMathCOPY/Quaternion.h>
-#include <ManifestMathCOPY/Point3.h>
+#include <ManifestGLFramework/ManifestMath/Quaternion.h>
+#include <ManifestGLFramework/ManifestMath/Point3.h>
 
 #include <ManifestParser/MDD/MDD_PhysicsNode.h>
 #include <ManifestParser/MDD/MDD_GameObject.h>
