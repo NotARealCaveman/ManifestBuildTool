@@ -9,7 +9,7 @@ DDL_Structure* MDD_PhysicsNode::Build(const std::string_view& partitionedStructu
 	ParseStructureHeader(partitionedStructureView, *result);
 	for (const auto& subStructure : PartitionDDLSubStructures(partitionedStructureView))
 		switch (ExtractStructureType(subStructure))
-		{
+		{			
 			case DDL_ExtendedTypes::MDD_RIGIDBODYPARAMS:
 			{
 				rigidBodyParams.Build(subStructure, referenceMap);

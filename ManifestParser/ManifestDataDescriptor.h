@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 
-#include <ManifestMathCOPY/Integer3D.h>
+#include <ManifestGLFramework/ManifestMath/Integer3D.h>
 #include <ManifestParser/MDD/MDD_Terrain.h>
 #include <ManifestParser/MDD/MDD_VoxelMap.h>
 #include <ManifestParser/MDD/MDD_PhysicsNode.h>

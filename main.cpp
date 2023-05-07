@@ -28,7 +28,7 @@ using namespace Manifest_Terrain;
 //MDB = MANIFEST DATABASE BUILDER STRUCTURE
 
 const std::string TEST_PATH{ "D:\\Users\\Droll\\Desktop\\Game\\testing\\" };
-const std::string TEST_GEX{ "scene00.mdd" };
+const std::string TEST_GEX{ "Scene00.mdd" };
 const std::string TEST_TERRAIN{ "Terrain Files\\0Terrain.mdd" };
 const std::string TEST_VOXELMAP{ "Terrain Files\\0map.mdd" };
 const std::string TEST_MBD{ "Test1.mbd" };
@@ -94,11 +94,10 @@ void ImportAndTestResourceDatabase()
 		DLOG(34, "number rigid bodies: " << rigidBodies.header.bodyCount);
 		for (auto body{ 0 }; body < rigidBodies.header.bodyCount; ++body)
 		{
-			auto addy0{ &rigidBodies.payload[sizeof(MFquaternion) * body] };
 			auto& payload{ rigidBodies.payload };			
-			DLOG(34 + (body % 3), "Body.orientation: " << reinterpret_cast<const MFquaternion&>(rigidBodies.payload[sizeof(MFquaternion) * body]) << " from addy" << body << ": " << addy0);			
-			auto addy1{ &rigidBodies.payload[rigidBodies.header.positionOffset + sizeof(MFpoint3) * body] };
-			DLOG(34 + (body % 3), "Body.position: " << reinterpret_cast<const MFpoint3&>(rigidBodies.payload[rigidBodies.header.positionOffset + sizeof(MFpoint3) * body]) << " from addy" << body << ": " << addy1);			
+			DLOG(34 + (body % 3), "Body.orientation: " << reinterpret_cast<const MFquaternion&>(rigidBodies.payload[sizeof(MFquaternion) * body]));			
+			DLOG(34 + (body % 3), "Body.position: " << reinterpret_cast<const MFpoint3&>(rigidBodies.payload[rigidBodies.header.positionOffset + sizeof(MFpoint3) * body]));			
+			DLOG(34 + (body % 3), "Body.uuid: " << reinterpret_cast<const MFu64&>(rigidBodies.payload[rigidBodies.header.objectIDOffset+ sizeof(MFpoint3) * body]));
 		}
 	}
 	bImport.seekg(std::ios::beg);

@@ -39,14 +39,13 @@ PropertyList Manifest_Parser::PartitionStructureProperties(const std::string_vie
 
 ReferenceList Manifest_Parser::PartitionStructureReferences(const std::string_view& partitionedStructure)
 {	
-	auto begin = partitionedStructure.find_first_of("$%{(");
-	auto end = partitionedStructure.find_last_of('}')+1;
-	auto references = partitionedStructure.substr(begin, end - begin);		
 	ReferenceList result;
-	while (*references.begin() != '}')
-	{		
-		result.emplace_back(references.substr(1, (end = references.find_first_of(",}", 1)) - 1));
-		references = references.substr(end);		
+	for (const auto& reference : PartitionDDLSubStructures(partitionedStructure))
+	{
+		auto begin = reference.find_first_of('"');
+		auto end = reference.find_last_of('"');
+		const auto& referenceName{ reference.substr(begin + 1,end - begin-1) };
+		result.emplace_back(referenceName);		
 	}
 	return result;
 }

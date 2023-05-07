@@ -18,7 +18,7 @@ ForeignKey Manifest_Persistence::TableEntry(const ScratchPadVector<DDL_Structure
 	{
 		const auto& object{ HeapData<MDD_GameObject>(*gameObject) };
 		//physics references are first in the list
-		const auto& ref{ object.objectReferences.referenceNames[0] };
+		const auto& ref{ object.objectReferences.referenceNames[0] };		
 		if (ref == physicsNodesStructure->name)
 		{
 			entry.objectID = reinterpret_cast<const MFu64&>(object.objectID.data.typeHeap);

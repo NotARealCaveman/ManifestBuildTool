@@ -5,7 +5,7 @@ using namespace Manifest_Parser;
 DDL_Structure* MDD_GameObject::Build(const std::string_view& partitionedStructureView, DDL_ReferenceMap& referenceMap)
 {
 	auto result = New<DDL_Structure, ScratchPad<DDL_Structure>>(1);
-
+	ParseStructureHeader(partitionedStructureView, *result);
 	for (const auto& subStructure : PartitionDDLSubStructures(partitionedStructureView))
 		switch (ExtractStructureType(subStructure))
 		{
