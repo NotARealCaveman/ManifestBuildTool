@@ -39,12 +39,13 @@ PropertyList Manifest_Parser::PartitionStructureProperties(const std::string_vie
 
 ReferenceList Manifest_Parser::PartitionStructureReferences(const std::string_view& partitionedStructure)
 {	
-	ReferenceList result;
-	for (const auto& reference : PartitionDDLSubStructures(partitionedStructure))
+	ReferenceList result;	
+	auto referenceList{ PartitionDDLSubStructures(partitionedStructure) };
+	for (const auto& reference : referenceList)
 	{
-		auto begin = reference.find_first_of('"');
-		auto end = reference.find_last_of('"');
-		const auto& referenceName{ reference.substr(begin + 1,end - begin-1) };
+		auto begin = reference.find_first_of('$');
+		auto end = reference.find_last_of('}');
+		const auto& referenceName{ reference.substr(begin,end - begin) };
 		result.emplace_back(referenceName);		
 	}
 	return result;
@@ -102,8 +103,11 @@ ScratchPadVector<std::string_view> Manifest_Parser::PartitionDDLSubStructures(co
 	auto end = partitionedStructureView.find_last_of('}');
 	auto payload = partitionedStructureView.substr(begin, end - begin);
 	ScratchPadVector<std::string_view> result;
-	for(size_t offset = 0; !payload.empty(); payload = payload.substr(offset))
-		result.emplace_back(PartitionDDLStructures(payload, offset));
+	if (payload.find_first_of("{") != std::string::npos)	
+		for(size_t offset = 0; !payload.empty(); payload = payload.substr(offset))
+			result.emplace_back(PartitionDDLStructures(payload, offset));
+	else 
+		result.emplace_back(payload);
 
 	return result;
 }
