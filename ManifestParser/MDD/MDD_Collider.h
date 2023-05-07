@@ -26,6 +26,6 @@ namespace Manifest_Parser
 		//substructures
 		DDL_Float colliderData;
 		//properties
-		MFu8 colliderGeometry{ DEFAULT_COLLIDER };
+		MFu8 colliderType{ COLLIDER_GEOMETRY::DEFAULT_COLLIDER };
 	};
 }

@@ -10,6 +10,8 @@ namespace Manifest_Persistence
 	using BinaryMaterialTable = BinaryTable<Binary_Material>;
 	using BinaryGeometryObjectTable = BinaryTable<Binary_GeometryObject>;
 	using BinaryGeometryNodeTable = BinaryTable<Binary_GeometryNode>;
+	using BinaryRigidBodyTable = BinaryTable<Binary_RigidBody>;
+	using BinaryColliderTable = BinaryTable<Binary_Collider>;
 	using BinaryTerrainTable =
 		BinaryTable<Binary_Terrain>;
 	using BinaryVoxelMapTable = BinaryTable<Binary_VoxelMap>;

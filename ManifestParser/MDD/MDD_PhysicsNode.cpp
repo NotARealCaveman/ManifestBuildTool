@@ -6,6 +6,7 @@ DDL_Structure* MDD_PhysicsNode::Build(const std::string_view& partitionedStructu
 {
 	auto result = New<DDL_Structure, ScratchPad<DDL_Structure>>(1);
 
+	ParseStructureHeader(partitionedStructureView, *result);
 	for (const auto& subStructure : PartitionDDLSubStructures(partitionedStructureView))
 		switch (ExtractStructureType(subStructure))
 		{

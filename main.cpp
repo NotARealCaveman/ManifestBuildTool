@@ -86,7 +86,20 @@ void ImportAndTestResourceDatabase()
 		DLOG(32, "Worldspace Data: ");
 		for (auto index{ 0 };index <16;++index)
 			std::cout << importNode.payload[index] << ", ";
-		std::cout << std::endl;				
+		std::cout << std::endl;					
+	}
+	for (auto i = 0; i < binaryDatabase.binaryRigidBodyTable.header.totalEntries; ++i)
+	{
+		const auto& rigidBodies{ binaryDatabase.binaryRigidBodyTable[i] };
+		DLOG(34, "number rigid bodies: " << rigidBodies.header.bodyCount);
+		for (auto body{ 0 }; body < rigidBodies.header.bodyCount; ++body)
+		{
+			auto addy0{ &rigidBodies.payload[sizeof(MFquaternion) * body] };
+			auto& payload{ rigidBodies.payload };			
+			DLOG(34 + (body % 3), "Body.orientation: " << reinterpret_cast<const MFquaternion&>(rigidBodies.payload[sizeof(MFquaternion) * body]) << " from addy" << body << ": " << addy0);			
+			auto addy1{ &rigidBodies.payload[rigidBodies.header.positionOffset + sizeof(MFpoint3) * body] };
+			DLOG(34 + (body % 3), "Body.position: " << reinterpret_cast<const MFpoint3&>(rigidBodies.payload[rigidBodies.header.positionOffset + sizeof(MFpoint3) * body]) << " from addy" << body << ": " << addy1);			
+		}
 	}
 	bImport.seekg(std::ios::beg);
 	ScratchPad<Byte>{}.Unwind();
@@ -158,7 +171,7 @@ void ImportAndTestWorldDatabase()
 			DLOG(37, "SDF: ");
 			for (auto sample{ 0 }; sample < importVoxelMap.header.payloadSize; ++sample)
 				std::cout << +importVoxelMap.payload[sample] << ",";
-		}
+		}		
 	}
 }
 void BuildAndExportWorldDatabase(std::vector<std::string> filenames)
@@ -238,13 +251,13 @@ int main()
 	Initialize_GEXGenerators();
 
 	//persistence tests
-	//DISABLE
+	DISABLE
 		CreateWorldMDD(true);
 	DISABLE
 		ImportAndTestWorldDatabase();
 	//DISABLE
 		BuildAndExportResourceDatabase();
-	DISABLE
+	//DISABLE
 		ImportAndTestResourceDatabase();	
 	
 	return 0;

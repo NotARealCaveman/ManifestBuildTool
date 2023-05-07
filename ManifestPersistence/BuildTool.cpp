@@ -6,14 +6,15 @@ void Manifest_Persistence::BuildResourceDatabase(const DDL_File& file, ManifestR
 {		
 	ScratchPadVector<DDL_Structure*>geometryObjects;
 	ScratchPadVector<DDL_Structure*> materials;
-	ScratchPadVector<DDL_Structure*> geometryNodes;
-	ScratchPadVector<DDL_Structure*> rigidBodiesParams;
-	ScratchPadVector<DDL_Structure*> colliders;
+	ScratchPadVector<DDL_Structure*> geometryNodes;	
 	ScratchPadVector<DDL_Structure*> physicsNodes;
+	//currently only rigid body objects are supported. in the future this will need to be subdivided by object types
+	ScratchPadVector<DDL_Structure*> gameObjects;	
 	//get all top level build structures
 	for (const auto& structure : file.primaryStructures)
 	{
 		auto identifier = structure->identifier;
+		DLOG(31, "IDENTIFIER: " << identifier);
 		auto mapEntry = DDL_BufferTypes::DDL_BufferTypeMap.find(identifier.c_str());
 		if (mapEntry != DDL_BufferTypes::DDL_BufferTypeMap.end())
 		{
@@ -26,15 +27,14 @@ void Manifest_Persistence::BuildResourceDatabase(const DDL_File& file, ManifestR
 					materials.emplace_back(structure);
 					break;
 				case GEX_BufferTypes::GEX_GeometryNode:
-					geometryNodes.emplace_back(structure);		case DDL_ExtendedTypes::MDD_RIGIDBODYPARAMS:
-						rigidBodiesParams.emplace_back(structure);
-					break;
-				case DDL_ExtendedTypes::MDD_COLLIDER:
-						colliders.emplace_back(structure);
-						break;
+					geometryNodes.emplace_back(structure);			break;
 				case DDL_ExtendedTypes::MDD_PHYSICSNODE:
-						physicsNodes.emplace_back(structure);
-						break;
+					physicsNodes.emplace_back(structure);
+					break;
+				case DDL_ExtendedTypes::MDD_GAMEOBJECT:
+					gameObjects.emplace_back(structure);
+					break;
+				
 				default:break;//prunes pure transmission structures
 			}
 		}
@@ -46,9 +46,11 @@ void Manifest_Persistence::BuildResourceDatabase(const DDL_File& file, ManifestR
 		TableEntry(*material, database.materialBuildTable, database.textureBuildTable);	
 	for (const auto& geometryNode : geometryNodes)
 		TableEntry(*geometryNode, database.geometryObjectBuildTable, database.materialBuildTable, database.geometryNodeBuildTable, database.objectRefBuildTable, database.materialRefBuildTable);
-	//rigid bodies and colliders are converted into their respective game framework formats
-	TableEntry(rigidBodiesParams, database.rigidBodyBuildTable);
-	TableEntry(colliders, database.colliderBuildTable);
+	for(const auto& physicsNode : physicsNodes)
+		TableEntry(gameObjects, physicsNode, database.colliderBuildTable);
+	//rigid bodies are converted into their respective game framework formats
+	TableEntry(gameObjects,physicsNodes, database.rigidBodyBuildTable);
+	
 }
 
 void Manifest_Persistence::BuildWorldDatabase(const DDL_File& file, ManifestWorldDatabaseBuilder& database)

@@ -3,12 +3,51 @@
 //Convert_MDB takes its resepective MDB_* datastructure and converts it into the binary format that will be stored as database records. these records and their respective tables are then exported to a .mdb(Manifest Database Binary) file which may be imported by the runtimem database program
 using namespace Manifest_Persistence;
 
-//RigidBodyObject
+//Rigidbodies - stores the rigidbody data separated by offsets. data arranged how framework expects it to be a straight memcpy
+size_t Manifest_Persistence::Convert_MDB(const MDB_Rigidbody& rigidBody,  Binary_RigidBody& binaryRigidBody)
+{
+	binaryRigidBody.header.bodyCount = rigidBody.bodyCount;
+	auto& payloadSize{ binaryRigidBody.header.payloadSize };	 
+	binaryRigidBody.header.positionOffset = payloadSize += sizeof(decltype(*rigidBody.orientation)) * rigidBody.bodyCount;
+	binaryRigidBody.header.linearAccelarationOffset = payloadSize += sizeof(decltype(*rigidBody.position)) * rigidBody.bodyCount;
+	binaryRigidBody.header.linearVelocityOffset = payloadSize += sizeof(decltype(*rigidBody.linearAccelaration)) * rigidBody.bodyCount;
+	binaryRigidBody.header.angularVelocityOffset = payloadSize += sizeof(decltype(*rigidBody.linearVelocity)) * rigidBody.bodyCount;
+	binaryRigidBody.header.appliedForceOffset = payloadSize += sizeof(decltype(*rigidBody.angularVelocity)) * rigidBody.bodyCount;
+	binaryRigidBody.header.appliedTorqueOffset = payloadSize += sizeof(decltype(*rigidBody.appliedForce)) * rigidBody.bodyCount;
+	binaryRigidBody.header.iMassOffset = payloadSize += sizeof(decltype(*rigidBody.appliedForce)) * rigidBody.bodyCount;
+	binaryRigidBody.header.linearDampingOffset = payloadSize += sizeof(decltype(*rigidBody.iMass)) * rigidBody.bodyCount;
+	binaryRigidBody.header.angularDampingOffset = payloadSize += sizeof(decltype(*rigidBody.linearDamping)) * rigidBody.bodyCount;
+	binaryRigidBody.header.objectIDOffset = payloadSize += sizeof(decltype(*rigidBody.angularDamping)) * rigidBody.bodyCount;
+	payloadSize += sizeof(decltype(*rigidBody.objectID)) * rigidBody.bodyCount;
+	//store binary data
+	binaryRigidBody.payload = New<Byte>(payloadSize);	
+	const auto& header{ binaryRigidBody.header };
+	auto& payload{ binaryRigidBody.payload };
+	memcpy(payload, rigidBody.orientation, header.positionOffset);
+	memcpy(&payload[header.positionOffset], rigidBody.position, header.linearAccelarationOffset - header.positionOffset);
+	memcpy(&payload[header.linearAccelarationOffset], rigidBody.linearAccelaration, header.linearVelocityOffset -header.linearAccelarationOffset);
+	memcpy(&payload[header.linearVelocityOffset], rigidBody.linearVelocity, header.angularVelocityOffset - header.linearVelocityOffset);
+	memcpy(&payload[header.angularVelocityOffset], rigidBody.angularVelocity, header.appliedForceOffset - header.angularVelocityOffset);
+	memcpy(&payload[header.appliedForceOffset], rigidBody.appliedForce, header.appliedTorqueOffset - header.appliedForceOffset);
+	memcpy(&payload[header.appliedTorqueOffset], rigidBody.appliedTorque, header.iMassOffset - header.appliedForceOffset);
+	memcpy(&payload[header.iMassOffset], rigidBody.iMass, header.linearDampingOffset - header.iMassOffset);
+	memcpy(&payload[header.linearDampingOffset], rigidBody.linearDamping, header.angularDampingOffset - header.linearDampingOffset);
+	memcpy(&payload[header.angularDampingOffset], rigidBody.angularDamping, header.objectIDOffset - header.angularDampingOffset);
+	memcpy(&payload[header.objectIDOffset], rigidBody.objectID, payloadSize - header.objectIDOffset);
+	
+	return EntrySize(binaryRigidBody);
+}
+//Colliders
+size_t Manifest_Persistence::Convert_MDB(const MDB_Collider& collider, Binary_Collider& binaryCollider)
+{
+	binaryCollider.header.objectID = collider.objectID;	
+	binaryCollider.header.colliderType = collider.colliderType;
+	binaryCollider.header.payloadSize = collider.colliderDataElements * sizeof(MFfloat);
+	binaryCollider.payload = reinterpret_cast<MFfloat*>(New<Byte>(binaryCollider.header.payloadSize));
+	memcpy(binaryCollider.payload, collider.colliderData, binaryCollider.header.payloadSize);
 
-//PhyiscsNode
-
-//Collider
-
+	return EntrySize(binaryCollider);
+}
 //GeometryObject
 size_t Manifest_Persistence::Convert_MDB(const MDB_GeometryObject& geometryObject, Binary_GeometryObject& binaryGeometryObject)
 {

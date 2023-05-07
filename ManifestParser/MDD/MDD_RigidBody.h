@@ -6,7 +6,6 @@
 
 namespace Manifest_Parser
 {
-	static const std::map<std::string, MFu8> rigidBodyParamList;
 	namespace RIGID_BODY_PARAMS
 	{
 		static constexpr MFu8 ORIENTATION{ 1 };
@@ -20,6 +19,21 @@ namespace Manifest_Parser
 		static constexpr MFu8 LINEAR_DAMPING{ 9 };
 		static constexpr MFu8 ANGULAR_DAMPING{ 10 };
 	}
+
+	static const std::map<std::string, MFu8> rigidBodyParamList
+	{
+		{"orientation",RIGID_BODY_PARAMS::ORIENTATION},
+		{"position",RIGID_BODY_PARAMS::POSITION},		
+	{"linearAccelaration",RIGID_BODY_PARAMS::ACCELARATION},
+	{"linearVelocity",RIGID_BODY_PARAMS::LINEAR_VELOCITY},
+	{"angularVelocity",RIGID_BODY_PARAMS::ANGULAR_VELOCITY},
+		{"appliedForce",RIGID_BODY_PARAMS::APPLIED_FORCE},
+		{"appliedTorque",RIGID_BODY_PARAMS::APPLIED_TORQUE},
+		{"iMass",RIGID_BODY_PARAMS::IMASS},
+		{"linearDamping",RIGID_BODY_PARAMS::LINEAR_DAMPING},
+		{"angularDamping",RIGID_BODY_PARAMS::ANGULAR_DAMPING}
+	};
+	
 
 	struct MDD_RigidBodyParams : public RegisteredBuilder
 	{

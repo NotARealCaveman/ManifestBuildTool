@@ -11,7 +11,7 @@ MDD_Collider::PropertyList::typeProperties
 DDL_Structure* MDD_Collider::Build(const std::string_view& partitionedStructureView, DDL_ReferenceMap& referenceMap)
 {
 	auto result = New<DDL_Structure, ScratchPad<DDL_Structure>>(1);
-
+	ParseStructureHeader(partitionedStructureView, *result);
 	for (const DDL_Property& property : PartitionStructureProperties(ParseStructureHeader(partitionedStructureView, *result)))
 		switch (PropertyList::typeProperties.find(static_cast<std::string>(property.key))->second)
 		{
@@ -20,13 +20,13 @@ DDL_Structure* MDD_Collider::Build(const std::string_view& partitionedStructureV
 				switch (std::stoi(static_cast<std::string>(property.value)))
 				{
 					case COLLIDER_GEOMETRY::SPHERE:
-						this->colliderGeometry = COLLIDER_GEOMETRY::SPHERE;
+						this->colliderType = COLLIDER_GEOMETRY::SPHERE;
 						break;
 					case COLLIDER_GEOMETRY::CAPSULE:
-						this->colliderGeometry = COLLIDER_GEOMETRY::CAPSULE;
+						this->colliderType = COLLIDER_GEOMETRY::CAPSULE;
 						break;
 					case COLLIDER_GEOMETRY::CONVEXHULL:
-						this->colliderGeometry = COLLIDER_GEOMETRY::CONVEXHULL;
+						this->colliderType = COLLIDER_GEOMETRY::CONVEXHULL;
 						break;
 				}
 				break;

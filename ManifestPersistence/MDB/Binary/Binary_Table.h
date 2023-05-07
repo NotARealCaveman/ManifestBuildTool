@@ -8,16 +8,14 @@
 #include "Binary_Material.h"
 #include "Binary_Terrain.h"
 #include "Binary_VoxelMap.h"
-#include "Binary_PhysicsNode.h"
 #include "Binary_Collider.h"
 #include "Binary_Rigidbody.h"
-#include "Binary_GameObject.h"
 
 
 namespace Manifest_Persistence
 {	
 	//total table size is sz(Header)+sz(Entries),
-	//where Entries = n*sz(entry)+i:[0,n]Σsz(entry:Payload[i])		
+	//where Entries = n*sz(entry)+i:[0,n)Σsz(entry:Payload[i])		
 	template<typename Binary_TableType>
 	struct BinaryTable
 	{		

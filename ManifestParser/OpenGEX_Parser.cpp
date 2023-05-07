@@ -16,6 +16,8 @@ void Manifest_Parser::InitializeExtendedGenerators()
 {
 	RegisteredGenerator::registeredGenerators.insert({ "Terrain",new Generator<MDD_Terrain> });
 	RegisteredGenerator::registeredGenerators.insert({ "VoxelMap",new Generator<MDD_VoxelMap> });
+	RegisteredGenerator::registeredGenerators.insert({ "GameObject",new Generator<MDD_GameObject> });
+	RegisteredGenerator::registeredGenerators.insert({ "PhysicsNode",new Generator<MDD_PhysicsNode> });		
 }
 
 void Manifest_Parser::InitializeExtendedTypes()
@@ -28,6 +30,10 @@ void Manifest_Parser::InitializeExtendedTypes()
 	//add support for true extended types here
 	DDL_BufferTypes::DDL_BufferTypeMap.insert({ "Terrain",DDL_ExtendedTypes::MDD_TERRAIN });	
 	DDL_BufferTypes::DDL_BufferTypeMap.insert({ "VoxelMap",DDL_ExtendedTypes::MDD_VOXELMAP });
+	DDL_BufferTypes::DDL_BufferTypeMap.insert({ "GameObject",DDL_ExtendedTypes::MDD_GAMEOBJECT });
+	DDL_BufferTypes::DDL_BufferTypeMap.insert({ "PhysicsNode",DDL_ExtendedTypes::MDD_PHYSICSNODE });
+	DDL_BufferTypes::DDL_BufferTypeMap.insert({ "RigidBodyParams",DDL_ExtendedTypes::MDD_RIGIDBODYPARAMS});
+	DDL_BufferTypes::DDL_BufferTypeMap.insert({ "Collider",DDL_ExtendedTypes::MDD_COLLIDER });
 }
 
 

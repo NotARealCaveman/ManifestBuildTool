@@ -3,24 +3,10 @@
 using namespace Manifest_Parser;
 using namespace RIGID_BODY_PARAMS;
 
-const std::map<std::string, MFu8> Manifest_Parser::rigidBodyParamList
-{
-	{"orientation",ORIENTATION},
-	{"position",POSITION},
-	{"linearAccelaration",ACCELARATION},
-	{"linearVelocity",LINEAR_VELOCITY},
-	{"angularVelocity",ANGULAR_VELOCITY},
-	{"appliedForce",APPLIED_FORCE},
-	{"appliedTorque",APPLIED_TORQUE},
-	{"iMass",IMASS},
-	{"linearDamping",LINEAR_DAMPING},
-	{"angularDamping",ANGULAR_DAMPING},
-};
-
 DDL_Structure* MDD_RigidBodyParams::Build(const std::string_view& partitionedStructureView, DDL_ReferenceMap& referenceMap)
 {
 	auto result = New<DDL_Structure, ScratchPad<DDL_Structure>>(1);
-
+	ParseStructureHeader(partitionedStructureView, *result);
 	for (const auto& subStructure : PartitionDDLSubStructures(partitionedStructureView))
 		switch (ExtractStructureType(subStructure))
 		{
@@ -31,6 +17,7 @@ DDL_Structure* MDD_RigidBodyParams::Build(const std::string_view& partitionedStr
 				{
 					case ORIENTATION:
 						orientation.Build(subStructure, referenceMap);
+						DLOG(34, "Orientation built at: " << &orientation.data.typeHeap);
 						break;
 					case POSITION:
 						position.Build(subStructure, referenceMap);
@@ -57,7 +44,7 @@ DDL_Structure* MDD_RigidBodyParams::Build(const std::string_view& partitionedStr
 						linearDamping.Build(subStructure, referenceMap);
 						break;
 					case ANGULAR_DAMPING:
-						angularVelocity.Build(subStructure, referenceMap);
+						angularDamping.Build(subStructure, referenceMap);
 						break;
 					DEFAULT_BREAK
 				}

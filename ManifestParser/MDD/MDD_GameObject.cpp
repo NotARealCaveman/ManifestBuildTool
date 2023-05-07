@@ -9,16 +9,16 @@ DDL_Structure* MDD_GameObject::Build(const std::string_view& partitionedStructur
 	for (const auto& subStructure : PartitionDDLSubStructures(partitionedStructureView))
 		switch (ExtractStructureType(subStructure))
 		{
-			case DDL_BufferTypes::DDL_int64:
-			{
+			case DDL_BufferTypes::DDL_int64:			
 				OBJECT_TYPE.Build(subStructure, referenceMap);
+				break;			
+			case DDL_BufferTypes::DDL_uint64:			
+				objectID.Build(subStructure, referenceMap);
 				break;
-			}
-			case DDL_BufferTypes::DDL_ref:
-			{
+			case DDL_BufferTypes::DDL_ref:			
 				objectReferences.Build(subStructure, referenceMap);
 				break;
-			}
+
 			DEFAULT_BREAK
 		}
 

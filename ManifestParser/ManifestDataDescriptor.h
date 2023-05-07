@@ -4,6 +4,8 @@
 #include <ManifestMathCOPY/Integer3D.h>
 #include <ManifestParser/MDD/MDD_Terrain.h>
 #include <ManifestParser/MDD/MDD_VoxelMap.h>
+#include <ManifestParser/MDD/MDD_PhysicsNode.h>
+#include <ManifestParser/MDD/MDD_GameObject.h>
 
 using namespace Manifest_Math;
 

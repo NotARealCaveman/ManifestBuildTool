@@ -3,8 +3,10 @@
 #include <ManifestMathCOPY/Quaternion.h>
 #include <ManifestMathCOPY/Point3.h>
 
-#include <ManifestParser/MDD/MDD_Rigidbody.h>
+#include <ManifestParser/MDD/MDD_PhysicsNode.h>
+#include <ManifestParser/MDD/MDD_GameObject.h>
 #include <ManifestParser/DDL_ExtendedTypes.h>
+
 
 #include "MDB_Table.h"
 
@@ -14,7 +16,7 @@ using namespace Manifest_Math;
 namespace Manifest_Persistence
 {	
 	struct MDB_Rigidbody
-	{
+	{		
 		PrimaryKey rigidBodyID;
 		MFsize bodyCount{0};
 		MFquaternion* orientation;
@@ -27,9 +29,9 @@ namespace Manifest_Persistence
 		MFfloat* iMass;
 		MFfloat* linearDamping;
 		MFfloat* angularDamping;
-
+		MFu64* objectID;
 	};
 	using RigidbodyBuildTable = DatabaseBuildTable<MDB_Rigidbody>;
 	//converts from AOS to SOA type data
-	ForeignKey TableEntry(const ScratchPadVector<DDL_Structure*>& rigidBodyParamsStructures, RigidbodyBuildTable& rigidbodyBuildTable);
+	ForeignKey TableEntry(const ScratchPadVector<DDL_Structure*>& gameObjectStructures,const ScratchPadVector<DDL_Structure*>& physicsNodesStructures, RigidbodyBuildTable& rigidbodyBuildTable);
 }

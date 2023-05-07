@@ -14,8 +14,7 @@ namespace Manifest_Persistence
 		ObjectRefBuildTable objectRefBuildTable;
 		MaterialRefBuildTable materialRefBuildTable;
 		MaterialBuildTable materialBuildTable;
-		TextureBuildTable textureBuildTable;
-		PhysicsNodeBuildTable physicsNodeBuildTable;
+		TextureBuildTable textureBuildTable;		
 		ColliderBuildTable colliderBuildTable;
 		RigidbodyBuildTable rigidBodyBuildTable;
 	};	

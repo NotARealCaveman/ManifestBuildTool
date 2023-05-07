@@ -2,24 +2,29 @@
 
 using namespace Manifest_Persistence;
 
-ForeignKey Manifest_Persistence::TableEntry(const ScratchPadVector<DDL_Structure*>& colliderStructures, ColliderBuildTable& colliderBuildTable)
+ForeignKey Manifest_Persistence::TableEntry(const ScratchPadVector<DDL_Structure*>& gameObjectStructures, const DDL_Structure* physicsNodesStructure, ColliderBuildTable& colliderBuildTable)
 {
 	MDB_Collider& entry = colliderBuildTable.entries.emplace_back();
 	entry.colliderID = colliderBuildTable.nextTableIndex++;
-	//colliderBuildTable.mappedEntryKeys.insert({ structure.name.c_str(), entry.colliderID });
-	const auto colliderCount{ colliderStructures.size() };
-	entry.colliderType = New<MFu8>(colliderCount);
-	entry.colliderData = New<MFfloat*>(colliderCount);
-	auto& colliderIndex{ entry.colliderCount };
-	for (const auto& structure : colliderStructures)
-	{		
-		const auto& collider{ HeapData<MDD_Collider>(*structure) };
-		entry.colliderType[colliderIndex] = collider.colliderGeometry;
-		const auto colliderSize{ sizeof(MFfloat) * collider.colliderData.data.subBufferElements *
-			collider.colliderData.data.subBufferCount };
-		entry.colliderData[colliderIndex] = new MFfloat[colliderSize];
-		memcpy(entry.colliderData[colliderIndex], collider.colliderData.data.typeHeap, colliderSize);
-		++colliderIndex;
-	}	
+	colliderBuildTable.mappedEntryKeys.insert({ "RigidBody" + entry.colliderID , entry.colliderID });
+	const auto& physicsNode{ HeapData<MDD_PhysicsNode>(*physicsNodesStructure) };
+	const auto& collider{ physicsNode.collider };	
+	entry.colliderType = collider.colliderType;
+	const auto& data{ collider.colliderData.data };
+	entry.colliderDataElements=  data.subBufferCount * data.subBufferElements ;
+	entry.colliderData = New<MFfloat>(entry.colliderDataElements);
+	memcpy(entry.colliderData, data.typeHeap, sizeof(MFfloat) * entry.colliderDataElements);
+	for (const auto& gameObject : gameObjectStructures)
+	{
+		const auto& object{ HeapData<MDD_GameObject>(*gameObject) };
+		//physics references are first in the list
+		const auto& ref{ object.objectReferences.referenceNames[0] };
+		if (ref == physicsNodesStructure->name)
+		{
+			entry.objectID = reinterpret_cast<const MFu64&>(object.objectID.data.typeHeap);
+			break;
+		}
+	}
+
 	return entry.colliderID;
 }

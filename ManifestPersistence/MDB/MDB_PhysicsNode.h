@@ -3,13 +3,11 @@
 #include <ManifestParser/MDD/MDD_PhysicsNode.h>
 #include <ManifestParser/DDL_ExtendedTypes.h>
 
-#include "MDB_Collider.h"
-#include "MDB_Rigidbody.h"
-
 #include "MDB_Table.h"
 
 using namespace Manifest_Parser;
 
+//to be repurposed to represent a physics node chunk in the world
 namespace Manifest_Persistence
 {
 	struct MDB_PhysicsNode
@@ -18,6 +16,5 @@ namespace Manifest_Persistence
 		ForeignKey rigidBodyID;
 		ForeignKey colliderID;
 	};
-	using PhysicsNodeBuildTable = DatabaseBuildTable<MDB_PhysicsNode>;
-	ForeignKey TableEntry(const DDL_Structure& structure, PhysicsNodeBuildTable& physicsNodeBuildTable,RigidbodyBuildTable& rigidBodyBuildTable, ColliderBuildTable& colliderBuildTable);
+	using PhysicsNodeBuildTable = DatabaseBuildTable<MDB_PhysicsNode>;	
 }
