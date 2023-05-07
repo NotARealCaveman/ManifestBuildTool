@@ -82,7 +82,7 @@ namespace Manifest_Parser
 			std::string element;
 			for (uint32_t bufferPosition = 0; bufferPosition < subBufferElementCount; ++bufferPosition)
 			{			
-				ss >> element;				
+				ss >> element;	
 				*(reinterpret_cast<T*>(buffer.typeHeap) + subBuffer++) = static_cast<T>(std::stof(element));
 			}
 		}

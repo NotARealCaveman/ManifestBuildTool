@@ -42,7 +42,7 @@ ForeignKey Manifest_Persistence::TableEntry(const ScratchPadVector<DDL_Structure
 			const auto& ref{ object.objectReferences.referenceNames[0] };
 			if (ref == structure->name)
 			{
-				entry.objectID[bodyIndex] = reinterpret_cast<const MFu64&>(object.objectID.data.typeHeap);
+				entry.objectID[bodyIndex] = *reinterpret_cast<MFu64*>(object.objectID.data.typeHeap);
 				break;
 			}
 		}

@@ -196,7 +196,8 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_Mesh& mesh, const VertexBuild
 	//binaryMesh.payload = new float[binaryMesh.header.payloadSize];//reserves enough memory for each float	
 	binaryMesh.payload = New<MFfloat, ScratchPad<MFfloat>>(binaryMesh.header.payloadSize);
 	//interleave buffer data
-	for (auto bufferIndex = 0; bufferIndex < vertices->elements / 3; ++bufferIndex)
+	const auto& nElements{ vertices->elements / 3 };
+	for (auto bufferIndex = 0; bufferIndex < nElements; ++bufferIndex)
 	{
 		auto baseOffset{ bufferIndex * binaryMesh.header.vboStride };
 		auto attributeOffset{ 0 };

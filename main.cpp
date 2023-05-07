@@ -1,5 +1,7 @@
 #pragma once
 
+#include <ManifestGLFramework/ManifestMath/Vector2.h>
+
 #include <ManifestParser/OpenGEX_Parser.h>
 #include <ManifestPersistence/BuildTool.h>
 #include <ManifestUtility/Console_Color.h>
@@ -205,6 +207,204 @@ using Milliseconds = std::chrono::duration<double, std::milli>;
 using Nanoseconds = std::chrono::duration<double, std::nano>;
 using Timepoint = std::chrono::time_point<std::chrono::steady_clock,Nanoseconds>;
 
+void OBJtoGEX(const std::string& objFile)
+{
+	std::vector<MFvec3> vertices;
+	std::vector<MFvec2> uvs;
+	std::vector<MFvec3> normals;
+	auto file = LoadFileContents(objFile);
+	DLOG(34, file);
+	std::stringstream fileStream{ file };
+	std::string current;
+	std::getline(fileStream, current);
+	while (current[0] != 'v')
+		std::getline(fileStream, current);
+	while (current[0] == 'v' && current[1] != 't')
+	{
+		std::stringstream vertexStream{ current.substr(2) };
+		MFvec3 vertex;
+		std::string value;
+		for (auto axis{ 0 }; axis < 3; ++axis)
+		{
+			vertexStream >> value;
+			vertex[axis] = std::stof(value);
+		}
+		vertices.emplace_back(vertex);
+		std::getline(fileStream, current);
+	}
+	while (current[0] == 'v' && current[1] == 't')
+	{
+		std::stringstream vertexStream{ current.substr(3) };
+		MFvec2 uv;
+		std::string value;
+		for (auto axis{ 0 }; axis < 2; ++axis)
+		{
+			vertexStream >> value;
+			uv[axis] = std::stof(value);
+		}
+		uvs.emplace_back(uv);
+		std::getline(fileStream, current);
+	}
+	while (current[0] == 'v' && current[1] == 'n')
+	{
+		std::stringstream vertexStream{ current.substr(3) };
+		MFvec3 normal;
+		std::string value;
+		for (auto axis{ 0 }; axis < 3; ++axis)
+		{
+			vertexStream >> value;
+			normal[axis] = std::stof(value);
+		}
+		normals.emplace_back(normal);
+		std::getline(fileStream, current);
+	}
+	while (current[0] != 'f')
+		std::getline(fileStream, current);
+	struct OBJface
+	{
+		MFu32 vertices[3];
+		MFu32 uvs[3];
+		MFu32 normals[3];
+	};
+	std::vector<OBJface> objFaces;
+	while (current[0] == 'f')
+	{
+		std::string indices{ current.substr(2) };
+		OBJface face;
+		for (auto point{ 0 }; point < 3; ++point)
+		{
+			std::string list{ indices.substr(0,indices.find_first_of(' ')) };
+			for (auto value{ 0 }; value < 3; ++value)
+			{
+				std::string index{ list.substr(0,list.find_first_of('/')) };
+				switch (value)
+				{
+				case 0:
+					face.vertices[point] = std::stoi(index);
+					break;
+				case 1:
+					face.uvs[point] = std::stoi(index);
+					break;
+				case 2:
+					face.normals[point] = std::stoi(index);
+					break;
+				}
+				list = list.substr(list.find_first_of('/') + 1);
+			}
+			indices = indices.substr(indices.find_first_of(' ') + 1);
+		}
+		objFaces.emplace_back(face);
+		std::getline(fileStream, current);
+	}
+	//prepare obj data into render format
+	std::vector<MFvec3> finalVertices;
+	std::vector<MFvec2> finalUVs;
+	std::vector<MFvec3> finalNormals;
+	std::vector<MFu32> finalIndices;
+	MFu32 index{ 0 };
+	for (const auto& face : objFaces)
+	{
+		finalVertices.emplace_back(vertices[face.vertices[0]-1]);
+		finalVertices.emplace_back(vertices[face.vertices[1]-1]);
+		finalVertices.emplace_back(vertices[face.vertices[2]-1]);
+		finalUVs.emplace_back(uvs[face.uvs[0] - 1]);
+		finalUVs.emplace_back(uvs[face.uvs[1] - 1]);
+		finalUVs.emplace_back(uvs[face.uvs[2] - 1]);
+		finalNormals.emplace_back(normals[face.normals[0]-1]);
+		finalNormals.emplace_back(normals[face.normals[1]-1]);
+		finalNormals.emplace_back(normals[face.normals[2]-1]);		
+		finalIndices.emplace_back(index++);
+		finalIndices.emplace_back(index++);
+		finalIndices.emplace_back(index++);
+	}		
+	//convert render format to opengex vertex arrays
+	std::ofstream gexFile{ TEST_PATH + "Sphere.gex" };
+	std::string line{ "GeometryObject $Sphere //Sphere\n" };
+	gexFile.write(line.c_str(), line.size());
+	line = "{\n\tMesh (primitive = \"triangles\", lod=0)\n";	
+	gexFile.write(line.c_str(), line.size());
+	//write position data
+	line = "\t{\n\t\tVertexArray (attrib = \"position\")\n";
+	gexFile.write(line.c_str(), line.size());
+	line = "\t\t{\n\t\t\tfloat[3]\n\t\t\t{\n\t\t\t\t";
+	gexFile.write(line.c_str(), line.size());	
+	int writeCount = 0;
+	for (const auto& vertex : finalVertices)
+	{
+		++writeCount;
+		line = "{ " + std::to_string(vertex.x) + ", " + std::to_string(vertex.y) + ", " + std::to_string(vertex.z) + "} ";
+		if (&vertex != finalVertices.data() + finalVertices.size() - 1)
+			line += ", ";
+		if (!(writeCount % 100))
+			line += "\n\t\t\t\t";
+		gexFile.write(line.c_str(), line.size());		
+	}
+	DLOG(34, writeCount << " vertices written");
+	line = "\n\t\t\t}\n\t\t}";
+	gexFile.write(line.c_str(), line.size());
+	//write normal data
+	line = "\n\t\tVertexArray (attrib = \"normal\")\n";
+	gexFile.write(line.c_str(), line.size());
+	line = "\t\t{\n\t\t\tfloat[3]\n\t\t\t{\n\t\t\t\t";
+	gexFile.write(line.c_str(), line.size());
+	writeCount = 0;
+	for (const auto& normal: finalNormals)
+	{
+		++writeCount;
+		line = "{ " + std::to_string(normal.x) + ", " + std::to_string(normal.y) + ", " + std::to_string(normal.z) + "} ";
+		if (&normal != finalNormals.data() + finalNormals.size() - 1)
+			line += ", ";
+		if (!(writeCount % 100))
+			line += "\n\t\t\t\t";
+		gexFile.write(line.c_str(), line.size());
+	}
+	DLOG(34, writeCount << " normals written");
+	line = "\n\t\t\t}\n\t\t}";
+	gexFile.write(line.c_str(), line.size());
+	//write uv data
+	line = "\n\t\tVertexArray (attrib = \"texcoord\")\n";
+	gexFile.write(line.c_str(), line.size());
+	line = "\t\t{\n\t\t\tfloat[2]\n\t\t\t{\n\t\t\t\t";
+	gexFile.write(line.c_str(), line.size());
+	writeCount = 0;	
+	for (const auto& uv : finalUVs)
+	{
+		++writeCount;
+		line = "{ " + std::to_string(uv.x) + ", " + std::to_string(uv.y) + "} ";
+		if(&uv != finalUVs.data() + finalUVs.size() - 1)
+			line += ", ";
+		if (!(writeCount % 100))
+			line += "\n\t\t\t\t";
+		gexFile.write(line.c_str(), line.size());
+	}
+	DLOG(34, writeCount << " uvs written");
+	line = "\n\t\t\t}\n\t\t}";
+	gexFile.write(line.c_str(), line.size());
+	//write index data
+	line = "\n\t\IndexArray\n";
+	gexFile.write(line.c_str(), line.size());
+	line = "\t\t{\n\t\t\tuint32[3]\n\t\t\t{\n\t\t\t\t";
+	gexFile.write(line.c_str(), line.size());
+	writeCount = 0;
+	for (auto index{ 0 }; index < finalIndices.size(); index+=3)
+	{
+		++writeCount;
+		line = "{ " + std::to_string(finalIndices[index + 0]) + ", " +std::to_string(finalIndices[index + 1]) + ", " + std::to_string(finalIndices[index + 2]) + "}";
+		if (index + 3 < finalIndices.size())
+			line += ", ";
+		if (!(writeCount % 100))
+			line += "\n\t\t\t\t";
+		gexFile.write(line.c_str(), line.size());
+	}
+	DLOG(34, writeCount << " indices written");
+	line = "\n\t\t\t}\n\t\t}";
+	gexFile.write(line.c_str(), line.size());
+	//close up file
+	line = "\n\t}\n}";
+	gexFile.write(line.c_str(), line.size());	
+	gexFile.close();
+}
+
 void CreateWorldMDD(MFbool buildMDDs)
 {
 	auto func{ 0 };
@@ -248,6 +448,9 @@ int main()
 	//ddl start up
 	Initialize_GEXTypes();
 	Initialize_GEXGenerators();
+
+	DISABLE
+		OBJtoGEX("C:\\Users\\Droll\\Desktop\\Game\\Reign\\Models\\Sphere.obj");
 
 	//persistence tests
 	DISABLE
