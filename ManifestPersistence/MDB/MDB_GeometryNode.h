@@ -1,8 +1,11 @@
 #pragma once
 
+#include <ManifestParser/MDD/MDD_GameObject.h>
+
 #include "MDB_Table.h"
 #include "MDB_Material.h"
 #include "MDB_GeometryObject.h"
+
 
 using namespace Manifest_Parser;
 
@@ -34,11 +37,12 @@ namespace Manifest_Persistence
 		PrimaryKey nodeID = KEY_NOT_PRESENT;
 		ForeignKey objectRefID = KEY_NOT_PRESENT;
 		ForeignKey materialRefID = KEY_NOT_PRESENT;
-		MDB_Transform* transform = BUFFER_NOT_PRESENT;
+		ForeignKey gameObjectID = KEY_NOT_PRESENT;
+		MDB_Transform* transform = BUFFER_NOT_PRESENT;		
 		//const uint32_t morphWeight;
 	};
 	typedef DatabaseBuildTable<MDB_GeometryNode> GeometryNodeBuildTable;
-	ForeignKey TableEntry(const DDL_Structure& structure,const GeometryObjectBuildTable& geometryObjectBuildTable, const MaterialBuildTable& materialBuildTable, GeometryNodeBuildTable& geometryNodeBuildTable, ObjectRefBuildTable& objectRefBuildTable, MaterialRefBuildTable& materialRefBuildTable);
+	ForeignKey TableEntry(const ScratchPadVector<DDL_Structure*>& gameObjectStructures,const DDL_Structure& structure,const GeometryObjectBuildTable& geometryObjectBuildTable, const MaterialBuildTable& materialBuildTable, GeometryNodeBuildTable& geometryNodeBuildTable, ObjectRefBuildTable& objectRefBuildTable, MaterialRefBuildTable& materialRefBuildTable);
 
 	struct Manifest_GeometryNode
 	{

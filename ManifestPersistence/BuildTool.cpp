@@ -45,7 +45,7 @@ void Manifest_Persistence::BuildResourceDatabase(const DDL_File& file, ManifestR
 	for (const auto& material : materials)
 		TableEntry(*material, database.materialBuildTable, database.textureBuildTable);	
 	for (const auto& geometryNode : geometryNodes)
-		TableEntry(*geometryNode, database.geometryObjectBuildTable, database.materialBuildTable, database.geometryNodeBuildTable, database.objectRefBuildTable, database.materialRefBuildTable);
+		TableEntry(gameObjects ,*geometryNode, database.geometryObjectBuildTable, database.materialBuildTable, database.geometryNodeBuildTable, database.objectRefBuildTable, database.materialRefBuildTable);
 	for(const auto& physicsNode : physicsNodes)
 		TableEntry(gameObjects, physicsNode, database.colliderBuildTable);
 	//rigid bodies are converted into their respective game framework formats

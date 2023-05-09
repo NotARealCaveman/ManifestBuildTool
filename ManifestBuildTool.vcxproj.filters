@@ -270,6 +270,9 @@
     <ClCompile Include="ManifestPersistence\MDB\MDB_Rigidbody.cpp">
       <Filter>Source Files\Persistence\MDB</Filter>
     </ClCompile>
+    <ClCompile Include="ManifestPersistence\MDB\MDB_GameObject.cpp">
+      <Filter>Source Files\Persistence\MDB</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EXPERIMENTAL\EXPERIMENTAL_RUNTIME_DATA_STRUCTURES.h">
@@ -529,6 +532,9 @@
     </ClInclude>
     <ClInclude Include="ManifestPersistence\MDB\Binary\Binary_Rigidbody.h">
       <Filter>Header Files\Persistence\MDB\Binary</Filter>
+    </ClInclude>
+    <ClInclude Include="ManifestPersistence\MDB\MDB_GameObject.h">
+      <Filter>Header Files\Persistence\MDB</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

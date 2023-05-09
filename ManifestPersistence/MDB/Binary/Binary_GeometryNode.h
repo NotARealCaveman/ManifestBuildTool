@@ -12,6 +12,7 @@ namespace Manifest_Persistence
 			PrimaryKey nodeID;
 			ForeignKey geometryID;
 			ForeignKey materialID;
+			ForeignKey objectID;
 			
 		}header;
 		MFfloat* payload;//represents a transform if present

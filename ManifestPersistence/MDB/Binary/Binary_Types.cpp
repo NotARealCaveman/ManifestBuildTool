@@ -65,13 +65,14 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_GeometryNode& geometryNode, c
 	binaryGeometryNode.header.nodeID = geometryNode.nodeID;
 	binaryGeometryNode.header.geometryID = *objectRefBuildTable.entries[geometryNode.objectRefID].geometryIDs;
 	binaryGeometryNode.header.materialID = *materialRefBuildTable.entries[geometryNode.materialRefID].materialIDs;
+	binaryGeometryNode.header.objectID = geometryNode.gameObjectID;
 	if (geometryNode.transform != BUFFER_NOT_PRESENT)
 	{		
 		//binaryGeometryNode.payload = new MFfloat[TransformSize];
 		binaryGeometryNode.payload = New<MFfloat,ScratchPad< MFfloat>>(TransformSize);
 		memcpy(binaryGeometryNode.payload, geometryNode.transform, binaryGeometryNode.header.payloadSize = sizeof(MFfloat) * TransformSize);
 	}	
-	DLOG(32, "Converting mdb_gn with nID, gID, mtlID: " << geometryNode.nodeID <<" " << binaryGeometryNode.header.geometryID << " " << binaryGeometryNode.header.materialID);
+	DLOG(32, "Converting mdb_gn with nID, gID, mtlID, objectID: " << geometryNode.nodeID <<" " << binaryGeometryNode.header.geometryID << " " << binaryGeometryNode.header.materialID << " " << binaryGeometryNode.header.objectID);
 	return EntrySize(binaryGeometryNode);
 };
 
