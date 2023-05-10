@@ -62,17 +62,35 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_GeometryObject& geometryObjec
 //GeometryNode
 size_t Manifest_Persistence::Convert_MDB(const MDB_GeometryNode& geometryNode, const ObjectRefBuildTable& objectRefBuildTable, const MaterialRefBuildTable& materialRefBuildTable, Binary_GeometryNode& binaryGeometryNode)
 {		
+	static constexpr MFfloat identity[TransformSize]
+	{
+		1.0f,0.0f,0.0f,0.0f,
+		0.0f,1.0f,0.0f,0.0f,
+		0.0f,0.0f,1.0f,0.0f,
+		0.0f,0.0f,0.0f,1.0f
+	};
+	constexpr auto width{ sizeof(PrimaryKey) / sizeof(float) };
+	const auto allocation{ width * geometryNode.gameObjectReferences.size() };
+
 	binaryGeometryNode.header.nodeID = geometryNode.nodeID;
 	binaryGeometryNode.header.geometryID = *objectRefBuildTable.entries[geometryNode.objectRefID].geometryIDs;
-	binaryGeometryNode.header.materialID = *materialRefBuildTable.entries[geometryNode.materialRefID].materialIDs;
-	binaryGeometryNode.header.objectID = geometryNode.gameObjectID;
-	if (geometryNode.transform != BUFFER_NOT_PRESENT)
-	{		
-		//binaryGeometryNode.payload = new MFfloat[TransformSize];
-		binaryGeometryNode.payload = New<MFfloat,ScratchPad< MFfloat>>(TransformSize);
-		memcpy(binaryGeometryNode.payload, geometryNode.transform, binaryGeometryNode.header.payloadSize = sizeof(MFfloat) * TransformSize);
-	}	
-	DLOG(32, "Converting mdb_gn with nID, gID, mtlID, objectID: " << geometryNode.nodeID <<" " << binaryGeometryNode.header.geometryID << " " << binaryGeometryNode.header.materialID << " " << binaryGeometryNode.header.objectID);
+	binaryGeometryNode.header.materialID = *materialRefBuildTable.entries[geometryNode.materialRefID].materialIDs;		
+	//allocate geoemtry node payload - model space transform will always be supplied first followed by any references
+	//identity matrix used if none supplied
+	//floats/u64 worth of storage are allocated per game object ID to provide enough room for entire ID
+	binaryGeometryNode.header.payloadSize = sizeof(MFfloat) * (TransformSize + allocation);
+	binaryGeometryNode.payload = New<MFfloat, ScratchPad< MFfloat>>(TransformSize + allocation);
+	if (geometryNode.transform != BUFFER_NOT_PRESENT)		
+		memcpy(binaryGeometryNode.payload, geometryNode.transform,  sizeof(MFfloat) * TransformSize);				
+	else
+		memcpy(binaryGeometryNode.payload, &identity[0], sizeof(MFfloat) * TransformSize);
+	memcpy(&binaryGeometryNode.payload[TransformSize], geometryNode.gameObjectReferences.data(), sizeof(MFfloat) * allocation);
+
+	constexpr auto base{ sizeof(MFfloat) * TransformSize };
+	const auto& total{ binaryGeometryNode.header.payloadSize };
+	const auto offset = total - base;
+	const auto elements = offset / sizeof(PrimaryKey);
+	DLOG(32, "Converting mdb_gn with nID, gID, mtlID " << geometryNode.nodeID <<" " << binaryGeometryNode.header.geometryID << " " << binaryGeometryNode.header.materialID <<" object has " << ((binaryGeometryNode.header.payloadSize-sizeof(MFfloat)*TransformSize))/sizeof(PrimaryKey) <<" references.");
 	return EntrySize(binaryGeometryNode);
 };
 

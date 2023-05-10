@@ -2,6 +2,7 @@
 #include <ManifestParser/OpenGEX/GEX_Metric.h>
 #include <ManifestUtility/DebugLogger.h>
 
+#include "MDB/MDB_GameObject.h"
 #include "Manifest_DatabaseBuilder.h"
 
 using namespace Manifest_Parser;

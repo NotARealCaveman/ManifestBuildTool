@@ -43,29 +43,18 @@ ForeignKey Manifest_Persistence::TableEntry(const DDL_Structure& structure, cons
 
 	return entry.materialRefID;
 }
-ForeignKey Manifest_Persistence::TableEntry(const ScratchPadVector<DDL_Structure*>& gameObjectStructures, const DDL_Structure& structure, const GeometryObjectBuildTable& geometryObjectTable, const MaterialBuildTable& materialBuildTable, GeometryNodeBuildTable& geometryNodeBuildTable, ObjectRefBuildTable& objectRefBuildTable, MaterialRefBuildTable& materialRefBuildTable)
+ForeignKey Manifest_Persistence::TableEntry(const DDL_Structure& structure,const GeometryObjectBuildTable& geometryObjectBuildTable, const MaterialBuildTable& materialBuildTable, GeometryNodeBuildTable& geometryNodeBuildTable, ObjectRefBuildTable& objectRefBuildTable, MaterialRefBuildTable& materialRefBuildTable)
 {
 	MDB_GeometryNode& entry = geometryNodeBuildTable.entries.emplace_back();
 	entry.nodeID = geometryNodeBuildTable.nextTableIndex++;
 	geometryNodeBuildTable.mappedEntryKeys.insert({ structure.name.c_str(), entry.nodeID });
-	for (const auto& gameObject : gameObjectStructures)
-	{
-		const auto& object{ HeapData<MDD_GameObject>(*gameObject) };
-		//physics references are first in the list
-		const auto& ref{ object.objectReferences.referenceNames[1] };
-		if (ref == structure.name)
-		{
-			entry.gameObjectID = *reinterpret_cast<MFu64*>(object.objectID.data.typeHeap);
-			break;
-		}
-	}
 	for (const auto& substructure : structure.subSutructres)
 	{
 		switch (ExtractStructureType(substructure->identifier.c_str()))
 		{
 			case GEX_BufferTypes::GEX_ObjectRef:
 			{
-				entry.objectRefID = TableEntry(*substructure, geometryObjectTable, objectRefBuildTable);
+				entry.objectRefID = TableEntry(*substructure, geometryObjectBuildTable, objectRefBuildTable);
 				break;
 			}
 			case GEX_BufferTypes::GEX_MaterialRef:
