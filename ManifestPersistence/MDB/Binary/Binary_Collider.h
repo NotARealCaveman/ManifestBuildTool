@@ -12,7 +12,7 @@ namespace Manifest_Persistence
 			MFu64 objectID;
 			MFu8 colliderType;			
 		}header;
-		MFfloat* payload;//represents a transform if present
+		MFfloat* payload;
 	};
 	//see Buffer_Types.cpp for details
 	size_t Convert_MDB(const MDB_Collider& collider, Binary_Collider& binaryCollider);

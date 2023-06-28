@@ -37,7 +37,7 @@ DDL_Structure* MDD_Collider::Build(const std::string_view& partitionedStructureV
 		switch (ExtractStructureType(subStructure))
 		{
 			case DDL_BufferTypes::DDL_float:
-			{
+			{				
 				colliderData.Build(subStructure, referenceMap);
 				break;
 			}

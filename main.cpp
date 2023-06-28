@@ -219,7 +219,7 @@ void OBJtoGEX(const std::string& objFile)
 	std::getline(fileStream, current);
 	while (current[0] != 'v')
 		std::getline(fileStream, current);
-	while (current[0] == 'v' && current[1] != 't')
+	while (current[0] == 'v' && current[1] != 't' && current[1] != 'n')
 	{
 		std::stringstream vertexStream{ current.substr(2) };
 		MFvec3 vertex;
@@ -269,7 +269,7 @@ void OBJtoGEX(const std::string& objFile)
 	std::vector<OBJface> objFaces;
 	while (current[0] == 'f')
 	{
-		std::string indices{ current.substr(2) };
+		std::string indices{ current.substr(2).data()};
 		OBJface face;
 		for (auto point{ 0 }; point < 3; ++point)
 		{
@@ -277,6 +277,11 @@ void OBJtoGEX(const std::string& objFile)
 			for (auto value{ 0 }; value < 3; ++value)
 			{
 				std::string index{ list.substr(0,list.find_first_of('/')) };
+				if (index.empty())
+				{
+					list = list.substr(list.find_first_of('/') + 1);
+					continue;
+				}
 				switch (value)
 				{
 				case 0:
@@ -304,22 +309,31 @@ void OBJtoGEX(const std::string& objFile)
 	MFu32 index{ 0 };
 	for (const auto& face : objFaces)
 	{
-		finalVertices.emplace_back(vertices[face.vertices[0]-1]);
-		finalVertices.emplace_back(vertices[face.vertices[1]-1]);
-		finalVertices.emplace_back(vertices[face.vertices[2]-1]);
-		finalUVs.emplace_back(uvs[face.uvs[0] - 1]);
-		finalUVs.emplace_back(uvs[face.uvs[1] - 1]);
-		finalUVs.emplace_back(uvs[face.uvs[2] - 1]);
-		finalNormals.emplace_back(normals[face.normals[0]-1]);
-		finalNormals.emplace_back(normals[face.normals[1]-1]);
-		finalNormals.emplace_back(normals[face.normals[2]-1]);		
+		if (vertices.size())
+		{
+			finalVertices.emplace_back(vertices[face.vertices[0] - 1]);
+			finalVertices.emplace_back(vertices[face.vertices[1] - 1]);
+			finalVertices.emplace_back(vertices[face.vertices[2] - 1]);
+		}
+		if (uvs.size())
+		{
+			finalUVs.emplace_back(uvs[face.uvs[0] - 1]);
+			finalUVs.emplace_back(uvs[face.uvs[1] - 1]);
+			finalUVs.emplace_back(uvs[face.uvs[2] - 1]);
+		}
+		if (normals.size())
+		{
+			finalNormals.emplace_back(normals[face.normals[0] - 1]);
+			finalNormals.emplace_back(normals[face.normals[1] - 1]);
+			finalNormals.emplace_back(normals[face.normals[2] - 1]);
+		}		
 		finalIndices.emplace_back(index++);
 		finalIndices.emplace_back(index++);
 		finalIndices.emplace_back(index++);
 	}		
 	//convert render format to opengex vertex arrays
-	std::ofstream gexFile{ TEST_PATH + "Sphere.gex" };
-	std::string line{ "GeometryObject $Sphere //Sphere\n" };
+	std::ofstream gexFile{ TEST_PATH + "Capsule.gex" };
+	std::string line{ "GeometryObject $Capsule //Capsule\n" };
 	gexFile.write(line.c_str(), line.size());
 	line = "{\n\tMesh (primitive = \"triangles\", lod=0)\n";	
 	gexFile.write(line.c_str(), line.size());
@@ -449,8 +463,14 @@ int main()
 	Initialize_GEXTypes();
 	Initialize_GEXGenerators();
 
+	
 	DISABLE
+	{		
+		
 		OBJtoGEX("C:\\Users\\Droll\\Desktop\\Game\\Reign\\Models\\Sphere.obj");
+		OBJtoGEX("D:\\Users\\Droll\\Desktop\\Game\\Testing\\OBJ-_gex\\Capsule.obj");
+	}
+
 
 	//persistence tests
 	DISABLE
@@ -459,7 +479,7 @@ int main()
 		ImportAndTestWorldDatabase();
 	//DISABLE
 		BuildAndExportResourceDatabase();
-	//DISABLE
+	DISABLE
 		ImportAndTestResourceDatabase();	
 	
 	return 0;

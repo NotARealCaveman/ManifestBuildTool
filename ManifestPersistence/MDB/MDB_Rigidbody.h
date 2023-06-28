@@ -1,5 +1,4 @@
 #pragma once
-
 #include <ManifestGLFramework/ManifestMath/Quaternion.h>
 #include <ManifestGLFramework/ManifestMath/Point3.h>
 
