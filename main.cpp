@@ -421,25 +421,26 @@ void OBJtoGEX(const std::string& objFile)
 
 void CreateWorldMDD(MFbool buildMDDs)
 {
-	auto func{ 0 };
-	auto seed{ 0 };
-	auto nChunks{ 1 };
-	auto mChunks{ 1 };
-	auto hChunks{ 1 };
-	auto lod{ 1 };
-	std::cout << "nChunks: ";
-	std::cin >> nChunks;
-	std::cout << "mChunks: ";
-	std::cin >> mChunks;
-	std::cout << "Max LOD(0-3): ";
-	std::cin >> lod;
-	std::cout << "seed: ";
-	std::cin >> seed;
-	std::cout << "Density Function(0-3): ";
-	std::cin >> func;
-	auto map{ GenerateVoxelMap(0,lod,nChunks,mChunks,hChunks,func) };
 	if (buildMDDs)
 	{
+		auto func{ 0 };
+		auto seed{ 0 };
+		auto nChunks{ 1 };
+		auto mChunks{ 1 };
+		auto hChunks{ 1 };
+		auto lod{ 1 };
+		std::cout << "nChunks: ";
+		std::cin >> nChunks;
+		std::cout << "mChunks: ";
+		std::cin >> mChunks;
+		std::cout << "Max LOD(0-3): ";
+		std::cin >> lod;
+		std::cout << "seed: ";
+		std::cin >> seed;
+		std::cout << "Density Function(0-3): ";
+		std::cin >> func;
+		auto map{ GenerateVoxelMap(0,lod,nChunks,mChunks,hChunks,func) };
+
 		ExportVoxelMapMDD(TEST_PATH + TEST_VOXELMAP, nChunks, mChunks, hChunks, lod, map.field);
 		//currently unused
 		ExportTerrainMDD(TEST_PATH + TEST_TERRAIN, nChunks, mChunks, hChunks, lod, map.field);
@@ -473,11 +474,11 @@ int main()
 
 
 	//persistence tests
-	DISABLE
+	//DISABLE
 		CreateWorldMDD(true);
 	DISABLE
 		ImportAndTestWorldDatabase();
-	//DISABLE
+	DISABLE
 		BuildAndExportResourceDatabase();
 	DISABLE
 		ImportAndTestResourceDatabase();	
