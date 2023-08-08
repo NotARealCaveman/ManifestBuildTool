@@ -474,11 +474,11 @@ int main()
 
 
 	//persistence tests
-	//DISABLE
+	DISABLE
 		CreateWorldMDD(true);
 	DISABLE
 		ImportAndTestWorldDatabase();
-	DISABLE
+	//DISABLE
 		BuildAndExportResourceDatabase();
 	DISABLE
 		ImportAndTestResourceDatabase();	

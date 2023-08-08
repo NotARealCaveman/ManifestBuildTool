@@ -11,9 +11,15 @@ namespace Manifest_Parser
 	//MDB/Binary physics nodes are to be repurposed to be an entire collection of the physics node properties
 	struct MDD_PhysicsNode : public RegisteredBuilder
 	{
+		struct PropertyList {
+			static constexpr int DYNAMIC{ 0 };
+			static const std::map<std::string, uint32_t> typeProperties;
+		};
 		DDL_Structure* Build(const std::string_view& partitionedStructureView, DDL_ReferenceMap& referenceMap)final;
 		//substructures
 		MDD_Collider collider;
 		MDD_RigidBodyParams rigidBodyParams;
+		//nodes are static by default
+		MFbool isDynamic{ false };
 	};
 }

@@ -24,9 +24,9 @@ namespace Manifest_Parser
 	{
 		{"orientation",RIGID_BODY_PARAMS::ORIENTATION},
 		{"position",RIGID_BODY_PARAMS::POSITION},		
-	{"linearAccelaration",RIGID_BODY_PARAMS::ACCELARATION},
-	{"linearVelocity",RIGID_BODY_PARAMS::LINEAR_VELOCITY},
-	{"angularVelocity",RIGID_BODY_PARAMS::ANGULAR_VELOCITY},
+		{"linearAccelaration",RIGID_BODY_PARAMS::ACCELARATION},
+		{"linearVelocity",RIGID_BODY_PARAMS::LINEAR_VELOCITY},
+		{"angularVelocity",RIGID_BODY_PARAMS::ANGULAR_VELOCITY},
 		{"appliedForce",RIGID_BODY_PARAMS::APPLIED_FORCE},
 		{"appliedTorque",RIGID_BODY_PARAMS::APPLIED_TORQUE},
 		{"iMass",RIGID_BODY_PARAMS::IMASS},

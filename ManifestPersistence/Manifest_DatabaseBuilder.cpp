@@ -23,6 +23,7 @@ void Manifest_Persistence::ExportBinaryResourceDatabase(const ManifestResourceDa
 	ExportBinaryTable(exportDatabase.binaryTextureTable, exportFile);
 	ExportBinaryTable(exportDatabase.binaryGeometryObjectTable, exportFile);
 	ExportBinaryTable(exportDatabase.binaryGeometryNodeTable, exportFile);
+
 	ExportBinaryTable(exportDatabase.binaryRigidBodyTable, exportFile);
 	ExportBinaryTable(exportDatabase.binaryColliderTable, exportFile);
 }

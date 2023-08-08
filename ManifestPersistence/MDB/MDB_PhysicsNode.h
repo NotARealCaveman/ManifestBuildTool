@@ -15,6 +15,7 @@ namespace Manifest_Persistence
 		PrimaryKey physicsNodeID;
 		ForeignKey rigidBodyID;
 		ForeignKey colliderID;
+		MFbool dynamic;
 	};
 	using PhysicsNodeBuildTable = DatabaseBuildTable<MDB_PhysicsNode>;	
 }

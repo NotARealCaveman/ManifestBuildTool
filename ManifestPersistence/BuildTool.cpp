@@ -43,13 +43,10 @@ void Manifest_Persistence::BuildResourceDatabase(const DDL_File& file, ManifestR
 	for (const auto& geometryObject : geometryObjects)
 		TableEntry(*geometryObject, database.geometryObjectBuildTable, database.meshBuildTable, database.vertexBuildTables, database.indexBuildTable);	
 	for (const auto& material : materials)
-		TableEntry(*material, database.materialBuildTable, database.textureBuildTable);	
-	//DO NOT BUILD NODES HERE - USE GAME OBJECT TABLE ENTRIES
-	/*
-	for (const auto& geometryNode : geometryNodes)
-		TableEntry(*geometryNode, database.geometryObjectBuildTable, database.materialBuildTable, database.geometryNodeBuildTable, database.objectRefBuildTable, database.materialRefBuildTable);
-		*/
+		TableEntry(*material, database.materialBuildTable, database.textureBuildTable);		
 	TableEntry(gameObjects, geometryNodes, database.geometryObjectBuildTable, database.materialBuildTable, database.geometryNodeBuildTable, database.objectRefBuildTable, database.materialRefBuildTable);
+	//build physics table entries - all physics node will have a collider, not all physics nodes will be tied to a rigid body
+	//rigid bodies only exist for objects tagged dynamic. a static object will have only the collider placed into the table
 	for(const auto& physicsNode : physicsNodes)
 		TableEntry(gameObjects, physicsNode, database.colliderBuildTable);
 	//rigid bodies are converted into their respective game framework formats
