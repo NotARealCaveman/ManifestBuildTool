@@ -90,16 +90,28 @@ void ImportAndTestResourceDatabase()
 			std::cout << importNode.payload[index] << ", ";
 		std::cout << std::endl;					
 	}
-	for (auto i = 0; i < binaryDatabase.binaryRigidBodyTable.header.totalEntries; ++i)
+	for (auto i = 0; i < binaryDatabase.binaryDynamicRigidBodyTable.header.totalEntries; ++i)
 	{
-		const auto& rigidBodies{ binaryDatabase.binaryRigidBodyTable[i] };
-		DLOG(34, "number rigid bodies: " << rigidBodies.header.bodyCount);
+		const auto& rigidBodies{ binaryDatabase.binaryDynamicRigidBodyTable[i] };
+		DLOG(34, "number dynamic rigid bodies: " << rigidBodies.header.bodyCount);
 		for (auto body{ 0 }; body < rigidBodies.header.bodyCount; ++body)
 		{
 			auto& payload{ rigidBodies.payload };			
 			DLOG(34 + (body % 3), "Body.orientation: " << reinterpret_cast<const MFquaternion&>(rigidBodies.payload[sizeof(MFquaternion) * body]));			
 			DLOG(34 + (body % 3), "Body.position: " << reinterpret_cast<const MFpoint3&>(rigidBodies.payload[rigidBodies.header.positionOffset + sizeof(MFpoint3) * body]));			
 			DLOG(34 + (body % 3), "Body.uuid: " << reinterpret_cast<const MFu64&>(rigidBodies.payload[rigidBodies.header.objectIDOffset+ sizeof(MFpoint3) * body]));
+		}
+	}
+	for (auto i = 0; i < binaryDatabase.binaryStaticRigidBodyTable.header.totalEntries; ++i)
+	{
+		const auto& rigidBodies{ binaryDatabase.binaryStaticRigidBodyTable[i] };
+		DLOG(34, "number static rigid bodies: " << rigidBodies.header.bodyCount);
+		for (auto body{ 0 }; body < rigidBodies.header.bodyCount; ++body)
+		{
+			auto& payload{ rigidBodies.payload };
+			DLOG(34 + (body % 3), "Body.orientation: " << reinterpret_cast<const MFquaternion&>(rigidBodies.payload[sizeof(MFquaternion) * body]));
+			DLOG(34 + (body % 3), "Body.position: " << reinterpret_cast<const MFpoint3&>(rigidBodies.payload[rigidBodies.header.positionOffset + sizeof(MFpoint3) * body]));
+			DLOG(34 + (body % 3), "Body.uuid: " << reinterpret_cast<const MFu64&>(rigidBodies.payload[rigidBodies.header.objectIDOffset + sizeof(MFpoint3) * body]));
 		}
 	}
 	bImport.seekg(std::ios::beg);
@@ -480,7 +492,7 @@ int main()
 		ImportAndTestWorldDatabase();
 	//DISABLE
 		BuildAndExportResourceDatabase();
-	DISABLE
+	//DISABLE
 		ImportAndTestResourceDatabase();	
 	
 	return 0;

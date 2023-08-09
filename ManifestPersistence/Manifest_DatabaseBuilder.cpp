@@ -14,8 +14,12 @@ void Manifest_Persistence::ExportBinaryResourceDatabase(const ManifestResourceDa
 	exportDatabase.binaryTextureTable = BinaryTableConversion<Binary_Texture>(databaseBuild.textureBuildTable);
 	exportDatabase.binaryGeometryObjectTable = BinaryTableConversion<Binary_GeometryObject>(databaseBuild.geometryObjectBuildTable);
 	exportDatabase.binaryGeometryNodeTable = BinaryTableConversion<Binary_GeometryNode>(databaseBuild.geometryNodeBuildTable, databaseBuild.objectRefBuildTable, databaseBuild.materialRefBuildTable);
-	exportDatabase.binaryRigidBodyTable = BinaryTableConversion<Binary_RigidBody>(databaseBuild.rigidBodyBuildTable);
-	exportDatabase.binaryColliderTable = BinaryTableConversion<Binary_Collider>(databaseBuild.colliderBuildTable);
+	//dynamic->static
+	exportDatabase.binaryDynamicRigidBodyTable = BinaryTableConversion<Binary_RigidBody>(databaseBuild.dynamicRigidBodyBuildTable);
+	exportDatabase.binaryStaticRigidBodyTable = BinaryTableConversion<Binary_RigidBody>(databaseBuild.staticRigidBodyBuildTable);
+	//dynamic->static
+	exportDatabase.binaryDynamicColliderTable = BinaryTableConversion<Binary_Collider>(databaseBuild.dynamicColliderBuildTable);
+	exportDatabase.binaryStaticColliderTable = BinaryTableConversion<Binary_Collider>(databaseBuild.staticColliderBuildTable);
 	//export binary tables to file
 	//TODO: settle on table ordering as ideally the entire table will be loaded into memory and a file header will be parsed to build the various table entrie payloads
 	ExportBinaryTable(exportDatabase.binaryMeshTable, exportFile);
@@ -23,9 +27,12 @@ void Manifest_Persistence::ExportBinaryResourceDatabase(const ManifestResourceDa
 	ExportBinaryTable(exportDatabase.binaryTextureTable, exportFile);
 	ExportBinaryTable(exportDatabase.binaryGeometryObjectTable, exportFile);
 	ExportBinaryTable(exportDatabase.binaryGeometryNodeTable, exportFile);
-
-	ExportBinaryTable(exportDatabase.binaryRigidBodyTable, exportFile);
-	ExportBinaryTable(exportDatabase.binaryColliderTable, exportFile);
+	//dynamic->static
+	ExportBinaryTable(exportDatabase.binaryDynamicRigidBodyTable, exportFile);
+	ExportBinaryTable(exportDatabase.binaryStaticRigidBodyTable, exportFile);
+	//dynamic->static
+	ExportBinaryTable(exportDatabase.binaryDynamicColliderTable, exportFile);
+	ExportBinaryTable(exportDatabase.binaryStaticColliderTable, exportFile);
 }
 
 void Manifest_Persistence::ExportBinaryTerrainDatabase(const ManifestWorldDatabaseBuilder& databaseBuild, std::ofstream& exportFile)

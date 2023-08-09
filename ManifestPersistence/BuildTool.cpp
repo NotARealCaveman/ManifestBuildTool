@@ -7,7 +7,8 @@ void Manifest_Persistence::BuildResourceDatabase(const DDL_File& file, ManifestR
 	ScratchPadVector<DDL_Structure*>geometryObjects;
 	ScratchPadVector<DDL_Structure*> materials;
 	ScratchPadVector<DDL_Structure*> geometryNodes;	
-	ScratchPadVector<DDL_Structure*> physicsNodes;
+	ScratchPadVector<DDL_Structure*> dynamicPhysicsNodes;
+	ScratchPadVector<DDL_Structure*> staticPhysicsNodes;
 	//currently only rigid body objects are supported. in the future this will need to be subdivided by object types
 	ScratchPadVector<DDL_Structure*> gameObjects;	
 	//get all top level build structures
@@ -21,16 +22,21 @@ void Manifest_Persistence::BuildResourceDatabase(const DDL_File& file, ManifestR
 			auto bufferType = mapEntry->second;
 			switch (bufferType)
 			{
-				case GEX_BufferTypes::GEX_GeometryObject:			geometryObjects.emplace_back(structure);
+				case GEX_BufferTypes::GEX_GeometryObject:	
+					geometryObjects.emplace_back(structure);
 					break;
 				case GEX_BufferTypes::GEX_Material:
 					materials.emplace_back(structure);
 					break;
 				case GEX_BufferTypes::GEX_GeometryNode:
-					geometryNodes.emplace_back(structure);			break;
-				case DDL_ExtendedTypes::MDD_PHYSICSNODE:
-					physicsNodes.emplace_back(structure);
+					geometryNodes.emplace_back(structure);	
 					break;
+				case DDL_ExtendedTypes::MDD_PHYSICSNODE:
+				{
+					const auto& node{ HeapData<MDD_PhysicsNode>(*structure) };
+					node.isDynamic ? dynamicPhysicsNodes.emplace_back(structure) : staticPhysicsNodes.emplace_back(structure);
+					break;
+				}
 				case DDL_ExtendedTypes::MDD_GAMEOBJECT:
 					gameObjects.emplace_back(structure);
 					break;
@@ -47,10 +53,13 @@ void Manifest_Persistence::BuildResourceDatabase(const DDL_File& file, ManifestR
 	TableEntry(gameObjects, geometryNodes, database.geometryObjectBuildTable, database.materialBuildTable, database.geometryNodeBuildTable, database.objectRefBuildTable, database.materialRefBuildTable);
 	//build physics table entries - all physics node will have a collider, not all physics nodes will be tied to a rigid body
 	//rigid bodies only exist for objects tagged dynamic. a static object will have only the collider placed into the table
-	for(const auto& physicsNode : physicsNodes)
-		TableEntry(gameObjects, physicsNode, database.colliderBuildTable);
+	for(const auto& physicsNode : dynamicPhysicsNodes)
+		TableEntry(gameObjects, physicsNode, database.dynamicColliderBuildTable);
+	for (const auto& physicsNode : staticPhysicsNodes)
+		TableEntry(gameObjects, physicsNode, database.staticColliderBuildTable);
 	//rigid bodies are converted into their respective game framework formats
-	TableEntry(gameObjects,physicsNodes, database.rigidBodyBuildTable);
+	TableEntry(gameObjects, dynamicPhysicsNodes, database.dynamicRigidBodyBuildTable);
+	TableEntry(gameObjects, staticPhysicsNodes, database.staticRigidBodyBuildTable);
 	
 }
 

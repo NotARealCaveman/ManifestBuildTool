@@ -22,9 +22,7 @@ ForeignKey Manifest_Persistence::TableEntry(const ScratchPadVector<DDL_Structure
 	auto& bodyIndex{ entry.bodyCount };
 	for (const auto& structure : physicsNodesStructures)
 	{			
-		const auto& physicsNode{ HeapData<MDD_PhysicsNode>(*structure) };
-		if (!physicsNode.isDynamic)
-			continue;
+		const auto& physicsNode{ HeapData<MDD_PhysicsNode>(*structure) };	
 		const auto& rigidBodyParams{ physicsNode.rigidBodyParams };			
 		DLOG(35, "Orientation read at: " << &rigidBodyParams.orientation.data.typeHeap);		
 		entry.orientation[bodyIndex] = *reinterpret_cast<const MFquaternion*>(rigidBodyParams.orientation.data.typeHeap);
