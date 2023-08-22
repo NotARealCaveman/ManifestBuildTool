@@ -61,13 +61,13 @@ namespace Manifest_Memory
 			generationReadFlags[generationIndex][readerId].isReading.store(true, std::memory_order_release);
 			Generation oldGeneration = currentGeneration;
 			//if guess was invalid - remove block and try again			
-			while (oldGeneration != (currentGeneration = globalGeneration.load(std::memory_order_acquire)))
+			while(oldGeneration != (currentGeneration = globalGeneration.load(std::memory_order_acquire)))
 			{
 				DLOG({ CONSOLE_COLOR::RED }, "inconsistent state detected!");
 				MFu32 oldIndex = generationIndex;
 				generationIndex = currentGeneration & RCU_MODULO;				
 				generationReadFlags[generationIndex][readerId].isReading.store(true, std::memory_order_release);
-				generationReadFlags[oldIndex][readerId].isReading.store(false, std::memory_order_relaxed);
+				generationReadFlags[oldIndex][readerId].isReading.store(false, std::memory_order_release);//removed relaxed,potential reorder
 				oldGeneration = currentGeneration;
 			}
 			//return a handle to the read-locked generation 
