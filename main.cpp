@@ -492,7 +492,7 @@ int main()
 		ImportAndTestWorldDatabase();
 	//DISABLE
 		BuildAndExportResourceDatabase();
-	//DISABLE
+	DISABLE
 		ImportAndTestResourceDatabase();	
 	
 	return 0;

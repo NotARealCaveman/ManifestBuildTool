@@ -6,6 +6,7 @@ using namespace Manifest_Persistence;
 //Rigidbodies - stores the rigidbody data separated by offsets. data arranged how framework expects it to be a straight memcpy
 size_t Manifest_Persistence::Convert_MDB(const MDB_Rigidbody& rigidBody,  Binary_RigidBody& binaryRigidBody)
 {
+	binaryRigidBody.header.dynamic = rigidBody.dynamic;
 	binaryRigidBody.header.bodyCount = rigidBody.bodyCount;
 	auto& payloadSize{ binaryRigidBody.header.payloadSize };	 
 	binaryRigidBody.header.positionOffset = payloadSize += sizeof(decltype(*rigidBody.orientation)) * rigidBody.bodyCount;
@@ -18,7 +19,7 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_Rigidbody& rigidBody,  Binary
 	binaryRigidBody.header.linearDampingOffset = payloadSize += sizeof(decltype(*rigidBody.iMass)) * rigidBody.bodyCount;
 	binaryRigidBody.header.angularDampingOffset = payloadSize += sizeof(decltype(*rigidBody.linearDamping)) * rigidBody.bodyCount;
 	binaryRigidBody.header.objectIDOffset = payloadSize += sizeof(decltype(*rigidBody.angularDamping)) * rigidBody.bodyCount;
-	payloadSize += sizeof(decltype(*rigidBody.objectID)) * rigidBody.bodyCount;
+	payloadSize += sizeof(decltype(*rigidBody.objectID)) * rigidBody.bodyCount;	
 	//store binary data
 	binaryRigidBody.payload = New<Byte>(payloadSize);	
 	const auto& header{ binaryRigidBody.header };
@@ -33,13 +34,13 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_Rigidbody& rigidBody,  Binary
 	memcpy(&payload[header.iMassOffset], rigidBody.iMass, header.linearDampingOffset - header.iMassOffset);
 	memcpy(&payload[header.linearDampingOffset], rigidBody.linearDamping, header.angularDampingOffset - header.linearDampingOffset);
 	memcpy(&payload[header.angularDampingOffset], rigidBody.angularDamping, header.objectIDOffset - header.angularDampingOffset);
-	memcpy(&payload[header.objectIDOffset], rigidBody.objectID, payloadSize - header.objectIDOffset);
-	
+	memcpy(&payload[header.objectIDOffset], rigidBody.objectID, payloadSize - header.objectIDOffset);	
 	return EntrySize(binaryRigidBody);
 }
 //Colliders
 size_t Manifest_Persistence::Convert_MDB(const MDB_Collider& collider, Binary_Collider& binaryCollider)
 {
+	binaryCollider.header.dynamic = collider.dynamic;
 	binaryCollider.header.objectID = collider.objectID;	
 	binaryCollider.header.colliderType = collider.colliderType;
 	binaryCollider.header.payloadSize = collider.colliderDataElements * sizeof(MFfloat);
@@ -55,7 +56,7 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_GeometryObject& geometryObjec
 	binaryGeometryObject.header.geometryID = geometryObject.geometryID;
 	binaryGeometryObject.header.meshID = geometryObject.meshID;
 	binaryGeometryObject.header.morphID = geometryObject.morphID;
-	DLOG(31, "Converting mdb_go with gID, mID, morphID : " << geometryObject.geometryID << " " << geometryObject.meshID << " " << geometryObject.morphID);
+	DLOG({CONSOLE_COLOR::GREEN}, "Converting mdb_go with gID, mID, morphID : " , geometryObject.geometryID , " " , geometryObject.meshID , " " , geometryObject.morphID);
 	return EntrySize(binaryGeometryObject);
 }
 
@@ -90,7 +91,7 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_GeometryNode& geometryNode, c
 	const auto& total{ binaryGeometryNode.header.payloadSize };
 	const auto offset = total - base;
 	const auto elements = offset / sizeof(PrimaryKey);
-	DLOG(32, "Converting mdb_gn with nID, gID, mtlID " << geometryNode.nodeID <<" " << binaryGeometryNode.header.geometryID << " " << binaryGeometryNode.header.materialID <<" object has " << ((binaryGeometryNode.header.payloadSize-sizeof(MFfloat)*TransformSize))/sizeof(PrimaryKey) <<" references.");
+	DLOG({ CONSOLE_COLOR::RED }, "Converting mdb_gn with nID, gID, mtlID", geometryNode.nodeID, binaryGeometryNode.header.geometryID, binaryGeometryNode.header.materialID, " object has ", ((binaryGeometryNode.header.payloadSize - sizeof(MFfloat) * TransformSize)) / sizeof(PrimaryKey) , " references.");
 	return EntrySize(binaryGeometryNode);
 };
 
@@ -101,7 +102,7 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_Material& material, const Tex
 	binaryMaterial.header.diffuseID = material.textureIDs[TextureTypes::DIFFUSE_TEXTURE];
 	binaryMaterial.header.normalID = material.textureIDs[TextureTypes::NORMAL_TEXTURE];
 	binaryMaterial.header.parallaxID = material.textureIDs[TextureTypes::PARALLAX_TEXTURE];	
-	DLOG(33, "Converting mdb_mtl with mtlID, tdID, tnID, tpID: " << material.materialID << " " << binaryMaterial.header.diffuseID << " " << binaryMaterial.header.normalID << " "<< binaryMaterial.header.parallaxID);
+	DLOG({ CONSOLE_COLOR::BLUE }, "Converting mdb_mtl with mtlID, tdID, tnID, tpID: " , material.materialID , " " , binaryMaterial.header.diffuseID , " " , binaryMaterial.header.normalID , " ", binaryMaterial.header.parallaxID);
 	return EntrySize(binaryMaterial);
 }
 
@@ -138,7 +139,7 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_Texture& texture, Binary_Text
 	for (auto element{ 0 }; element < binaryTexture.header.payloadSize; ++element)			
 		binaryTexture.payload[element] = texture.channelData[element] * 255;	
 	binaryTexture.header.payloadSize;
-	DLOG(34, "Converting mdb_texture with tID: " << texture.textureID);
+	DLOG({ CONSOLE_COLOR::CYAN }, "Converting mdb_texture with tID: ", texture.textureID);
 	return EntrySize(binaryTexture);
 }
 
@@ -250,7 +251,7 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_Mesh& mesh, const VertexBuild
 	//convert to total bytes
 	binaryMesh.header.payloadSize *= sizeof(float);
 
-	DLOG(35, "Converting mdb_mesh with mID: " << mesh.meshID);
+	DLOG({ CONSOLE_COLOR::MAGENTA }, "Converting mdb_mesh with mID: " , mesh.meshID);
 	return EntrySize(binaryMesh);
 }
 
@@ -261,7 +262,7 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_Terrain& terrain, Binary_Terr
 	header.payloadSize = 0;
 	header.terrainHash = terrain.terrainIndexHash;	
 
-	DLOG(36, "Converting mdb_terrain terrainID: " << terrain.terrainID);
+	DLOG({ CONSOLE_COLOR::YELLOW }, "Converting mdb_terrain terrainID: " , terrain.terrainID);
 	return EntrySize(binaryTerrain);
 }
 
@@ -279,6 +280,6 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_VoxelMap& voxelMap, Binary_Vo
 	binaryVoxelMap.payload = New<MFint8, ScratchPad<MFint8>>(header.payloadSize);
 	memcpy(binaryVoxelMap.payload, voxelMap.mapSDF, header.payloadSize);
 
-	DLOG(36, "Converting mdb_voxelmap mapID: " << voxelMap.mapID);
+	DLOG({ CONSOLE_COLOR::RED }, "Converting mdb_voxelmap mapID: " , voxelMap.mapID);
 	return EntrySize(binaryVoxelMap);
 }

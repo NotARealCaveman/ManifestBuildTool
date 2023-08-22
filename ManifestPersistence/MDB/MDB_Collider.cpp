@@ -2,9 +2,10 @@
 
 using namespace Manifest_Persistence;
 
-ForeignKey Manifest_Persistence::TableEntry(const ScratchPadVector<DDL_Structure*>& gameObjectStructures, const DDL_Structure* physicsNodesStructure, ColliderBuildTable& colliderBuildTable)
+ForeignKey Manifest_Persistence::TableEntry(const ScratchPadVector<DDL_Structure*>& gameObjectStructures, const DDL_Structure* physicsNodesStructure, ColliderBuildTable& colliderBuildTable, const MFbool isDynamic)
 {
 	MDB_Collider& entry = colliderBuildTable.entries.emplace_back();
+	entry.dynamic = isDynamic;
 	entry.colliderID = colliderBuildTable.nextTableIndex++;
 	colliderBuildTable.mappedEntryKeys.insert({ "RigidBody" + entry.colliderID , entry.colliderID });
 	const auto& physicsNode{ HeapData<MDD_PhysicsNode>(*physicsNodesStructure) };

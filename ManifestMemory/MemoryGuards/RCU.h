@@ -63,7 +63,7 @@ namespace Manifest_Memory
 			//if guess was invalid - remove block and try again			
 			while (oldGeneration != (currentGeneration = globalGeneration.load(std::memory_order_acquire)))
 			{
-				DLOG(33, "inconsistent state detected!");
+				DLOG({ CONSOLE_COLOR::RED }, "inconsistent state detected!");
 				MFu32 oldIndex = generationIndex;
 				generationIndex = currentGeneration & RCU_MODULO;				
 				generationReadFlags[generationIndex][readerId].isReading.store(true, std::memory_order_release);
@@ -100,7 +100,7 @@ namespace Manifest_Memory
 					++waitCount;		
 				}
 			if(waitCount)
-				LOG(32, "Waiting("<<waitCount<<")");
+				LOG({ CONSOLE_COLOR::YELLOW }, "Waiting(", waitCount, ")");
 			//release unused memory
 			deleter(generationHandles[oldIndex].handle);
 			generationHandles[oldIndex].handle = nullptr;

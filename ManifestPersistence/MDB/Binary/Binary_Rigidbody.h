@@ -20,7 +20,7 @@ namespace Manifest_Persistence
 			MFsize linearDampingOffset;
 			MFsize angularDampingOffset;
 			MFsize objectIDOffset;
-
+			MFbool dynamic;
 		}header;		
 		Byte* payload;//represents a transform if present
 	};

@@ -10,7 +10,8 @@ namespace Manifest_Persistence
 		{
 			size_t	payloadSize{ 0 };
 			MFu64 objectID;
-			MFu8 colliderType;			
+			MFu8 colliderType;		
+			MFbool dynamic;
 		}header;
 		MFfloat* payload;
 	};

@@ -13,7 +13,7 @@ namespace Manifest_Communication
 	{
 		return MFu64{ 1 } << base ;
 	}
-	constexpr MFu8 DecodeMessageBase(MFu64 pow2Base)
+	constexpr MFu8 ipow2(MFu64 pow2Base)
 	{
 		MFu8 result{ 0 };
 		for (; pow2Base > 1; ++result)

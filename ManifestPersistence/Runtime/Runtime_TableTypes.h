@@ -11,7 +11,7 @@ using namespace Manifest_Experimental;
 
 namespace Manifest_Persistence
 {	
-	using NodeStateTable = Table<Manifest_Physics::StatePair, std::default_delete<Manifest_Physics::StatePair>>;
+	using NodeStateTable = Table<Manifest_Physics::StatePairs, std::default_delete<Manifest_Physics::StatePairs>>;
 	using TerrainExtractionTable = Table<Manifest_Terrain::TerrainExtraction, Manifest_Terrain::TerrainExtractionDeleter>;
 	using WorldConfigurationTable = Table<Manifest_Core::WorldConfiguration, WorldConfigurationDeleter>;
 }

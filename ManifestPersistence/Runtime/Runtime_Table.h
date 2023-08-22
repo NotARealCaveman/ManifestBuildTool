@@ -36,7 +36,7 @@ namespace Manifest_Persistence
 			writeLock.Unlock();
 		};
 		template<typename Function, typename... Params>
-		void Pull(const MFu32& readerId, Function&& function, Params&&... params)
+		void Pull(const MFu32 readerId, Function&& function, Params&&... params)
 		{
 			typename RCU::Handle handle = rcu.rcu_read_lock(readerId);
 			TableForwardingFunction(function, handle, params...);

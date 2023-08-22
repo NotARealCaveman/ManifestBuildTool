@@ -2,9 +2,10 @@
 
 using namespace Manifest_Persistence;
 
-ForeignKey Manifest_Persistence::TableEntry(const ScratchPadVector<DDL_Structure*>& gameObjectStructures, const ScratchPadVector<DDL_Structure*>& physicsNodesStructures, RigidbodyBuildTable& rigidbodyBuildTable)
+ForeignKey Manifest_Persistence::TableEntry(const ScratchPadVector<DDL_Structure*>& gameObjectStructures, const ScratchPadVector<DDL_Structure*>& physicsNodesStructures, RigidbodyBuildTable& rigidbodyBuildTable, const MFbool isDynamic)
 {
 	MDB_Rigidbody& entry = rigidbodyBuildTable.entries.emplace_back();
+	entry.dynamic = isDynamic;
 	entry.rigidBodyID = rigidbodyBuildTable.nextTableIndex++;
 	rigidbodyBuildTable.mappedEntryKeys.insert({ "RigidBody"+entry.rigidBodyID, entry.rigidBodyID });
 	const auto bodyCount{ physicsNodesStructures.size() };	
