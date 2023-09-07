@@ -23,6 +23,7 @@ void Manifest_Parser::InitializeExtendedGenerators()
 void Manifest_Parser::InitializeExtendedTypes()
 {
 	//internally these are all float buffers and the subscript identifier will parse the type
+	DDL_BufferTypes::DDL_BufferTypeMap.insert({ "float[1]",DDL_BufferTypes::DDL_float });
 	DDL_BufferTypes::DDL_BufferTypeMap.insert({ "float[2]",DDL_BufferTypes::DDL_float });
 	DDL_BufferTypes::DDL_BufferTypeMap.insert({ "float[3]",DDL_BufferTypes::DDL_float });
 	DDL_BufferTypes::DDL_BufferTypeMap.insert({ "float[4]",DDL_BufferTypes::DDL_float });

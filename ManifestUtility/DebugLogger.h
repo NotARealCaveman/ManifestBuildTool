@@ -52,6 +52,7 @@ void printCsv(std::ostream& os, T&& value, Args&&... args) {
     printCsv(os, std::forward<Args>(args)...);
 }
 
+
 template <typename... Args>
 std::string LogConsole(std::vector<CONSOLE_CODE> consoleOptions, Args&&... args)
 {    

@@ -32,7 +32,7 @@ namespace Manifest_Terrain
 	//DENSITY FUNCTIONS	
 	//flat plane
 	static inline Voxel DensityFunction_0(siv::PerlinNoise& noise, const MFu32 i, const MFu32& j, const MFu32& k);	
-	//random 3d noise
+	//vertical plane
 	static inline Voxel DensityFunction_1(siv::PerlinNoise& noise, const MFu32 i, const MFu32& j, const MFu32& k);
 	//terrain func 1
 	static inline Voxel DensityFunction_2(siv::PerlinNoise& noise, const MFu32 i, const MFu32& j, const MFu32& k);

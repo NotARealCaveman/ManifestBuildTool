@@ -17,7 +17,7 @@ DDL_Structure* MDD_RigidBodyParams::Build(const std::string_view& partitionedStr
 				{
 					case ORIENTATION:
 						orientation.Build(subStructure, referenceMap);
-						DLOG(34, "Orientation built at: " << &orientation.data.typeHeap);
+						DLOG({ CONSOLE_COLOR::GREEN }, "Orientation built at: " , &orientation.data.typeHeap);
 						break;
 					case POSITION:
 						position.Build(subStructure, referenceMap);

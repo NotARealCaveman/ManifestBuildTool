@@ -15,6 +15,9 @@ void ParallelMapGeneration(siv::PerlinNoise& noise, Voxel* field, int i, int j, 
 					case 0:
 						field[index] = DensityFunction_0(noise, i, j, k);
 						break;
+					case 1:
+						field[index] = DensityFunction_1(noise, i, j, k);
+						break;
 					case 3:
 						field[index] = DensityFunction_3(noise, i, j, k);
 						break;
@@ -82,13 +85,12 @@ Voxel Manifest_Terrain::DensityFunction_0(siv::PerlinNoise& noise, const MFu32 i
 
 Voxel Manifest_Terrain::DensityFunction_1(siv::PerlinNoise& noise, const MFu32 i, const MFu32& j, const MFu32& k)
 {	
-	if (k > 10)
-		return 127;
-	if (k < groundLevel)
-		return -127;
-
-
-	return  noise.noise2D(i * 0.1, j * 0.1) * 127;
+	if (j < groundLevel)
+		return -1;
+	else if (j == groundLevel)
+		return 0;
+	else
+		return 1;
 }
 
 Voxel Manifest_Terrain::DensityFunction_2(siv::PerlinNoise& noise, const MFu32 i, const MFu32& j, const MFu32& k)

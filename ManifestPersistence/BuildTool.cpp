@@ -15,7 +15,7 @@ void Manifest_Persistence::BuildResourceDatabase(const DDL_File& file, ManifestR
 	for (const auto& structure : file.primaryStructures)
 	{
 		auto identifier = structure->identifier;
-		DLOG(31, "IDENTIFIER: " << identifier);
+		DLOG({ CONSOLE_COLOR::GREEN }, "IDENTIFIER: " , identifier);
 		auto mapEntry = DDL_BufferTypes::DDL_BufferTypeMap.find(identifier.c_str());
 		if (mapEntry != DDL_BufferTypes::DDL_BufferTypeMap.end())
 		{
