@@ -480,8 +480,10 @@ int main()
 	DISABLE
 	{		
 		
-		OBJtoGEX("C:\\Users\\Droll\\Desktop\\Game\\Reign\\Models\\Sphere.obj");
+		
+		OBJtoGEX("C:\\Users\\Droll\\Desktop\\Game\\Testing\\OBJ-_gex\\Sphere.obj");
 		OBJtoGEX("D:\\Users\\Droll\\Desktop\\Game\\Testing\\OBJ-_gex\\Capsule.obj");
+		return 0;
 	}
 
 
