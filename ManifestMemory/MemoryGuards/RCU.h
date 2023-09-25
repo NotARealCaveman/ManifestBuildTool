@@ -67,7 +67,7 @@ namespace Manifest_Memory
 				MFu32 oldIndex = generationIndex;
 				generationIndex = currentGeneration & RCU_MODULO;				
 				generationReadFlags[generationIndex][readerId].isReading.store(true, std::memory_order_release);
-				generationReadFlags[oldIndex][readerId].isReading.store(false, std::memory_order_release);//removed relaxed,potential reorder
+				generationReadFlags[oldIndex][readerId].isReading.store(false, std::memory_order_relaxed);//won't be reordered above release
 				oldGeneration = currentGeneration;
 			}
 			//return a handle to the read-locked generation 
