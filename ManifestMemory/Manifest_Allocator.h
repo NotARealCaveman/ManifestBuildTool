@@ -97,7 +97,7 @@ namespace Manifest_Memory
                 //DLOG(31, "Sending: " << (void*)heap << " for alignment. allocation request: " << sizeof(T) * allocation <<" with alignment: " << alignment);
                 auto alignedHeap = AlignAllocation(heap, alignment); 
                 if (alignedHeap > memoryHandles->scratchPadEnd)
-                    LOG({ CONSOLE_COLOR::BG_YELLOW }, "!!OUT OF MEMORY!!");
+                    LOG({ CONSOLE_BG_YELLOW }, "!!OUT OF MEMORY!!");
                 if ((void*)alignedHeap == heap);
                 //DLOG(32, "Heap already aligned for boundary");
                 else;

@@ -9,7 +9,7 @@ DDL_Structure* DDL_Reference::Build(const std::string_view& partitionedStructure
 	referenceNames = PartitionStructureReferences(partitionedStructureView);	
 	result->typeHeap = static_cast<void*>(this);
 	MapStructureName(*result, referenceMap);
-	DLOG({ CONSOLE_COLOR::BLUE }, "typeheap: " , result->typeHeap);
+	DLOG({ CONSOLE_BLUE }, "typeheap: " , result->typeHeap);
 
 	return result;
 }

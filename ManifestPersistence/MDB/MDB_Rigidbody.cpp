@@ -25,7 +25,7 @@ ForeignKey Manifest_Persistence::TableEntry(const ScratchPadVector<DDL_Structure
 	{			
 		const auto& physicsNode{ HeapData<MDD_PhysicsNode>(*structure) };	
 		const auto& rigidBodyParams{ physicsNode.rigidBodyParams };			
-		DLOG({ CONSOLE_COLOR::GREEN }, "Orientation read at: " , &rigidBodyParams.orientation.data.typeHeap);
+		DLOG({ CONSOLE_GREEN }, "Orientation read at: " , &rigidBodyParams.orientation.data.typeHeap);
 		entry.orientation[bodyIndex] = *reinterpret_cast<const MFquaternion*>(rigidBodyParams.orientation.data.typeHeap);
 		entry.position[bodyIndex] = *reinterpret_cast<const MFpoint3*>(rigidBodyParams.position.data.typeHeap);
 		entry.linearAccelaration[bodyIndex] = *reinterpret_cast<const MFvec3*>(rigidBodyParams.linearAccelaration.data.typeHeap);

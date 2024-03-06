@@ -38,7 +38,7 @@ const std::string TEST_WORLDMAP{ "0Map.mbd" };
 
 void PrintInfo(const DDL_Structure& structure)
 {
-	DLOG({ CONSOLE_COLOR::GREEN }, "Structure " , structure.name , " with type: " , structure.identifier , " contains: " , structure.subSutructres.size() , " substructures");
+	DLOG({ CONSOLE_GREEN }, "Structure " , structure.name , " with type: " , structure.identifier , " contains: " , structure.subSutructres.size() , " substructures");
 	for (const auto& substructure : structure.subSutructres)
 		PrintInfo(*substructure);
 };
@@ -52,7 +52,7 @@ void ImportAndTestResourceDatabase()
 	for(int i = 0 ; i < nLoops;++i)
 	{
 		ManifestBinaryResourceDatabase binaryDatabase = ImportGameResources(bImport);
-		DLOG({ CONSOLE_COLOR::GREEN }, "Printing Imported Database:");
+		DLOG({ CONSOLE_GREEN }, "Printing Imported Database:");
 	for (auto i = 0; i < binaryDatabase.binaryGeometryNodeTable.header.totalEntries; ++i)
 	{
 		const auto importNode = binaryDatabase.binaryGeometryNodeTable[i];
@@ -60,8 +60,8 @@ void ImportAndTestResourceDatabase()
 		const auto importMesh = binaryDatabase.binaryMeshTable[importGeometry.header.meshID];
 		const auto importMaterial = binaryDatabase.binaryMaterialTable[importNode.header.materialID];
 		const auto importTexture = binaryDatabase.binaryTextureTable[importMaterial.header.diffuseID];
-		DLOG({ CONSOLE_COLOR::GREEN }, "Reading from file:" , i);
-		DLOG({ CONSOLE_COLOR::GREEN }, "Mesh Stride:" , importMesh.header.vboStride , " AttributeCode: " , +importMesh.header.activeArrayAttributes , " Vertex Buffer Size: " , importMesh.header.payloadSize , " bytes Vertex Buffer Elements: " , importMesh.header.payloadSize / sizeof(float) , " texture channels: " , +importTexture.header.nChannels , " texture size: " , +importTexture.header.payloadSize);
+		DLOG({ CONSOLE_GREEN }, "Reading from file:" , i);
+		DLOG({ CONSOLE_GREEN }, "Mesh Stride:" , importMesh.header.vboStride , " AttributeCode: " , +importMesh.header.activeArrayAttributes , " Vertex Buffer Size: " , importMesh.header.payloadSize , " bytes Vertex Buffer Elements: " , importMesh.header.payloadSize / sizeof(float) , " texture channels: " , +importTexture.header.nChannels , " texture size: " , +importTexture.header.payloadSize);
 
 		auto nElements = (importMesh.header.eboOffset) / sizeof(float);
 		auto nSubArrayElements = nElements / importMesh.header.vboStride;
@@ -78,14 +78,14 @@ void ImportAndTestResourceDatabase()
 		for (auto index = 0; index < nIndices; ++index)
 			std::cout << reinterpret_cast<uint32_t*>(beginIndices)[index] << ",";
 		std::cout << std::endl;
-		DLOG({ CONSOLE_COLOR::GREEN }, "Material: " , importMaterial.header.materialID , " MTL(Diffuse): " , importMaterial.header.diffuseID , " MTL(Normal) : " , importMaterial.header.normalID , " MTL(Parllax) : " , importMaterial.header.parallaxID);
-		DLOG({ CONSOLE_COLOR::GREEN }, "Texture info - w: " , importTexture.header.width , " h: " , importTexture.header.height , " nChannels: " , +importTexture.header.nChannels , " size: " , importTexture.header.payloadSize);
-		DLOG({ CONSOLE_COLOR::GREEN },"Texture Data: ");
+		DLOG({ CONSOLE_GREEN }, "Material: " , importMaterial.header.materialID , " MTL(Diffuse): " , importMaterial.header.diffuseID , " MTL(Normal) : " , importMaterial.header.normalID , " MTL(Parllax) : " , importMaterial.header.parallaxID);
+		DLOG({ CONSOLE_GREEN }, "Texture info - w: " , importTexture.header.width , " h: " , importTexture.header.height , " nChannels: " , +importTexture.header.nChannels , " size: " , importTexture.header.payloadSize);
+		DLOG({ CONSOLE_GREEN },"Texture Data: ");
 		auto nTextureElements{ importTexture.header.payloadSize};
 		for (auto data{ 0 }; data < nTextureElements; ++data)
 			std::cout << +importTexture.payload[data] << ", ";
 		std::cout << std::endl;
-		DLOG({ CONSOLE_COLOR::GREEN }, "Worldspace Data: ");
+		DLOG({ CONSOLE_GREEN }, "Worldspace Data: ");
 		for (auto index{ 0 };index <16;++index)
 			std::cout << importNode.payload[index] << ", ";
 		std::cout << std::endl;					
@@ -93,25 +93,25 @@ void ImportAndTestResourceDatabase()
 	for (auto i = 0; i < binaryDatabase.binaryDynamicRigidBodyTable.header.totalEntries; ++i)
 	{
 		const auto& rigidBodies{ binaryDatabase.binaryDynamicRigidBodyTable[i] };
-		DLOG({ CONSOLE_COLOR::GREEN }, "number dynamic rigid bodies: " , rigidBodies.header.bodyCount);
+		DLOG({ CONSOLE_GREEN }, "number dynamic rigid bodies: " , rigidBodies.header.bodyCount);
 		for (auto body{ 0 }; body < rigidBodies.header.bodyCount; ++body)
 		{
 			auto& payload{ rigidBodies.payload };			
-			DLOG({ CONSOLE_COLOR::GREEN }, "Body.orientation: " , reinterpret_cast<const MFquaternion&>(rigidBodies.payload[sizeof(MFquaternion) * body]));
-			DLOG({ CONSOLE_COLOR::GREEN }, "Body.position: " , reinterpret_cast<const MFpoint3&>(rigidBodies.payload[rigidBodies.header.positionOffset + sizeof(MFpoint3) * body]));
-			DLOG({ CONSOLE_COLOR::GREEN }, "Body.uuid: " , reinterpret_cast<const MFu64&>(rigidBodies.payload[rigidBodies.header.objectIDOffset+ sizeof(MFpoint3) * body]));
+			DLOG({ CONSOLE_GREEN }, "Body.orientation: " , reinterpret_cast<const MFquaternion&>(rigidBodies.payload[sizeof(MFquaternion) * body]));
+			DLOG({ CONSOLE_GREEN }, "Body.position: " , reinterpret_cast<const MFpoint3&>(rigidBodies.payload[rigidBodies.header.positionOffset + sizeof(MFpoint3) * body]));
+			DLOG({ CONSOLE_GREEN }, "Body.uuid: " , reinterpret_cast<const MFu64&>(rigidBodies.payload[rigidBodies.header.objectIDOffset+ sizeof(MFpoint3) * body]));
 		}
 	}
 	for (auto i = 0; i < binaryDatabase.binaryStaticRigidBodyTable.header.totalEntries; ++i)
 	{
 		const auto& rigidBodies{ binaryDatabase.binaryStaticRigidBodyTable[i] };
-		DLOG({ CONSOLE_COLOR::GREEN }, "number static rigid bodies: " , rigidBodies.header.bodyCount);
+		DLOG({ CONSOLE_GREEN }, "number static rigid bodies: " , rigidBodies.header.bodyCount);
 		for (auto body{ 0 }; body < rigidBodies.header.bodyCount; ++body)
 		{
 			auto& payload{ rigidBodies.payload };
-			DLOG({ CONSOLE_COLOR::GREEN }, "Body.orientation: " , reinterpret_cast<const MFquaternion&>(rigidBodies.payload[sizeof(MFquaternion) * body]));
-			DLOG({ CONSOLE_COLOR::GREEN }, "Body.position: " , reinterpret_cast<const MFpoint3&>(rigidBodies.payload[rigidBodies.header.positionOffset + sizeof(MFpoint3) * body]));
-			DLOG({ CONSOLE_COLOR::GREEN }, "Body.uuid: " , reinterpret_cast<const MFu64&>(rigidBodies.payload[rigidBodies.header.objectIDOffset + sizeof(MFpoint3) * body]));
+			DLOG({ CONSOLE_GREEN }, "Body.orientation: " , reinterpret_cast<const MFquaternion&>(rigidBodies.payload[sizeof(MFquaternion) * body]));
+			DLOG({ CONSOLE_GREEN }, "Body.position: " , reinterpret_cast<const MFpoint3&>(rigidBodies.payload[rigidBodies.header.positionOffset + sizeof(MFpoint3) * body]));
+			DLOG({ CONSOLE_GREEN }, "Body.uuid: " , reinterpret_cast<const MFu64&>(rigidBodies.payload[rigidBodies.header.objectIDOffset + sizeof(MFpoint3) * body]));
 		}
 	}
 	bImport.seekg(std::ios::beg);
@@ -123,12 +123,12 @@ void BuildAndExportResourceDatabase()
 	//for printing purposes
 	auto fileName = TEST_PATH + TEST_GEX;	
 	auto file = LoadFileContents(fileName);
-	DLOG({ CONSOLE_COLOR::GREEN }, file);
+	DLOG({ CONSOLE_GREEN }, file);
 	auto filtered = FilterFile(file);
-	DLOG({ CONSOLE_COLOR::GREEN }, filtered);
+	DLOG({ CONSOLE_GREEN }, filtered);
 	auto fileContents = PartitionDDLFile(filtered);
 	for (const auto& c : fileContents)
-		DLOG({ CONSOLE_COLOR::GREEN }, c);
+		DLOG({ CONSOLE_GREEN }, c);
 	//begin actual parse	
 	auto nLoops = 1950000;	
 	nLoops = 1;
@@ -148,7 +148,7 @@ void BuildAndExportResourceDatabase()
 			std::ofstream bExport{ TEST_PATH + TEST_MBD, std::ios::out | std::ios::binary };
 			if (bExport.is_open())
 			{
-				DLOG({ CONSOLE_COLOR::GREEN }, "Printing Exported Database:");
+				DLOG({ CONSOLE_GREEN }, "Printing Exported Database:");
 				ExportBinaryResourceDatabase(databaseBuilder, bExport);
 				bExport.close();
 			}
@@ -166,22 +166,22 @@ void ImportAndTestWorldDatabase()
 	for (int i = 0; i < nLoops; ++i)
 	{
 		ManifestBinaryWorldDatabase binaryDatabase = ImportGameTerrain(bImport);
-		DLOG({ CONSOLE_COLOR::GREEN }, "Printing Imported Database:");
+		DLOG({ CONSOLE_GREEN }, "Printing Imported Database:");
 		for (auto i = 0; i < binaryDatabase.binaryTerrainTable.header.totalEntries; ++i)
 		{
 			const auto& importTerrain = binaryDatabase.binaryTerrainTable[i];
-			DLOG({ CONSOLE_COLOR::GREEN }, "Reading Terrain Chunk: " , i);
+			DLOG({ CONSOLE_GREEN }, "Reading Terrain Chunk: " , i);
 			const auto& index = importTerrain.header.terrainHash;
-			DLOG({ CONSOLE_COLOR::GREEN }, "Terrain index hash: " , index);
-			DLOG({ CONSOLE_COLOR::GREEN }, "Terrain xIndex: " , GetCompositeWard(index,TERRAIN_Z_INDEX_HASH_OFFSET) , " zIndex: " , GetCompositeBow(index, TERRAIN_Z_INDEX_HASH_OFFSET));		
+			DLOG({ CONSOLE_GREEN }, "Terrain index hash: " , index);
+			DLOG({ CONSOLE_GREEN }, "Terrain xIndex: " , GetCompositeWard(index,TERRAIN_Z_INDEX_HASH_OFFSET) , " zIndex: " , GetCompositeBow(index, TERRAIN_Z_INDEX_HASH_OFFSET));		
 		}
 		for (auto i = 0; i < binaryDatabase.binaryVoxelMapTable.header.totalEntries; ++i)
 		{
 			const auto& importVoxelMap = binaryDatabase.binaryVoxelMapTable[i];
-			DLOG({ CONSOLE_COLOR::GREEN }, "Reading Voxel Map: " , i);
-			DLOG({ CONSOLE_COLOR::GREEN }, " xChunks: " , importVoxelMap.header.xChunks , " zChunks: " , importVoxelMap.header.zChunks);
-			DLOG({ CONSOLE_COLOR::GREEN }, " nVoxels: " , importVoxelMap.header.nVoxels , " mVoxels: " , importVoxelMap.header.mVoxels , " hVoxels: " , importVoxelMap.header.hVoxels);
-			DLOG({ CONSOLE_COLOR::GREEN }, "SDF: ");
+			DLOG({ CONSOLE_GREEN }, "Reading Voxel Map: " , i);
+			DLOG({ CONSOLE_GREEN }, " xChunks: " , importVoxelMap.header.xChunks , " zChunks: " , importVoxelMap.header.zChunks);
+			DLOG({ CONSOLE_GREEN }, " nVoxels: " , importVoxelMap.header.nVoxels , " mVoxels: " , importVoxelMap.header.mVoxels , " hVoxels: " , importVoxelMap.header.hVoxels);
+			DLOG({ CONSOLE_GREEN }, "SDF: ");
 			for (auto sample{ 0 }; sample < importVoxelMap.header.payloadSize; ++sample)
 				std::cout << +importVoxelMap.payload[sample] << ",";
 		}		
@@ -208,7 +208,7 @@ void BuildAndExportWorldDatabase(std::vector<std::string> filenames)
 	std::ofstream bExport{ fileName, std::ios::out | std::ios::binary };
 	if (bExport.is_open())
 	{
-		DLOG({CONSOLE_COLOR::GREEN}, "Printing Exported Database:");
+		DLOG({CONSOLE_GREEN}, "Printing Exported Database:");
 		ExportBinaryTerrainDatabase(databaseBuilder, bExport);
 		bExport.close();
 	}		
@@ -225,7 +225,7 @@ void OBJtoGEX(const std::string& objFile)
 	std::vector<MFvec2> uvs;
 	std::vector<MFvec3> normals;
 	auto file = LoadFileContents(objFile);
-	DLOG({ CONSOLE_COLOR::GREEN }, file);
+	DLOG({ CONSOLE_GREEN }, file);
 	std::stringstream fileStream{ file };
 	std::string current;
 	std::getline(fileStream, current);
@@ -365,7 +365,7 @@ void OBJtoGEX(const std::string& objFile)
 			line += "\n\t\t\t\t";
 		gexFile.write(line.c_str(), line.size());		
 	}
-	DLOG({ CONSOLE_COLOR::GREEN }, writeCount , " vertices written");
+	DLOG({ CONSOLE_GREEN }, writeCount , " vertices written");
 	line = "\n\t\t\t}\n\t\t}";
 	gexFile.write(line.c_str(), line.size());
 	//write normal data
@@ -384,7 +384,7 @@ void OBJtoGEX(const std::string& objFile)
 			line += "\n\t\t\t\t";
 		gexFile.write(line.c_str(), line.size());
 	}
-	DLOG({ CONSOLE_COLOR::GREEN }, writeCount , " normals written");
+	DLOG({ CONSOLE_GREEN }, writeCount , " normals written");
 	line = "\n\t\t\t}\n\t\t}";
 	gexFile.write(line.c_str(), line.size());
 	//write uv data
@@ -403,7 +403,7 @@ void OBJtoGEX(const std::string& objFile)
 			line += "\n\t\t\t\t";
 		gexFile.write(line.c_str(), line.size());
 	}
-	DLOG({ CONSOLE_COLOR::GREEN }, writeCount , " uvs written");
+	DLOG({ CONSOLE_GREEN }, writeCount , " uvs written");
 	line = "\n\t\t\t}\n\t\t}";
 	gexFile.write(line.c_str(), line.size());
 	//write index data
@@ -422,7 +422,7 @@ void OBJtoGEX(const std::string& objFile)
 			line += "\n\t\t\t\t";
 		gexFile.write(line.c_str(), line.size());
 	}
-	DLOG({ CONSOLE_COLOR::GREEN }, writeCount , " indices written");
+	DLOG({ CONSOLE_GREEN }, writeCount , " indices written");
 	line = "\n\t\t\t}\n\t\t}";
 	gexFile.write(line.c_str(), line.size());
 	//close up file
@@ -502,7 +502,7 @@ int main()
 		ImportAndTestWorldDatabase();
 	//DISABLE
 		BuildAndExportResourceDatabase();
-	DISABLE
+	//DISABLE
 		ImportAndTestResourceDatabase();	
 	
 	return 0;

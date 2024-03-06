@@ -57,7 +57,7 @@ void Manifest_Parser::ExportVoxelMapMDD(const std::string& voxelMapFile, const M
 			exportString = std::to_string(field[sample]) + ",";
 			mddExport.write(exportString.data(), sizeof(char) * exportString.size());
 			if (!(sample % 10000000))
-				DLOG({ CONSOLE_COLOR::GREEN }, "Sample at: " , sample);
+				DLOG({ CONSOLE_GREEN }, "Sample at: " , sample);
 		}//remove excess "," from last entry
 		mddExport.seekp(mddExport.tellp() - std::streampos{ 1 });
 		exportString = "}\n\t}\n}";

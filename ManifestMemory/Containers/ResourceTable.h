@@ -1,5 +1,6 @@
 #pragma once
-#include <unordered_map>
+#include <cassert>
+#include <stack>
 
 #include <ManifestPersistence/DatabaseTypes.h>
 
@@ -7,93 +8,88 @@ using namespace Manifest_Persistence;
 
 namespace Manifest_Memory
 {
-	template<typename T>
+	constexpr MFu32 RESOURCE_NOT_PRESENT{ std::numeric_limits<MFu32>::max() };
+
+	//TODO: HANDLE ADDITIONAL/RE ALLOCATION
+	template<typename Resource, typename KeyType = PrimaryKey>
 	class ResourceTable
 	{
-	private:
-		std::vector<T*> Find_Each_N2(const PrimaryKey* searchKeys, const MFsize& keyCount) const
+	public:		
+		ResourceTable(const MFsize allocation)
+			:allocatedResources{ allocation }, activeResources{ 0 }
 		{
-			std::vector<T*> result;
-
-			for (auto searchIndex{ 0 }; searchIndex < keyCount; ++searchIndex)
+			if (allocatedResources)
 			{
-				const auto& key = searchKeys[searchIndex];
-				for (auto keyIndex{ 0 }; keyIndex < activeResources; ++keyIndex)
-				{
-					if (key == keys[keyIndex])
-					{
-						result.emplace_back(&resources[keyIndex]);
-						break;
-					}
-				}
+				keys = new KeyType[allocatedResources];
+				resources = new Resource[allocatedResources];
 			}
-
-			return result;
-		}
-		std::vector<T*> Find_Each_N2Cached(const PrimaryKey* searchKeys, const MFsize& keyCount) const
-		{
-			std::vector<T*> result;
-			std::unordered_map<PrimaryKey, T*> encounterMap;
-
-			for (auto searchIndex {0}; searchIndex < keyCount; ++searchIndex)
-			{
-				const auto& key = searchKeys[searchIndex];
-				auto encountered = encounterMap.find(key);
-				if (encountered != encounterMap.end())
-				{
-					result.emplace_back(encounterMap[key]);
-					continue;
-				}
-				for (auto keyIndex{ 0 }; keyIndex < activeResources; ++keyIndex)
-				{
-					encounterMap[keys[keyIndex]] = &resources[keyIndex];
-					if (key == keys[keyIndex])
-					{
-						result.emplace_back(&resources[keyIndex]);
-						break;
-					}
-				}
-			}
-			
-			return result;
-		}
-	public:
-		ResourceTable(const MFsize& maxResources)
-			:MAX_RESOURCES{ maxResources }, activeResources{ 0 }, keys{ new PrimaryKey[maxResources] }, resources{ new T[maxResources] } {};
+		};		
 		~ResourceTable()
 		{
-			//needs to be addressed if resizing is a concern - tables shouldnt be deleted during runtime
-			if (0)
+			if (keys)
 			{
-				if (keys)
-					delete[] keys;
-				if (resources)
-					delete[] resources;
+				delete[] keys;
+				keys = nullptr;
+			}
+			if (resources)
+			{
+				delete[] resources;
+				resources = nullptr;
 			}
 		}
-		UniqueKey Insert(const PrimaryKey& databaseKey, T&& resource)
+
+		//TODO: HANDLE MAX ENTRIES
+		MFu32 Insert(const KeyType resourceKey,const Resource& resource)
 		{
-			auto result = activeResources++;
-			keys[result] = databaseKey;
+			MFu32 result{ RESOURCE_NOT_PRESENT };
+
+			if (resourceIndexFreeList.size())
+			{
+				result = resourceIndexFreeList.top();
+				resourceIndexFreeList.pop();
+			}
+			else
+				result = activeResources++;
+
+			keys[result] = resourceKey;
 			resources[result] = std::move(resource);
+
 			return result;
 		}
-		//later will be changed into finding a set of desired keys all at once
-		T& Find(const PrimaryKey& key) const
-		{
-			MFsize keyIndex{ 0 };			
-			while (keys[keyIndex] != key)
-				++keyIndex;						
-			return resources[keyIndex];
+		MFu32 FindKeyIndex(const KeyType resourceKey) const
+		{			
+			KeyType* cachedKey{ std::find(&keys[0], &keys[activeResources], resourceKey) };
+
+			if (cachedKey == &keys[activeResources])
+				return RESOURCE_NOT_PRESENT;
+
+			return std::distance(&keys[0], cachedKey);
 		}
-		void Remove(const UniqueKey& indexKey)
+		Resource& GetResource(const MFu32 resourceIndex) const
 		{
-			//tbd
+			assert(resourceIndex != RESOURCE_NOT_PRESENT);
+			assert(resourceIndex < allocatedResources); 
+			assert(resourceIndex >= 0);
+			
+			
+			return resources[resourceIndex];
+		}
+		//removes key entry - does not clean up resource memory slot
+		void Remove(const KeyType resourceKey)
+		{
+			MFu32 removedIndex{ FindKeyIndex(resourceKey) };
+			resourceIndexFreeList.push(removedIndex);
+			keys[removedIndex] = RESOURCE_NOT_PRESENT;			
 		}
 
-		PrimaryKey* keys;
-		T* resources;
-		const MFsize MAX_RESOURCES;
+		KeyType const* const GetTableKeys(){ return keys; };
+		Resource const* const GetTableResources(){ return resources; };
+
 		MFsize activeResources;
+	private:
+		std::stack<MFu32> resourceIndexFreeList;
+		KeyType* keys;
+		Resource* resources;
+		MFsize allocatedResources;
 	};
 }
