@@ -26,16 +26,28 @@ namespace Manifest_Communication
 
 		MFu64 registeredObservationTokens{ 0 };
 	};
-	//allow meta messages to be generated		
-	using VOIDPTR = void*;
-	template<typename T = VOIDPTR,typename... Args>
-	using MessageProcessingFunction = T*(*)(std::vector<Message>&, Args&...);
 
 	//Observer is an independent broker
 	//the observer object is created with an observation token providing guaranteed, exclusive access to the message types of the event it is observing	
 	//the exclusivity is provided by UniqueObserverRegister
 	class Observer
-	{
+	{	
+	public:
+		Observer(const ObservationToken& observationToken);	
+		//Processes messages - spins if writing for observation	
+		template<typename Function, typename... Params>
+		void ProcessEvents(Function&& function, Params&&... params)
+		{
+			messageLock.Lock();
+			std::vector<Message> messages = std::move(observedEventMessages);			
+			messageLock.Unlock();
+
+			//messages are cleaned up upon exiting function
+			if (!messages.empty())							
+				std::invoke(function, messages, params...);
+		}
+		inline const MFbool HasPendingMessages() { return !observedEventMessages.empty(); };
+		const ObservationToken observationToken;		
 	private:
 		friend EventSpace;				
 		//Moves into messages - spins if moving for processing
@@ -43,22 +55,5 @@ namespace Manifest_Communication
 
 		std::vector<Message> observedEventMessages;
 		ExchangeLock messageLock;
-	public:
-		Observer(const ObservationToken& observationToken);	
-		//Processes messages - spins if writing for observation	
-		template<typename T = VOIDPTR, typename... Args>
-		T* ProcessEvents(const MessageProcessingFunction<T,Args...> processFunction,Args&... args)
-		{
-			messageLock.Lock();
-			std::vector<Message> messages = std::move(observedEventMessages);
-			messageLock.Unlock();
-
-			if (!messages.size())
-				return nullptr;
-			//messages are cleaned up upon exiting function
-			return processFunction(messages,args...);
-		}
-		inline const MFbool HasPendingMessages() { return observedEventMessages.size(); };
-		const ObservationToken observationToken;			
 	};
 }

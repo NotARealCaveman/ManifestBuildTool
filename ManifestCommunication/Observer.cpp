@@ -20,6 +20,6 @@ Observer::Observer(const ObservationToken& observationToken)
 void Observer::ObserveEvent(Message&& message)
 {
 	messageLock.Lock();
-	observedEventMessages.emplace_back(std::move(message));
+	observedEventMessages.emplace_back(std::move(message));	
 	messageLock.Unlock();
 }

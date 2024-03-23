@@ -67,11 +67,11 @@ std::string LogConsole(std::vector<CONSOLE_CODE> consoleOptions, Args&&... args)
 #define LOG(COLOR,...) std::cout << LogConsole(COLOR,__VA_ARGS__)
 
 #ifndef _DEBUG //vs built in macro
-#define DLOG(COLOR,x) ;
+#define DLOG(COLOR,x) 
 #define RLOG(COLOR,...) LOG(COLOR,__VA_ARGS__)
 #else
 #define DLOG(COLOR,...) LOG(COLOR,__VA_ARGS__)
-#define RLOG(COLOR,x);
+#define RLOG(COLOR,x)
 #endif
 
 
