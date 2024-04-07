@@ -32,10 +32,10 @@ namespace Manifest_Communication
 		};				
 		template<typename Content>
 		Message(const ObservationToken& _messageToken, const Content& content)
-			: messageToken{ _messageToken }, messageBase{ new ContentWrapper{content} } {};
+			: messageToken{ _messageToken }, messageBase{ new ContentWrapper{content} }{};
 		template<typename Content>
 		Message(const ObservationToken& _messageToken, Content&& content)
-			: messageToken{ _messageToken }, messageBase{ new ContentWrapper{std::move(content)} } {};
+			: messageToken{ _messageToken }, messageBase{ new ContentWrapper{std::move(content)} }{};
 		Message(Message&& other) noexcept;
 		Message(const Message& other) = delete;		
 		~Message();				
@@ -47,8 +47,8 @@ namespace Manifest_Communication
 			Content& content = contentWrapper->content;
 			return std::move(content);
 		}
-				
-		const ObservationToken messageToken;				
-		MessageBase* messageBase;
+			
+		const ObservationToken messageToken;						
+		MessageBase* messageBase;		
 	};	
 };

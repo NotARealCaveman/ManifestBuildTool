@@ -1,6 +1,6 @@
 #pragma once
 
-#include <ManifestPhysics/State.h>
+#include <ManifestPhysics/SimulationState.h>
 #include <ManifestTerrain/TerrainExtraction.h>
 #include <ManifestCore/WorldConfiguration.h>
 
@@ -11,7 +11,7 @@ using namespace Manifest_Experimental;
 
 namespace Manifest_Persistence
 {	
-	using NodeStateTable = Table<Manifest_Physics::StatePairs, std::default_delete<Manifest_Physics::StatePairs>>;
+	using SimulationStateTable = Table<Manifest_Physics::SimulationState, std::default_delete<Manifest_Physics::SimulationState>>;
 	using TerrainExtractionTable = Table<Manifest_Terrain::TerrainExtraction, Manifest_Terrain::TerrainExtractionDeleter>;
-	using WorldConfigurationTable = Table<Manifest_Core::WorldConfiguration, WorldConfigurationDeleter>;
+	using WorldConfigurationTable = Table<Manifest_Core::WorldConfiguration, Manifest_Core::WorldConfigurationDeleter>;
 }

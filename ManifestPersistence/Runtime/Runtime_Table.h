@@ -1,5 +1,6 @@
 #pragma once
 #include <functional>
+#include <type_traits>
 
 #include <ManifestMemory/MemoryGuards/RCU.h>
 #include <ManifestMemory/MemoryGuards/ExchangeLock.h>
@@ -35,8 +36,24 @@ namespace Manifest_Persistence
 			rcu.synchronize_rcu(TableForwardingFunction(function, params...));
 			writeLock.Unlock();
 		};
+		
 		template<typename Function, typename... Params>
-		void Pull(const MFu32 readerId, Function&& function, Params&&... params)
+		using TableReturnType = decltype(std::declval<Function>()(std::declval<typename RCU::Handle>(), std::declval<Params>()...));
+			
+		//return type pull - for types that can be internally constructed 
+		template<typename Function, typename... Params>
+		typename std::enable_if<!std::is_same<TableReturnType<Function, Params...>, void>::value, TableReturnType<Function, Params...>>::type Pull(const MFu32 readerId, Function&& function, Params&&... params)
+		{
+			typename RCU::Handle handle = rcu.rcu_read_lock(readerId);
+			auto&& result{ TableForwardingFunction(function, handle, params...) };
+			rcu.rcu_read_unlock(handle, readerId);
+
+			return std::move(result);
+		};
+
+		//void specialized pull - for types that need external constructions
+		template<typename Function, typename... Params>
+		typename std::enable_if<std::is_same<TableReturnType<Function,Params...>,void>::value,void>::type Pull(const MFu32 readerId, Function&& function, Params&&... params)
 		{
 			typename RCU::Handle handle = rcu.rcu_read_lock(readerId);
 			TableForwardingFunction(function, handle, params...);
