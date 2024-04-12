@@ -11,7 +11,7 @@ namespace Manifest_Memory
 		FunctionBinder() = default;
 		template<typename Function, typename... Params>
 		FunctionBinder(Function&& function, Params&&... params)
-			:callable{ std::make_unique<Callable<Function,Params...>>(function,std::forward<Params>(params)...) } {};
+			:callable{ std::make_unique<Callable<Function,Params...>>(std::forward<Function>(function),std::forward<Params>(params)...) } {};
 		void operator()()
 		{
 			callable->operator()();

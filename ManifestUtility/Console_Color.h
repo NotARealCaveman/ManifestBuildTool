@@ -1,6 +1,7 @@
 #pragma once
 #include "DebugLogger.h"
 
+
 //used for colored codes on windows 
 #ifdef _WIN64 
 #define	NOMINMAX //turns off windows max function - redef w/ limits::max
@@ -19,3 +20,4 @@ void Enable_ASCII_Color()
 #endif // _WIN64 
 
 #define WINDOWS_COLOR_CONSOLE Enable_ASCII_Color();
+

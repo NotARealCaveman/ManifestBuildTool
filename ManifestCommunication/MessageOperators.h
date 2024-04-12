@@ -3,6 +3,7 @@
 #include <type_traits>
 
 #include <ManifestUtility/Typenames.h>
+#include <ManifestUtility/TypeAssist.h>//includes UnderlyingType
 
 using namespace Manifest_Utility;
 
@@ -19,13 +20,7 @@ namespace Manifest_Communication
 		for (; pow2Base > 1; ++result)
 			pow2Base >>= 1;
 		return result;
-	}
-	//generally - will return the MFu64 value of the MessageType
-	template<typename E>
-	inline constexpr typename std::underlying_type<E>::type UnderlyingType(const E& e)
-	{
-		return static_cast<typename std::underlying_type<E>::type>(e);
-	};
+	}	
 	//generally - checks if an event is of interest to an Observer
 	template<typename MessageTypes>
 	inline constexpr MessageTypes operator&(const MessageTypes& observationToken, const MessageTypes& eventToken)

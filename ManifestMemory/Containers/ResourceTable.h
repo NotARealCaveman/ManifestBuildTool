@@ -15,6 +15,7 @@ namespace Manifest_Memory
 	class ResourceTable
 	{
 	public:		
+		ResourceTable() = default;
 		ResourceTable(const MFsize allocation)
 			:allocatedResources{ allocation }, activeResources{ 0 }
 		{
@@ -82,8 +83,8 @@ namespace Manifest_Memory
 			keys[removedIndex] = RESOURCE_NOT_PRESENT;			
 		}
 
-		KeyType const* const GetTableKeys(){ return keys; };
-		Resource const* const GetTableResources(){ return resources; };
+		KeyType const* const GetTableKeys()const { return keys; };
+		Resource const* const GetTableResources()const { return resources; };
 
 		MFsize activeResources;
 	private:

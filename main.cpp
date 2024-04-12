@@ -468,9 +468,9 @@ int main()
 	RegisterProgramExecutiveThread();
 	//create data stores
 	INIT_MEMORY_RESERVES();	
-	MEMORYSTATUSEX status;
-	status.dwLength = sizeof(status);
-	GlobalMemoryStatusEx(&status);
+	//MEMORYSTATUSEX status;
+	//status.dwLength = sizeof(status);
+	//GlobalMemoryStatusEx(&status);
 	
 	//ddl start up
 	Initialize_GEXTypes();

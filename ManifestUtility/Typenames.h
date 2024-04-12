@@ -28,4 +28,5 @@ namespace Manifest_Utility
 	using MFulong = MFu32;
 	using MFullong = MFu64;
 	using MFsize = size_t;
+	using MFdiff = ptrdiff_t;
 }

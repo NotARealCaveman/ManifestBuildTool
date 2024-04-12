@@ -1,10 +1,9 @@
 #pragma once
 #include <functional>
-#include <type_traits>
 
 #include <ManifestMemory/MemoryGuards/RCU.h>
 #include <ManifestMemory/MemoryGuards/ExchangeLock.h>
-
+#include <ManifestUtility/TypeAssist.h>
 
 using namespace Manifest_Utility;
 using namespace Manifest_Memory;
@@ -16,13 +15,7 @@ namespace Manifest_Persistence
 	{
 	private:
 		using RCU = RCU<T, Deleter>;
-
-		template<typename Function, typename... Params>
-		decltype(auto) TableForwardingFunction(Function&& function, Params&&... params)
-		{
-			return std::forward<Function>(function)(std::forward<Params>(params)...);
-		};		
-
+				
 		RCU rcu;	
 		ExchangeLock writeLock;
 	public:			
@@ -33,19 +26,19 @@ namespace Manifest_Persistence
 		inline void Push(Function&& function, Params&&... params)
 		{			
 			writeLock.Lock();
-			rcu.synchronize_rcu(TableForwardingFunction(function, params...));
+			rcu.synchronize_rcu(Manifest_Utility::ForwardFunction(function, params...));
 			writeLock.Unlock();
 		};
 		
 		template<typename Function, typename... Params>
-		using TableReturnType = decltype(std::declval<Function>()(std::declval<typename RCU::Handle>(), std::declval<Params>()...));
+		using TableReturnType = Manifest_Utility::ReturnType<Function, decltype(std::declval<typename RCU::Handle>()), Params...>;
 			
 		//return type pull - for types that can be internally constructed 
 		template<typename Function, typename... Params>
 		typename std::enable_if<!std::is_same<TableReturnType<Function, Params...>, void>::value, TableReturnType<Function, Params...>>::type Pull(const MFu32 readerId, Function&& function, Params&&... params)
 		{
 			typename RCU::Handle handle = rcu.rcu_read_lock(readerId);
-			auto&& result{ TableForwardingFunction(function, handle, params...) };
+			auto&& result{ Manifest_Utility::ForwardFunction(function, handle, params...) };
 			rcu.rcu_read_unlock(handle, readerId);
 
 			return std::move(result);
@@ -56,7 +49,7 @@ namespace Manifest_Persistence
 		typename std::enable_if<std::is_same<TableReturnType<Function,Params...>,void>::value,void>::type Pull(const MFu32 readerId, Function&& function, Params&&... params)
 		{
 			typename RCU::Handle handle = rcu.rcu_read_lock(readerId);
-			TableForwardingFunction(function, handle, params...);
+			Manifest_Utility::ForwardFunction(function, handle, params...);
 			rcu.rcu_read_unlock(handle, readerId);
 		};
 		//if successful returns an index reserved for reader
