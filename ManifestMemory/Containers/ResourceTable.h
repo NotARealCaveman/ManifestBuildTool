@@ -40,7 +40,7 @@ namespace Manifest_Memory
 		}
 
 		//TODO: HANDLE MAX ENTRIES
-		MFu32 Insert(const KeyType resourceKey,const Resource& resource)
+		MFu32 ReserveTableEntry()
 		{
 			MFu32 result{ RESOURCE_NOT_PRESENT };
 
@@ -52,6 +52,12 @@ namespace Manifest_Memory
 			else
 				result = activeResources++;
 
+			return result;
+		}
+
+		MFu32 Insert(const KeyType resourceKey,const Resource& resource)
+		{
+			MFu32 result{ ReserveTableEntry() };
 			keys[result] = resourceKey;
 			resources[result] = std::move(resource);
 
@@ -75,20 +81,41 @@ namespace Manifest_Memory
 			
 			return resources[resourceIndex];
 		}
+		void SetResourceKey(const PrimaryKey key, const MFu32 resourceIndex)
+		{
+			assert(resourceIndex != RESOURCE_NOT_PRESENT);
+			assert(resourceIndex < allocatedResources);
+			assert(resourceIndex >= 0);
+
+			keys[resourceIndex] = key;
+		}
+		void SetResourceObject(const Resource& resource, const MFu32 resourceIndex)
+		{
+			assert(resourceIndex != RESOURCE_NOT_PRESENT);
+			assert(resourceIndex < allocatedResources);
+			assert(resourceIndex >= 0);
+
+			resources[resourceIndex] = resource;
+		}
+
 		//removes key entry - does not clean up resource memory slot
 		void Remove(const KeyType resourceKey)
 		{
 			MFu32 removedIndex{ FindKeyIndex(resourceKey) };
+
+			if (removedIndex == RESOURCE_NOT_PRESENT)
+				return;
+
 			resourceIndexFreeList.push(removedIndex);
 			keys[removedIndex] = RESOURCE_NOT_PRESENT;			
 		}
 
 		KeyType const* const GetTableKeys()const { return keys; };
-		Resource const* const GetTableResources()const { return resources; };
+		Resource const* const GetTableResources()const { return resources; };		
 
 		MFsize activeResources;
-	private:
 		std::stack<MFu32> resourceIndexFreeList;
+	private:		
 		KeyType* keys;
 		Resource* resources;
 		MFsize allocatedResources;
