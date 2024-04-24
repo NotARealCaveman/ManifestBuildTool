@@ -3,6 +3,8 @@
 #include <sstream>
 #include <cassert>
 #include <vector>
+#include <thread>
+#include <chrono>
 
 using CONSOLE_CODE = const char*;
 
@@ -54,12 +56,16 @@ template <typename... Args>
 std::string LogConsole(std::vector<CONSOLE_CODE> consoleOptions, Args&&... args)
 {    
     std::ostringstream result;
-    result <<"\x1B[";
+    result <<"\x1B[";    
     for (const CONSOLE_CODE& optionCode : consoleOptions)
         result << optionCode <<';';
     result.seekp(result.tellp() - std::streampos{ 1 });
     result << "m";
-    printCsv(result, std::forward<Args>(args)...);
+    result << "THREAD: " << std::this_thread::get_id();
+    result << " TIME: " << std::chrono::system_clock::now() <<"\n";
+    printCsv(result, std::forward<Args>(args)...);    
+      
+
     result << "\x1B[0m\n";
     return result.str();
 }
@@ -67,11 +73,11 @@ std::string LogConsole(std::vector<CONSOLE_CODE> consoleOptions, Args&&... args)
 #define LOG(COLOR,...) std::cout << LogConsole(COLOR,__VA_ARGS__)
 
 #ifndef _DEBUG //vs built in macro
-#define DLOG(COLOR,x) 
-#define RLOG(COLOR,...) LOG(COLOR,__VA_ARGS__)
+    #define DLOG(COLOR,x) 
+    #define RLOG(COLOR,...) LOG(COLOR,__VA_ARGS__)
 #else
-#define DLOG(COLOR,...) LOG(COLOR,__VA_ARGS__)
-#define RLOG(COLOR,x)
+    #define DLOG(COLOR,...) LOG(COLOR,__VA_ARGS__)
+    #define RLOG(COLOR,x)
 #endif
 
 

@@ -54,7 +54,7 @@ namespace Manifest_Memory
 			Callable(Callable&& other) : boundFunction{ std::move(other.boundFunction) } { DLOG({ CONSOLE_CYAN }, "move ctor callable:", this, "other:", &other); };
 			Callable operator=(Callable&& other) { DLOG({ CONSOLE_CYAN }, "operator= callable:", this, "other:", &other); return std::move(other); };
 			Callable(const Callable&) = delete;
-			Callable operator=(const Callable&) = delete;
+			Callable& operator=(const Callable&) = delete;
 
 			~Callable() { DLOG({ CONSOLE_CYAN }, "Destroying callable:", this); };
 			void operator()()
