@@ -8,19 +8,7 @@
 using namespace Manifest_Utility;
 
 namespace Manifest_Communication
-{
-	//there is allowed up to 64 possible flags
-	constexpr MFu64 pow2(MFu64 base)
-	{
-		return MFu64{ 1 } << base ;
-	}
-	constexpr MFu8 ipow2(MFu64 pow2Base)
-	{
-		MFu8 result{ 0 };
-		for (; pow2Base > 1; ++result)
-			pow2Base >>= 1;
-		return result;
-	}	
+{	
 	//generally - checks if an event is of interest to an Observer
 	template<typename MessageTypes>
 	inline constexpr MessageTypes operator&(const MessageTypes& observationToken, const MessageTypes& eventToken)

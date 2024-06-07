@@ -16,5 +16,5 @@ namespace Manifest_Communication
 
 			UniqueObserverRegister observerRegister;
 	};
-	MFbool RegisterObserverToEventSpaces(const Observer& observer, EventSpace& eventSpace);	
+	MFbool RegisterObserverToEventSpace(const Observer& observer, EventSpace& eventSpace);	
 }

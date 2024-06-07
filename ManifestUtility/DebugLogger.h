@@ -61,8 +61,8 @@ std::string LogConsole(std::vector<CONSOLE_CODE> consoleOptions, Args&&... args)
         result << optionCode <<';';
     result.seekp(result.tellp() - std::streampos{ 1 });
     result << "m";
-    result << "THREAD: " << std::this_thread::get_id();
-    result << " TIME: " << std::chrono::system_clock::now() <<"\n";
+    //result << "THREAD: " << std::this_thread::get_id();
+   // result << " TIME: " << std::chrono::system_clock::now() <<"\n";
     printCsv(result, std::forward<Args>(args)...);    
       
 

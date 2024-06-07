@@ -6,7 +6,7 @@ ThreadPool::ThreadPool()
 	:finished{ false }, joiner(threads)
 {
 	//1 thread for main, 1 thread for renderer
-	constexpr MFu32 maxThreads{ 4 };//don't melt test PCs
+	constexpr MFu32 maxThreads{ 2 };//don't melt test PCs
 	const MFu32 nThreads{ std::thread::hardware_concurrency() > maxThreads ? maxThreads : std::thread::hardware_concurrency() };
 	for (uint32_t i = 0; i < nThreads; ++i)
 		threads.push_back(std::thread(&ThreadPool::Worker, this));

@@ -23,6 +23,7 @@ namespace Manifest_Persistence
 			SimulationStateTable* simulationStateTable;
 			TerrainExtractionTable* terrainExtractionTable;
 			WorldConfigurationTable* worldConfigurationTable;
+			ActionPlanTable* actionPlanTable;
 	};
 }
 

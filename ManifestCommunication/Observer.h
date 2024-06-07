@@ -37,7 +37,7 @@ namespace Manifest_Communication
 		//Processes messages - spins if writing for observation	
 		template<typename Function, typename... Params>
 		void ProcessEvents(Function&& function, Params&&... params)
-		{
+		{			
 			messageLock.Lock();
 			std::vector<Message> messages = std::move(observedEventMessages);			
 			messageLock.Unlock();

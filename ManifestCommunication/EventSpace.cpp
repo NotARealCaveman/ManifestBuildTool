@@ -15,7 +15,7 @@ void EventSpace::NotifyRegisteredObservers(Event&& event) const
 	}
 }
 
-MFbool Manifest_Communication::RegisterObserverToEventSpaces(const Observer& observer, EventSpace& eventSpace)
+MFbool Manifest_Communication::RegisterObserverToEventSpace(const Observer& observer, EventSpace& eventSpace)
 {
 	return eventSpace.observerRegister.RegisterObserver(observer);
 }

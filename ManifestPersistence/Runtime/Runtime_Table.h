@@ -20,11 +20,13 @@ namespace Manifest_Persistence
 		ExchangeLock writeLock;
 	public:			
 		Table(const MFsize maxConcurrentReaders)
-			: rcu{ maxConcurrentReaders } {};		
-		//params are taken by reference - be careful to not make unwated alterations to parameter data
+			: rcu{ maxConcurrentReaders } {};				
+
 		template<typename Function, typename... Params>
-		inline void Push(Function&& function, Params&&... params)
-		{			
+		void Push(Function&& function, Params&&... params)
+		{		
+			static_assert(!std::is_same_v<Manifest_Utility::ReturnType<Function, Params...>, void>);
+
 			writeLock.Lock();
 			rcu.synchronize_rcu(Manifest_Utility::ForwardFunction(function, params...));
 			writeLock.Unlock();
@@ -35,7 +37,7 @@ namespace Manifest_Persistence
 			
 		//return type pull - for types that can be internally constructed 
 		template<typename Function, typename... Params>
-		typename std::enable_if<!std::is_same<TableReturnType<Function, Params...>, void>::value, TableReturnType<Function, Params...>>::type Pull(const MFu32 readerId, Function&& function, Params&&... params)
+		typename std::enable_if_t<!std::is_same_v<TableReturnType<Function, Params...>, void>, TableReturnType<Function, Params...>> Pull(const MFu32 readerId, Function&& function, Params&&... params)
 		{
 			typename RCU::Handle handle = rcu.rcu_read_lock(readerId);
 			auto&& result{ Manifest_Utility::ForwardFunction(function, handle, params...) };
@@ -46,7 +48,7 @@ namespace Manifest_Persistence
 
 		//void specialized pull - for types that need external constructions
 		template<typename Function, typename... Params>
-		typename std::enable_if<std::is_same<TableReturnType<Function,Params...>,void>::value,void>::type Pull(const MFu32 readerId, Function&& function, Params&&... params)
+		typename std::enable_if_t<std::is_same_v<TableReturnType<Function,Params...>,void>,void> Pull(const MFu32 readerId, Function&& function, Params&&... params)
 		{
 			typename RCU::Handle handle = rcu.rcu_read_lock(readerId);
 			Manifest_Utility::ForwardFunction(function, handle, params...);
