@@ -16,8 +16,7 @@ DDL_Structure* MDD_RigidBodyParams::Build(const std::string_view& partitionedStr
 				switch (rigidBodyParamList.find(name)->second)
 				{
 					case ORIENTATION:
-						orientation.Build(subStructure, referenceMap);
-						DLOG({ CONSOLE_GREEN }, "Orientation built at: " , &orientation.data.typeHeap);
+						orientation.Build(subStructure, referenceMap);		
 						break;
 					case POSITION:
 						position.Build(subStructure, referenceMap);
@@ -30,6 +29,9 @@ DDL_Structure* MDD_RigidBodyParams::Build(const std::string_view& partitionedStr
 						break;
 					case ANGULAR_VELOCITY:
 						angularVelocity.Build(subStructure, referenceMap);
+						break;
+					case BODY_SCALE:
+						scale.Build(subStructure, referenceMap);
 						break;
 					case APPLIED_FORCE:
 						appliedForce.Build(subStructure, referenceMap);

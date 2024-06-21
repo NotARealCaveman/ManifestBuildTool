@@ -92,7 +92,7 @@ namespace Manifest_Memory
 			generationHandles[newIndex] = newHandle;
 			globalGeneration.store(newGeneration, std::memory_order_release);
 			//wait for old readers
-			MFu32 waitCount{ 0 };			
+			MFu32 waitCount{ 0 };		
 			for (auto reader{ 0 }; reader < registeredReaders.load(std::memory_order_relaxed); ++reader)
 				while (generationReadFlags[oldIndex][reader].isReading.load(std::memory_order_acquire))
 				{

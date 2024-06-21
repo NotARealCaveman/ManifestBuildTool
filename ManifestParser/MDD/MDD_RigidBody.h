@@ -9,15 +9,16 @@ namespace Manifest_Parser
 	namespace RIGID_BODY_PARAMS
 	{
 		static constexpr MFu8 ORIENTATION{ 1 };
-		static constexpr MFu8 POSITION{ 2 };
-		static constexpr MFu8 ACCELARATION{ 3 };
-		static constexpr MFu8 LINEAR_VELOCITY{ 4 };
-		static constexpr MFu8 ANGULAR_VELOCITY{ 5 };
-		static constexpr MFu8 APPLIED_FORCE{ 6 };
-		static constexpr MFu8 APPLIED_TORQUE{ 7 };
-		static constexpr MFu8 IMASS{ 8 };
-		static constexpr MFu8 LINEAR_DAMPING{ 9 };
-		static constexpr MFu8 ANGULAR_DAMPING{ 10 };
+		static constexpr MFu8 POSITION{ ORIENTATION+1 };
+		static constexpr MFu8 ACCELARATION{ POSITION+1 };
+		static constexpr MFu8 LINEAR_VELOCITY{ ACCELARATION+1 };
+		static constexpr MFu8 ANGULAR_VELOCITY{ LINEAR_VELOCITY+1 };		
+		static constexpr MFu8 BODY_SCALE{ ANGULAR_VELOCITY + 1 };
+		static constexpr MFu8 APPLIED_FORCE{ BODY_SCALE +1 };
+		static constexpr MFu8 APPLIED_TORQUE{ APPLIED_FORCE+1 };
+		static constexpr MFu8 IMASS{ APPLIED_TORQUE+1 };
+		static constexpr MFu8 LINEAR_DAMPING{ IMASS+1 };
+		static constexpr MFu8 ANGULAR_DAMPING{ LINEAR_DAMPING + 1 };
 	}
 
 	static const std::map<std::string, MFu8> rigidBodyParamList
@@ -27,6 +28,7 @@ namespace Manifest_Parser
 		{"linearAccelaration",RIGID_BODY_PARAMS::ACCELARATION},
 		{"linearVelocity",RIGID_BODY_PARAMS::LINEAR_VELOCITY},
 		{"angularVelocity",RIGID_BODY_PARAMS::ANGULAR_VELOCITY},
+		{"scale",RIGID_BODY_PARAMS::BODY_SCALE},
 		{"appliedForce",RIGID_BODY_PARAMS::APPLIED_FORCE},
 		{"appliedTorque",RIGID_BODY_PARAMS::APPLIED_TORQUE},
 		{"iMass",RIGID_BODY_PARAMS::IMASS},
@@ -44,6 +46,7 @@ namespace Manifest_Parser
 		DDL_Float linearAccelaration;
 		DDL_Float linearVelocity;
 		DDL_Float angularVelocity;
+		DDL_Float scale;
 		DDL_Float appliedForce;
 		DDL_Float appliedTorque;
 		DDL_Float iMass;

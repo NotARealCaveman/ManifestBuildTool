@@ -14,6 +14,7 @@ ForeignKey Manifest_Persistence::TableEntry(const ScratchPadVector<DDL_Structure
 	entry.linearAccelaration = New<MFvec3>(bodyCount);
 	entry.linearVelocity = New<MFvec3>(bodyCount);
 	entry.angularVelocity = New<MFvec3>(bodyCount);
+	entry.scale = New<MFvec3>(bodyCount);
 	entry.appliedForce = New<MFvec3>(bodyCount);
 	entry.appliedTorque = New<MFvec3>(bodyCount);
 	entry.iMass = New<MFfloat>(bodyCount);
@@ -31,6 +32,7 @@ ForeignKey Manifest_Persistence::TableEntry(const ScratchPadVector<DDL_Structure
 		entry.linearAccelaration[bodyIndex] = *reinterpret_cast<const MFvec3*>(rigidBodyParams.linearAccelaration.data.typeHeap);
 		entry.linearVelocity[bodyIndex] = *reinterpret_cast<const MFvec3*>(rigidBodyParams.linearVelocity.data.typeHeap);
 		entry.angularVelocity[bodyIndex] = *reinterpret_cast<const MFvec3*>(rigidBodyParams.angularVelocity.data.typeHeap);
+		entry.scale[bodyIndex] = *reinterpret_cast<const MFvec3*>(rigidBodyParams.scale.data.typeHeap);
 		entry.appliedForce[bodyIndex] = *reinterpret_cast<const MFvec3*>(rigidBodyParams.appliedForce.data.typeHeap);
 		entry.appliedTorque[bodyIndex] = *reinterpret_cast<const MFvec3*>(rigidBodyParams.appliedTorque.data.typeHeap);
 		entry.iMass[bodyIndex] = *reinterpret_cast<const MFfloat*>(rigidBodyParams.iMass.data.typeHeap);

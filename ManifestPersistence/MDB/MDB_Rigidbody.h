@@ -23,6 +23,7 @@ namespace Manifest_Persistence
 		MFvec3* linearAccelaration;
 		MFvec3* linearVelocity;
 		MFvec3* angularVelocity;
+		MFvec3* scale;
 		MFvec3* appliedForce;
 		MFvec3* appliedTorque;
 		MFfloat* iMass;

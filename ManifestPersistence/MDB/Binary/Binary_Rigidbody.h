@@ -14,6 +14,7 @@ namespace Manifest_Persistence
 			MFsize linearAccelarationOffset;
 			MFsize linearVelocityOffset;
 			MFsize angularVelocityOffset;
+			MFsize scaleOffset;
 			MFsize appliedForceOffset;
 			MFsize appliedTorqueOffset;
 			MFsize iMassOffset;

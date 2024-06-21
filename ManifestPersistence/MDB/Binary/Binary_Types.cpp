@@ -13,7 +13,8 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_Rigidbody& rigidBody,  Binary
 	binaryRigidBody.header.linearAccelarationOffset = payloadSize += sizeof(decltype(*rigidBody.position)) * rigidBody.bodyCount;
 	binaryRigidBody.header.linearVelocityOffset = payloadSize += sizeof(decltype(*rigidBody.linearAccelaration)) * rigidBody.bodyCount;
 	binaryRigidBody.header.angularVelocityOffset = payloadSize += sizeof(decltype(*rigidBody.linearVelocity)) * rigidBody.bodyCount;
-	binaryRigidBody.header.appliedForceOffset = payloadSize += sizeof(decltype(*rigidBody.angularVelocity)) * rigidBody.bodyCount;
+	binaryRigidBody.header.scaleOffset = payloadSize += sizeof(decltype(*rigidBody.angularVelocity)) * rigidBody.bodyCount;
+	binaryRigidBody.header.appliedForceOffset = payloadSize += sizeof(decltype(*rigidBody.scale)) * rigidBody.bodyCount;
 	binaryRigidBody.header.appliedTorqueOffset = payloadSize += sizeof(decltype(*rigidBody.appliedForce)) * rigidBody.bodyCount;
 	binaryRigidBody.header.iMassOffset = payloadSize += sizeof(decltype(*rigidBody.appliedForce)) * rigidBody.bodyCount;
 	binaryRigidBody.header.linearDampingOffset = payloadSize += sizeof(decltype(*rigidBody.iMass)) * rigidBody.bodyCount;
@@ -28,7 +29,8 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_Rigidbody& rigidBody,  Binary
 	memcpy(&payload[header.positionOffset], rigidBody.position, header.linearAccelarationOffset - header.positionOffset);
 	memcpy(&payload[header.linearAccelarationOffset], rigidBody.linearAccelaration, header.linearVelocityOffset -header.linearAccelarationOffset);
 	memcpy(&payload[header.linearVelocityOffset], rigidBody.linearVelocity, header.angularVelocityOffset - header.linearVelocityOffset);
-	memcpy(&payload[header.angularVelocityOffset], rigidBody.angularVelocity, header.appliedForceOffset - header.angularVelocityOffset);
+	memcpy(&payload[header.angularVelocityOffset], rigidBody.angularVelocity, header.scaleOffset- header.angularVelocityOffset);
+	memcpy(&payload[header.scaleOffset], rigidBody.scale, header.appliedForceOffset - header.scaleOffset);
 	memcpy(&payload[header.appliedForceOffset], rigidBody.appliedForce, header.appliedTorqueOffset - header.appliedForceOffset);
 	memcpy(&payload[header.appliedTorqueOffset], rigidBody.appliedTorque, header.iMassOffset - header.appliedForceOffset);
 	memcpy(&payload[header.iMassOffset], rigidBody.iMass, header.linearDampingOffset - header.iMassOffset);
