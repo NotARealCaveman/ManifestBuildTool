@@ -49,4 +49,10 @@ namespace Manifest_Utility
 	{
 		return static_cast<T>(UnderlyingType(t0) | UnderlyingType(t1));
 	}
+	//RETURNS THE BITWISE |= OF TWO INTEGRAL TYPES AS THE ORIGINAL OBJECT TYPE T
+	template<typename T>
+	inline constexpr T operator|=(const T& t0, const T& t1)
+	{
+		return t0 | t1;
+	}
 }
