@@ -32,9 +32,9 @@ namespace Manifest_Utility
 	using ReturnType = decltype(std::declval<Function>()(std::declval<Params>()...));
 	//FORWARDS FUNCTION W/ PARAMS
 	template<typename Function, typename... Params>
-	ReturnType<Function, Params...> ForwardFunction(Function&& function, Params&&... params)
+	ReturnType ForwardFunction(Function function, Params&&... params)
 	{
-		return std::invoke(std::forward<Function>(function), std::forward<Params>(params)...);
+		return std::invoke(std::ref(function), std::forward<Params>(params)...);
 	};
 
 	//RETURNS THE BITWISE & OF TWO INTEGRAL TYPES AS THE ORIGINAL OBJECT TYPE T
