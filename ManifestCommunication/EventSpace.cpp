@@ -10,12 +10,12 @@ void EventSpace::NotifyRegisteredObservers(Event&& event) const
 		const std::vector<Observer*>& observers = observerRegister.registeredObservers;
 		auto observer = std::find_if(observers.begin(), observers.end(), [&](Observer* observer)
 			{return (observer->observationToken & message.messageToken); });
-		assert(("no observer", observer != observers.end()));
+		assert(("no observer", observer != observers.end()));		
 		(*observer)->ObserveEvent(std::move(message));
 	}
 }
 
 MFbool Manifest_Communication::RegisterObserverToEventSpace(const Observer& observer, EventSpace& eventSpace)
-{
+{	
 	return eventSpace.observerRegister.RegisterObserver(observer);
 }
