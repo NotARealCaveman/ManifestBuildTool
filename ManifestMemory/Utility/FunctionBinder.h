@@ -3,6 +3,9 @@
 #include <memory>
 
 #include <ManifestUtility/DebugLogger.h>
+#include <ManifestUtility/TypeAssist.h>
+
+using namespace Manifest_Utility;
 
 namespace Manifest_Memory
 {
@@ -30,9 +33,9 @@ namespace Manifest_Memory
 		{
 			//DLOG({ CONSOLE_CYAN }, "Destroying function binder:", this);
 		}
-		void operator()()
+		void operator()() const
 		{
-			callable->operator()();
+			ForwardFunction(&FunctionBase::operator(), callable);	
 		}
 	private:
 		FunctionBinder(const FunctionBinder&) = delete;
@@ -64,8 +67,8 @@ namespace Manifest_Memory
 			{ //DLOG({ CONSOLE_CYAN }, "Destroying callable:", this);
 			};
 			void operator()()
-			{
-				std::invoke(boundFunction);
+			{	
+				ForwardFunction(boundFunction);				
 			};
 
 			std::function<void()> boundFunction;
