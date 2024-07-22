@@ -69,7 +69,7 @@ namespace Manifest_Memory
 			void operator()()
 			{	
 				ForwardFunction(boundFunction);				
-			};
+			};			
 
 			std::function<void()> boundFunction;
 		};
