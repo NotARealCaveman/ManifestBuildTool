@@ -1,6 +1,8 @@
 #pragma once
 #include <atomic>
 #include <array>
+#include <algorithm>
+#include <ranges>
 
 #include <EXPERIMENTAL/EXPERIMENTAL_RUNTIME_DATA_STRUCTURES.h>
 #include <ManifestUtility/Typenames.h>
@@ -22,7 +24,7 @@ namespace Manifest_Memory
 		struct ReadFlag
 		{
 			std::atomic<MFbool> isReading{ false };
-			char padding[64 - sizeof(isReading)];
+			const MFu8 padding[64 - sizeof(isReading)]{};
 		};
 		struct GenerationHandle
 		{
@@ -35,7 +37,8 @@ namespace Manifest_Memory
 
 		//rcu				
 		Deleter deleter;		
-		GenerationHandle generationHandles[MAX_RCU_GENERATION];
+		//GenerationHandle generationHandles[MAX_RCU_GENERATION];
+		std::array<GenerationHandle, MAX_RCU_GENERATION> generationHandles;
 		std::array<ReadFlag*, MAX_RCU_GENERATION> generationReadFlags;
 		std::atomic<Generation> globalGeneration;		
 	public:
@@ -44,15 +47,18 @@ namespace Manifest_Memory
 		RCU(const MFsize _maxReaders)
 			: maxReaders(_maxReaders), registeredReaders{ 0 }, deleter{ Deleter{} }, globalGeneration{ DEFAULT_GENERATION }
 		{
-			for (Generation generation{ 0 }; generation < MAX_RCU_GENERATION; ++generation)
-			{
-				generationHandles[generation] = GenerationHandle{ DEFAULT_GENERATION,new T };
-				auto& readFlag = generationReadFlags[generation];
-				readFlag = new ReadFlag[maxReaders];	
-				memset(readFlag, 0, sizeof(ReadFlag) * maxReaders);
-			}
+			//create default generation handles
+			std::ranges::for_each(generationHandles, [](GenerationHandle& generationHandle)->void
+				{
+					generationHandle = GenerationHandle{ DEFAULT_GENERATION,new T };
+				});
+			//create default read flags
+			std::ranges::for_each(generationReadFlags, [=](ReadFlag*& readFlag)->void
+				{
+					readFlag = new ReadFlag[maxReaders];
+				});
 		}	
-		GenerationHandle rcu_read_lock(const MFu32& readerId)
+		const GenerationHandle rcu_read_lock(const MFu32& readerId)
 		{
 			//use current generation as guess
 			Generation currentGeneration = globalGeneration.load(std::memory_order_relaxed);
@@ -76,18 +82,18 @@ namespace Manifest_Memory
 		void rcu_read_unlock(const GenerationHandle& generationHandle, const MFu32& readerId)
 		{
 			//unblock read generation for writer
-			MFu32 generationIndex = generationHandle.generation & RCU_MODULO;
+			const MFu32 generationIndex = generationHandle.generation & RCU_MODULO;
 			generationReadFlags[generationIndex][readerId].isReading.store(false, std::memory_order_relaxed);
 		}
 		void synchronize_rcu(T* update)
 		{
 			//store old generation for current readers;
-			Generation oldGeneration = globalGeneration.load(std::memory_order_relaxed);
-			MFu32 oldIndex = oldGeneration & RCU_MODULO;;
+			const Generation oldGeneration = globalGeneration.load(std::memory_order_relaxed);
+			const MFu32 oldIndex = oldGeneration & RCU_MODULO;;
 			//prepare new geneartion for future readers
-			Generation newGeneration = oldGeneration + 1;
-			Handle newHandle{ newGeneration,update };
-			MFu32 newIndex = newGeneration & RCU_MODULO;
+			const Generation newGeneration = oldGeneration + 1;
+			const Handle newHandle{ newGeneration,update };
+			const MFu32 newIndex = newGeneration & RCU_MODULO;
 			//make new generation visible for future readers
 			generationHandles[newIndex] = newHandle;
 			globalGeneration.store(newGeneration, std::memory_order_release);

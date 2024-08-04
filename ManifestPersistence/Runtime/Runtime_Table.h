@@ -23,10 +23,8 @@ namespace Manifest_Persistence
 			: rcu{ maxConcurrentReaders } {};				
 
 		template<typename Function, typename... Params>
-		void Push(Function&& function, Params&&... params)
+		typename std::enable_if_t<!std::is_same_v<Manifest_Utility::ReturnType<Function, Params...>, void>, void>  Push(Function&& function, Params&&... params)
 		{		
-			static_assert(!std::is_same_v<Manifest_Utility::ReturnType<Function, Params...>, void>);
-
 			writeLock.Lock();
 			rcu.synchronize_rcu(Manifest_Utility::ForwardFunction(function, params...));
 			writeLock.Unlock();
@@ -39,7 +37,7 @@ namespace Manifest_Persistence
 		template<typename Function, typename... Params>
 		typename std::enable_if_t<!std::is_same_v<TableReturnType<Function, Params...>, void>, TableReturnType<Function, Params...>> Pull(const MFu32 readerId, Function&& function, Params&&... params)
 		{
-			typename RCU::Handle handle = rcu.rcu_read_lock(readerId);
+			const typename RCU::Handle handle = rcu.rcu_read_lock(readerId);
 			auto&& result{ Manifest_Utility::ForwardFunction(function, handle, params...) };
 			rcu.rcu_read_unlock(handle, readerId);
 

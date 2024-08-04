@@ -46,33 +46,27 @@ namespace Manifest_Memory
 			virtual void operator()() = 0;
 			virtual ~FunctionBase() {};
 		};
+
 		template<typename Function, typename... Params>
 		struct Callable : public FunctionBase
 		{
 			Callable(Function&& function, Params&&... params)
 				: boundFunction{ std::bind(function,params...) }
-			{
-				//DLOG({ CONSOLE_CYAN }, "Creating Callable:", this);
-			};
+			{};
 			Callable(Callable&& other) : boundFunction{ std::move(other.boundFunction) } 
-			{ //DLOG({ CONSOLE_CYAN }, "move ctor callable:", this, "other:", &other); 
-			};
-			Callable operator=(Callable&& other)
-			{ //DLOG({ CONSOLE_CYAN }, "operator= callable:", this, "other:", &other); return std::move(other); 
-			};
+			{};
+			Callable operator=(Callable&& other) {};
 			Callable(const Callable&) = delete;
 			Callable& operator=(const Callable&) = delete;
-
-			~Callable()			
-			{ //DLOG({ CONSOLE_CYAN }, "Destroying callable:", this);
-			};
-			void operator()()
-			{	
+			~Callable() {};
+			void operator()() 
+			{
 				ForwardFunction(boundFunction);				
 			};			
 
 			std::function<void()> boundFunction;
 		};
+
 		std::unique_ptr<FunctionBase> callable;
 	};
 }
