@@ -16,7 +16,7 @@ void ThreadPool::Worker()
 {
 	while (!finished)
 	{		
-		FunctionWrapper task;
+		FunctionWrapper_OLD task;
 		if (queue.TryPop(task))
 			task();
 		else

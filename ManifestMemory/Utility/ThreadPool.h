@@ -21,7 +21,7 @@ namespace Manifest_Memory
 		std::vector<std::thread> threads;
 		std::atomic<MFbool> finished;		
 		ThreadJoiner joiner;		
-		ThreadedQueue<FunctionWrapper> queue;	
+		ThreadedQueue<FunctionWrapper_OLD> queue;	
 	public:
 		ThreadPool();
 		template<typename R,typename Function, typename... Args>
