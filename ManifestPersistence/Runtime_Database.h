@@ -22,8 +22,7 @@ namespace Manifest_Persistence
 			ManifestRuntimeDatabase();
 			SimulationStateTable* simulationStateTable;
 			TerrainExtractionTable* terrainExtractionTable;
-			WorldConfigurationTable* worldConfigurationTable;
-			ActionPlanTable* actionPlanTable;
+			WorldConfigurationTable* worldConfigurationTable;		
 	};
 }
 
