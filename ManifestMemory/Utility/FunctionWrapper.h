@@ -12,7 +12,6 @@ namespace Manifest_Memory
 {
 	struct FunctionWrapper
 	{
-
 		template<typename Function>
 		FunctionWrapper(Function function) : callable{ std::make_unique<Callable<Function>>(function) } {};
 
@@ -23,6 +22,7 @@ namespace Manifest_Memory
 		decltype(auto) Invoke(Params... params) const
 		{
 			const Callable<FunctionPointer<R, Params...>>& functor{ reinterpret_cast<const Callable<FunctionPointer<R, Params...>>&>(*callable.get()) };
+			DLOG({ CONSOLE_BG_BLUE }, "function name:", typeid(functor).name());
 			return ForwardFunction(functor, params...);
 		}
 
@@ -30,7 +30,7 @@ namespace Manifest_Memory
 		{};
 
 		template<typename Function>
-		struct Callable : Base
+		struct Callable : public Base
 		{
 			Callable(Function _function) : function{ _function }
 			{};
