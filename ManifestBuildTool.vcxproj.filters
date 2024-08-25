@@ -536,5 +536,8 @@
     <ClInclude Include="ManifestPersistence\MDB\MDB_GameObject.h">
       <Filter>Header Files\Persistence\MDB</Filter>
     </ClInclude>
+    <ClInclude Include="ManifestMemory\Utility\FunctionBinder.h">
+      <Filter>Header Files\Memory\Utility</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

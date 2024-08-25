@@ -43,8 +43,11 @@ namespace Manifest_Communication
 		template<typename Content>		
 		Content&& GetMessageContent()
 		{
-			ContentWrapper<Content>* contentWrapper = reinterpret_cast<ContentWrapper<Content>*>(messageBase);			
-			return std::move(contentWrapper->content);
+			ContentWrapper<Content>* contentWrapper = static_cast<ContentWrapper<Content>*>(messageBase);	
+
+			Content& content{ contentWrapper->content };
+
+			return std::move(content);
 		}
 			
 		const ObservationToken messageToken;						

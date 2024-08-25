@@ -54,5 +54,5 @@ namespace Manifest_Utility
 	inline constexpr T operator|=(const T& t0, const T& t1)
 	{
 		return t0 | t1;
-	}
+	}	
 }
