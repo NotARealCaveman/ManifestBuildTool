@@ -25,6 +25,22 @@ namespace Manifest_Memory
 				resources = new Resource[allocatedResources];
 			}
 		};		
+		//used for creating a constant resoruce table atm
+		ResourceTable(const std::initializer_list<std::pair<KeyType, Resource>>& keyPairs)
+			: allocatedResources(keyPairs.size()), activeResources(keyPairs.size())
+		{
+			if (allocatedResources)
+			{
+				keys = new KeyType[allocatedResources];
+				resources = new Resource[allocatedResources];
+				MFu32 index{ 0 };
+				for (const auto [key, resource] : keyPairs)
+				{
+					keys[index] = key;
+					resources[index] = resource;
+				}
+			}
+		}
 		~ResourceTable()
 		{
 			if (keys)
