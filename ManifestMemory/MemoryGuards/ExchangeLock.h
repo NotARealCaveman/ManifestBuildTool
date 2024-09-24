@@ -1,5 +1,6 @@
 #pragma once
 #include <atomic>
+#include <thread>
 
 #include <ManifestUtility/Typenames.h>
 
@@ -13,11 +14,11 @@ namespace Manifest_Memory
 	struct ExchangeLock
 	{
 	protected:
-		std::atomic<MFbool> lock{ UNLOCKED };
+		std::atomic<MFbool> lock{ UNLOCKED };		
 	public:
 		//attempts to lock, spins on exchange until locked
 		void Lock();
 		//restores lock to unlocked state
-		void Unlock();
+		void Unlock();		
 	};
 }
