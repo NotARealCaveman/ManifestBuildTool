@@ -15,10 +15,8 @@ namespace Manifest_Persistence
 		BinaryTextureTable binaryTextureTable;
 		BinaryGeometryObjectTable binaryGeometryObjectTable;
 		BinaryGeometryNodeTable binaryGeometryNodeTable;
-		BinaryRigidBodyTable binaryDynamicRigidBodyTable;
-		BinaryRigidBodyTable binaryStaticRigidBodyTable;
-		BinaryColliderTable binaryDynamicColliderTable;
-		BinaryColliderTable binaryStaticColliderTable;
+		BinaryRigidBodyTable binaryRigidBodyTable;		
+		BinaryColliderTable binaryColliderTable;		
 	};
 	ManifestBinaryResourceDatabase ImportGameResources(std::ifstream& resourceFile);
 

@@ -7,8 +7,7 @@ void Manifest_Persistence::BuildResourceDatabase(const DDL_File& file, ManifestR
 	ScratchPadVector<DDL_Structure*>geometryObjects;
 	ScratchPadVector<DDL_Structure*> materials;
 	ScratchPadVector<DDL_Structure*> geometryNodes;	
-	ScratchPadVector<DDL_Structure*> dynamicPhysicsNodes;
-	ScratchPadVector<DDL_Structure*> staticPhysicsNodes;
+	ScratchPadVector<DDL_Structure*> physicsNodes;	
 	//currently only rigid body objects are supported. in the future this will need to be subdivided by object types
 	ScratchPadVector<DDL_Structure*> gameObjects;	
 	//get all top level build structures
@@ -32,11 +31,8 @@ void Manifest_Persistence::BuildResourceDatabase(const DDL_File& file, ManifestR
 					geometryNodes.emplace_back(structure);	
 					break;
 				case DDL_ExtendedTypes::MDD_PHYSICSNODE:
-				{
-					const auto& node{ HeapData<MDD_PhysicsNode>(*structure) };
-					node.isDynamic ? dynamicPhysicsNodes.emplace_back(structure) : staticPhysicsNodes.emplace_back(structure);
-					break;
-				}
+					physicsNodes.emplace_back(structure);
+					break;				
 				case DDL_ExtendedTypes::MDD_GAMEOBJECT:
 					gameObjects.emplace_back(structure);
 					break;
@@ -52,14 +48,11 @@ void Manifest_Persistence::BuildResourceDatabase(const DDL_File& file, ManifestR
 		TableEntry(*material, database.materialBuildTable, database.textureBuildTable);		
 	TableEntry(gameObjects, geometryNodes, database.geometryObjectBuildTable, database.materialBuildTable, database.geometryNodeBuildTable, database.objectRefBuildTable, database.materialRefBuildTable);
 	//dynamic->static
-	for(const auto& physicsNode : dynamicPhysicsNodes)
-		TableEntry(gameObjects, physicsNode, database.dynamicColliderBuildTable,DYNAMIC);
-	for (const auto& physicsNode : staticPhysicsNodes)
-		TableEntry(gameObjects, physicsNode, database.staticColliderBuildTable, STATIC);
+	for(const auto& physicsNode : physicsNodes)
+		TableEntry(gameObjects, physicsNode, database.colliderBuildTable);
 	//dynamic->static
 	//rigid bodies are converted into their respective game framework formats
-	TableEntry(gameObjects, dynamicPhysicsNodes, database.dynamicRigidBodyBuildTable, DYNAMIC);
-	TableEntry(gameObjects, staticPhysicsNodes, database.staticRigidBodyBuildTable, STATIC);
+	TableEntry(gameObjects, physicsNodes, database.rigidBodyBuildTable);
 	
 }
 

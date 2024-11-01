@@ -30,9 +30,9 @@ namespace Manifest_Persistence
 		MFfloat* linearDamping;
 		MFfloat* angularDamping;
 		MFu64* objectID;
-		MFbool dynamic;
+		MFbool* dynamic;
 	};
 	using RigidbodyBuildTable = DatabaseBuildTable<MDB_Rigidbody>;
 	//converts from AOS to SOA type data
-	ForeignKey TableEntry(const ScratchPadVector<DDL_Structure*>& gameObjectStructures,const ScratchPadVector<DDL_Structure*>& physicsNodesStructures, RigidbodyBuildTable& rigidbodyBuildTable, const MFbool isDynamic);
+	ForeignKey TableEntry(const ScratchPadVector<DDL_Structure*>& gameObjectStructures,const ScratchPadVector<DDL_Structure*>& physicsNodesStructures, RigidbodyBuildTable& rigidbodyBuildTable);
 }

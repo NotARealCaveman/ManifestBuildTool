@@ -51,6 +51,6 @@ namespace Manifest_Parser
 		DDL_Float appliedTorque;
 		DDL_Float iMass;
 		DDL_Float linearDamping;
-		DDL_Float angularDamping;
+		DDL_Float angularDamping;		
 	};
 }

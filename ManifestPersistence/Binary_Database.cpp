@@ -12,11 +12,9 @@ ManifestBinaryResourceDatabase Manifest_Persistence::ImportGameResources(std::if
 	result.binaryGeometryObjectTable = ImportBinaryTable<Binary_GeometryObject>(resourceFile);
 	result.binaryGeometryNodeTable = ImportBinaryTable<Binary_GeometryNode>(resourceFile);
 	//dynamic->static
-	result.binaryDynamicRigidBodyTable = ImportBinaryTable<Binary_RigidBody>(resourceFile);
-	result.binaryStaticRigidBodyTable = ImportBinaryTable<Binary_RigidBody>(resourceFile);
+	result.binaryRigidBodyTable = ImportBinaryTable<Binary_RigidBody>(resourceFile);
 	//dynamic->static
-	result.binaryDynamicColliderTable = ImportBinaryTable<Binary_Collider>(resourceFile);
-	result.binaryStaticColliderTable = ImportBinaryTable<Binary_Collider>(resourceFile);
+	result.binaryColliderTable = ImportBinaryTable<Binary_Collider>(resourceFile);
 
 	return result;
 }

@@ -36,7 +36,7 @@ namespace Manifest_Parser
 		}
 		DDL_Buffer data;
 	};
-	
+		
 	typedef Primitive<float, DDL_BufferTypes::DDL_float> DDL_Float;
 	typedef Primitive<double, DDL_BufferTypes::DDL_double> DDL_Double;
 	typedef Primitive<int8_t, DDL_BufferTypes::DDL_int8> DDL_Int8;

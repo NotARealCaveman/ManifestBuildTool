@@ -5,8 +5,7 @@ using namespace Manifest_Persistence;
 
 //Rigidbodies - stores the rigidbody data separated by offsets. data arranged how framework expects it to be a straight memcpy
 size_t Manifest_Persistence::Convert_MDB(const MDB_Rigidbody& rigidBody,  Binary_RigidBody& binaryRigidBody)
-{
-	binaryRigidBody.header.dynamic = rigidBody.dynamic;
+{	
 	binaryRigidBody.header.bodyCount = rigidBody.bodyCount;
 	auto& payloadSize{ binaryRigidBody.header.payloadSize };	 
 	binaryRigidBody.header.positionOffset = payloadSize += sizeof(decltype(*rigidBody.orientation)) * rigidBody.bodyCount;
@@ -20,7 +19,8 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_Rigidbody& rigidBody,  Binary
 	binaryRigidBody.header.linearDampingOffset = payloadSize += sizeof(decltype(*rigidBody.iMass)) * rigidBody.bodyCount;
 	binaryRigidBody.header.angularDampingOffset = payloadSize += sizeof(decltype(*rigidBody.linearDamping)) * rigidBody.bodyCount;
 	binaryRigidBody.header.objectIDOffset = payloadSize += sizeof(decltype(*rigidBody.angularDamping)) * rigidBody.bodyCount;
-	payloadSize += sizeof(decltype(*rigidBody.objectID)) * rigidBody.bodyCount;	
+	binaryRigidBody.header.dynamicOffset = payloadSize += sizeof(decltype(*rigidBody.objectID)) * rigidBody.bodyCount;
+	payloadSize += sizeof(decltype(*rigidBody.dynamic)) * rigidBody.bodyCount;	
 	//store binary data
 	binaryRigidBody.payload = New<Byte>(payloadSize);	
 	const auto& header{ binaryRigidBody.header };
@@ -36,7 +36,8 @@ size_t Manifest_Persistence::Convert_MDB(const MDB_Rigidbody& rigidBody,  Binary
 	memcpy(&payload[header.iMassOffset], rigidBody.iMass, header.linearDampingOffset - header.iMassOffset);
 	memcpy(&payload[header.linearDampingOffset], rigidBody.linearDamping, header.angularDampingOffset - header.linearDampingOffset);
 	memcpy(&payload[header.angularDampingOffset], rigidBody.angularDamping, header.objectIDOffset - header.angularDampingOffset);
-	memcpy(&payload[header.objectIDOffset], rigidBody.objectID, payloadSize - header.objectIDOffset);	
+	memcpy(&payload[header.objectIDOffset], rigidBody.objectID, header.dynamicOffset - header.objectIDOffset);
+	memcpy(&payload[header.dynamicOffset], rigidBody.dynamic, payloadSize - header.dynamicOffset);
 	return EntrySize(binaryRigidBody);
 }
 //Colliders

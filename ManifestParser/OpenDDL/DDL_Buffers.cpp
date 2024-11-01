@@ -6,7 +6,7 @@ std::map<std::string, DDL_BufferType> DDL_BufferTypes::DDL_BufferTypeMap
 {
 	
 	//references
-	{"ref",	DDL_BufferTypes::DDL_ref},
+	{"ref",	DDL_BufferTypes::DDL_ref},	
 	//signed ints
 	{"int8",	DDL_BufferTypes::DDL_int8},	{ "i8",			DDL_BufferTypes::DDL_int8 },
 	{"int16",	DDL_BufferTypes::DDL_int16 },	{ "i16",		DDL_BufferTypes::DDL_int16 },

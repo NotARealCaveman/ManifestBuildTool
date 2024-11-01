@@ -20,5 +20,5 @@ namespace Manifest_Persistence
 		MFbool dynamic;
 	};
 	using ColliderBuildTable = DatabaseBuildTable<MDB_Collider>;
-	ForeignKey TableEntry(const ScratchPadVector<DDL_Structure*>& gameObjectStructures, const DDL_Structure* physicsNodesStructure, ColliderBuildTable& colliderBuildTable, const MFbool isDynamic);
+	ForeignKey TableEntry(const ScratchPadVector<DDL_Structure*>& gameObjectStructures, const DDL_Structure* physicsNodesStructure, ColliderBuildTable& colliderBuildTable);
 }

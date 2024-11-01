@@ -90,9 +90,9 @@ void ImportAndTestResourceDatabase()
 			std::cout << importNode.payload[index] << ", ";
 		std::cout << std::endl;					
 	}
-	for (auto i = 0; i < binaryDatabase.binaryDynamicRigidBodyTable.header.totalEntries; ++i)
+	for (auto i = 0; i < binaryDatabase.binaryRigidBodyTable.header.totalEntries; ++i)
 	{
-		const auto& rigidBodies{ binaryDatabase.binaryDynamicRigidBodyTable[i] };
+		const auto& rigidBodies{ binaryDatabase.binaryRigidBodyTable[i] };
 		DLOG({ CONSOLE_GREEN }, "number dynamic rigid bodies: " , rigidBodies.header.bodyCount);
 		for (auto body{ 0 }; body < rigidBodies.header.bodyCount; ++body)
 		{
@@ -101,19 +101,7 @@ void ImportAndTestResourceDatabase()
 			DLOG({ CONSOLE_GREEN }, "Body.position: " , reinterpret_cast<const MFpoint3&>(rigidBodies.payload[rigidBodies.header.positionOffset + sizeof(MFpoint3) * body]));
 			DLOG({ CONSOLE_GREEN }, "Body.uuid: " , reinterpret_cast<const MFu64&>(rigidBodies.payload[rigidBodies.header.objectIDOffset+ sizeof(MFpoint3) * body]));
 		}
-	}
-	for (auto i = 0; i < binaryDatabase.binaryStaticRigidBodyTable.header.totalEntries; ++i)
-	{
-		const auto& rigidBodies{ binaryDatabase.binaryStaticRigidBodyTable[i] };
-		DLOG({ CONSOLE_GREEN }, "number static rigid bodies: " , rigidBodies.header.bodyCount);
-		for (auto body{ 0 }; body < rigidBodies.header.bodyCount; ++body)
-		{
-			auto& payload{ rigidBodies.payload };
-			DLOG({ CONSOLE_GREEN }, "Body.orientation: " , reinterpret_cast<const MFquaternion&>(rigidBodies.payload[sizeof(MFquaternion) * body]));
-			DLOG({ CONSOLE_GREEN }, "Body.position: " , reinterpret_cast<const MFpoint3&>(rigidBodies.payload[rigidBodies.header.positionOffset + sizeof(MFpoint3) * body]));
-			DLOG({ CONSOLE_GREEN }, "Body.uuid: " , reinterpret_cast<const MFu64&>(rigidBodies.payload[rigidBodies.header.objectIDOffset + sizeof(MFpoint3) * body]));
-		}
-	}
+	} 
 	bImport.seekg(std::ios::beg);
 	ScratchPad<Byte>{}.Unwind();
 	}

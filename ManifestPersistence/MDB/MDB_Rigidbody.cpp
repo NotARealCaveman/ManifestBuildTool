@@ -2,10 +2,9 @@
 
 using namespace Manifest_Persistence;
 
-ForeignKey Manifest_Persistence::TableEntry(const ScratchPadVector<DDL_Structure*>& gameObjectStructures, const ScratchPadVector<DDL_Structure*>& physicsNodesStructures, RigidbodyBuildTable& rigidbodyBuildTable, const MFbool isDynamic)
+ForeignKey Manifest_Persistence::TableEntry(const ScratchPadVector<DDL_Structure*>& gameObjectStructures, const ScratchPadVector<DDL_Structure*>& physicsNodesStructures, RigidbodyBuildTable& rigidbodyBuildTable)
 {
-	MDB_Rigidbody& entry = rigidbodyBuildTable.entries.emplace_back();
-	entry.dynamic = isDynamic;
+	MDB_Rigidbody& entry = rigidbodyBuildTable.entries.emplace_back();	
 	entry.rigidBodyID = rigidbodyBuildTable.nextTableIndex++;
 	rigidbodyBuildTable.mappedEntryKeys.insert({ "RigidBody"+entry.rigidBodyID, entry.rigidBodyID });
 	const auto bodyCount{ physicsNodesStructures.size() };	
@@ -21,6 +20,7 @@ ForeignKey Manifest_Persistence::TableEntry(const ScratchPadVector<DDL_Structure
 	entry.linearDamping = New<MFfloat>(bodyCount);
 	entry.angularDamping = New<MFfloat>(bodyCount);
 	entry.objectID = New<MFu64>(bodyCount);
+	entry.dynamic = New<MFbool>(bodyCount);
 	auto& bodyIndex{ entry.bodyCount };
 	for (const auto& structure : physicsNodesStructures)
 	{			
@@ -38,6 +38,7 @@ ForeignKey Manifest_Persistence::TableEntry(const ScratchPadVector<DDL_Structure
 		entry.iMass[bodyIndex] = *reinterpret_cast<const MFfloat*>(rigidBodyParams.iMass.data.typeHeap);
 		entry.linearDamping[bodyIndex] = *reinterpret_cast<const MFfloat*>(rigidBodyParams.linearDamping.data.typeHeap);
 		entry.angularDamping[bodyIndex] = *reinterpret_cast<const MFfloat*>(rigidBodyParams.angularDamping.data.typeHeap);
+		entry.dynamic[bodyIndex] = physicsNode.isDynamic;
 		for (const auto& gameObject : gameObjectStructures)
 		{
 			const auto& object{ HeapData<MDD_GameObject>(*gameObject) };

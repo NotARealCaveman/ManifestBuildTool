@@ -17,7 +17,7 @@ namespace Manifest_Parser
 
 	struct DDL_BufferTypes
 	{
-		static constexpr DDL_BufferType DDL_ref{ 0 };
+		static constexpr DDL_BufferType DDL_ref{ 0 };		
 		static constexpr DDL_BufferType DDL_int8{ DDL_ref + 1 };
 		static constexpr DDL_BufferType DDL_int16{ DDL_int8 + 1 };
 		static constexpr DDL_BufferType DDL_int32{ DDL_int16 + 1 };
