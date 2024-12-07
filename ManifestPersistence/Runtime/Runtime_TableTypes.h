@@ -1,7 +1,7 @@
 #pragma once
 
-#include <ManifestPhysics/SimulationState.h>
-#include <ManifestPhysics/IntelligenceEngine/ActionPlanner.h>
+#include <ManifestSimulation/SimulationState.h>
+#include <ManifestSimulation/IntelligenceEngine/ActionPlanner.h>
 #include <ManifestTerrain/TerrainExtraction.h>
 #include <ManifestCore/WorldConfiguration.h>
 
