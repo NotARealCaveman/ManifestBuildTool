@@ -455,7 +455,11 @@ int main()
 {		
 	RegisterProgramExecutiveThread();
 	//create data stores
-	INIT_MEMORY_RESERVES();	
+	//memory reservation
+	std::cout << "TOTAL MEMORY TO RESERVE FOR BUILD: ";
+	std::string reservation;
+	std::getline(std::cin, reservation);	
+	INIT_MEMORY_RESERVES(std::stoi(reservation));	
 	//MEMORYSTATUSEX status;
 	//status.dwLength = sizeof(status);
 	//GlobalMemoryStatusEx(&status);

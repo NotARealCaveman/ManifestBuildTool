@@ -63,7 +63,7 @@ namespace Manifest_Memory
     //checks argument thread id against registered thread ids and returns allocated memory handles reserved for thread
     ThreadMemoryHandles* GetThreadMemoryHandles(const std::thread::id& registeredThread = std::this_thread::get_id());
 
-    void INIT_MEMORY_RESERVES();
+    void INIT_MEMORY_RESERVES(const MFsize RESERVATION);
         
     
         
