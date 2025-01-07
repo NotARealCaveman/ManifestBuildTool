@@ -456,7 +456,7 @@ int main()
 	RegisterProgramExecutiveThread();
 	//create data stores
 	//memory reservation
-	std::cout << "TOTAL MEMORY TO RESERVE FOR BUILD: ";
+	std::cout << "TOTAL MEMORY(MB) TO RESERVE FOR BUILD: ";
 	std::string reservation;
 	std::getline(std::cin, reservation);	
 	INIT_MEMORY_RESERVES(std::stoi(reservation));	
@@ -470,8 +470,7 @@ int main()
 
 	
 	DISABLE
-	{		
-		
+	{				
 		
 		OBJtoGEX("C:\\Users\\Droll\\Desktop\\Game\\Testing\\OBJ-_gex\\Sphere.obj");
 		OBJtoGEX("D:\\Users\\Droll\\Desktop\\Game\\Testing\\OBJ-_gex\\Capsule.obj");
