@@ -27,6 +27,8 @@ namespace Manifest_Utility
 	using MFu64 = uint64_t;
 	using MFulong = MFu32;
 	using MFullong = MFu64;
+	//casting types
 	using MFsize = size_t;
 	using MFdiff = ptrdiff_t;
+	using MFuptr = uintptr_t;
 }
