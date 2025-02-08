@@ -5,6 +5,9 @@
 #include <vector>
 #include <thread>
 #include <chrono>
+#include <ctime>
+#include <iomanip>
+
 
 namespace Manifest_Utility
 {
@@ -58,13 +61,17 @@ namespace Manifest_Utility
     std::string LogConsole(std::vector<CONSOLE_CODE> consoleOptions, Args&&... args)
     {
         std::ostringstream result;
+        auto now = std::chrono::system_clock::now();
+        auto time = std::chrono::system_clock::to_time_t(now);
+        std::tm localTime{};
+        localtime_s(&localTime, &time);  
+        result << std::this_thread::get_id() << " "
+            << std::put_time(&localTime, "%H:%M:%S") <<":";
         result << "\x1B[";
         for (const CONSOLE_CODE& optionCode : consoleOptions)
             result << optionCode << ';';
         result.seekp(result.tellp() - std::streampos{ 1 });
-        result << "m";
-        //result << "THREAD: " << std::this_thread::get_id();
-       // result << " TIME: " << std::chrono::system_clock::now() <<"\n";
+        result << "m";               
         printCsv(result, std::forward<Args>(args)...);
 
 
