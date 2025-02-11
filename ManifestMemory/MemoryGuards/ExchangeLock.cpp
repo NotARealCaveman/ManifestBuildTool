@@ -17,6 +17,11 @@ void ExchangeLock::Lock()
 	}
 };
 
+MFbool ExchangeLock::ProbeLock()
+{
+	return lock.load(std::memory_order_relaxed);
+}
+
 void ExchangeLock::Unlock()
 {
 	lock.store(UNLOCKED, std::memory_order_release);

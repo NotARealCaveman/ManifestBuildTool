@@ -18,6 +18,8 @@ namespace Manifest_Memory
 	public:
 		//attempts to lock, spins on exchange until locked
 		void Lock();
+		//probe lock to avoids spinning(use for shared resources with long lockout time)
+		MFbool ProbeLock();
 		//restores lock to unlocked state
 		void Unlock();		
 	};
