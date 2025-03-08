@@ -539,5 +539,8 @@
     <ClInclude Include="ManifestMemory\Utility\FunctionBinder.h">
       <Filter>Header Files\Memory\Utility</Filter>
     </ClInclude>
+    <ClInclude Include="ManifestUtility\Assert.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
