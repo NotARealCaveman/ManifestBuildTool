@@ -6,11 +6,11 @@
 
 namespace Manifest_Utility
 {	
-	constexpr uint64_t pow2(const uint64_t base)
+	inline constexpr uint64_t pow2(const uint64_t base)
 	{
 		return uint64_t{ 1 } << base;
 	}
-	constexpr uint16_t ipow2(const uint64_t pow2Base)
+	inline constexpr uint16_t ipow2(const uint64_t pow2Base)
 	{
 		return pow2Base>>1;
 	}
