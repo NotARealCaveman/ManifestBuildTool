@@ -6,6 +6,7 @@ namespace Manifest_Utility
 {	
 	//tbd
 	using MFstring = std::string;
+	using MFbyte = std::byte;
 	///single character types
 	using MFbool = bool;
 	using MFchar = char;	
