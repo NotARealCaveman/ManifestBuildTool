@@ -10,6 +10,6 @@ Message::Message(Message&& other) noexcept
 
 Message::~Message()
 {
-	if (messageBase)
+	if (messageBase)		
 		delete messageBase;
 }

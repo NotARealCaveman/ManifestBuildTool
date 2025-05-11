@@ -4,11 +4,9 @@
 
 #include "Event.h"
 
-#include <ManifestUtility/Typenames.h>
 #include <ManifestMemory/MemoryGuards/ExchangeLock.h>
 
 using namespace Manifest_Memory;
-using namespace Manifest_Utility;
 
 namespace Manifest_Communication
 {
@@ -43,16 +41,20 @@ namespace Manifest_Communication
 			messageLock.Unlock();
 
 			//messages are cleaned up upon exiting function
-			if (!messages.empty())							
-				std::invoke(function, messages, params...);
+			assert(!messages.empty(), && "ENSURE CALL TO HAS PENDING MESSAGES BEFORE PROCESSING EVENTS");
+			ForwardFunction(function, messages, params...);
+		}
+		template<typename Function, typename... Params>
+		void ProcessEvents_Unlocked(Function&& function, Params&&... params)
+		{
+			ForwardFunction(function, observedEventMessages, params...);
+			observedEventMessages.clear();
 		}
 		inline const MFbool HasPendingMessages() { return !observedEventMessages.empty(); };
 		const ObservationToken observationToken;		
-	private:
-		friend EventSpace;				
 		//Moves into messages - spins if moving for processing
 		void ObserveEvent(Message&& messaoge);
-
+	private:
 		std::vector<Message> observedEventMessages;
 		ExchangeLock messageLock;
 	};

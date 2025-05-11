@@ -4,10 +4,6 @@
 
 #include "Message.h"
 
-#include <ManifestUtility/Typenames.h>
-
-using namespace Manifest_Utility;
-
 namespace Manifest_Communication
 {		
 	//ObservableEvent is a snapshot of all the messages created during an event action

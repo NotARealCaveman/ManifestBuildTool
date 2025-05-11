@@ -41,13 +41,13 @@ namespace Manifest_Communication
 		~Message();				
 		//dynamic allocations in content are not cleaned up by ~Message(), only messageBase itself
 		template<typename Content>		
-		Content&& GetMessageContent()
+		Content& GetMessageContent() const
 		{
 			ContentWrapper<Content>* contentWrapper = static_cast<ContentWrapper<Content>*>(messageBase);	
 
 			Content& content{ contentWrapper->content };
 
-			return std::move(content);
+			return content;
 		}
 			
 		const ObservationToken messageToken;						

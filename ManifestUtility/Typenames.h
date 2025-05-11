@@ -3,7 +3,7 @@
 #include <string>
 
 namespace Manifest_Utility
-{	
+{	 
 	//tbd
 	using MFstring = std::string;
 	using MFbyte = std::byte;
@@ -25,7 +25,7 @@ namespace Manifest_Utility
 	using MFu8 = uint8_t;
 	using MFu16 = uint16_t;
 	using MFu32 = uint32_t;
-	using MFu64 = uint64_t;
+	using MFu64 = uint64_t; 
 	using MFulong = MFu32;
 	using MFullong = MFu64;
 	//casting types
