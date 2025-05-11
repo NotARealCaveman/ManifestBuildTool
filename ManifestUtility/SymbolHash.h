@@ -8,6 +8,7 @@ namespace Manifest_Utility
 	{
 	public:		
 		SymbolHash() = default;
+		inline SymbolHash(const MFu64 _hash) : hash{ _hash } {};
 		constexpr SymbolHash(const char* symbol) : hash{ HashFnv1a(symbol) } {}		
 		constexpr SymbolHash operator=(const SymbolHash& other) 
 		{
@@ -20,7 +21,6 @@ namespace Manifest_Utility
 		}
 
 		constexpr operator MFu64() const { return hash; }
-
 	private:
 		static constexpr MFu64 FNV1A_PRIME = 1099511628211ull;
 		static constexpr MFu64 FNV1A_BASIS = 14695981039346656037ull;
