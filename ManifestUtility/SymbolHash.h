@@ -8,7 +8,7 @@ namespace Manifest_Utility
 	{
 	public:		
 		SymbolHash() = default;
-		inline SymbolHash(const MFu64 _hash) : hash{ _hash } {};
+		inline constexpr SymbolHash(const MFu64 _hash) : hash{ _hash } {};
 		constexpr SymbolHash(const char* symbol) : hash{ HashFnv1a(symbol) } {}		
 		constexpr SymbolHash operator=(const SymbolHash& other) 
 		{
