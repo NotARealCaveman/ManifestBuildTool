@@ -13,7 +13,7 @@ using namespace Manifest_Experimental;
 namespace Manifest_Persistence
 {	
 	using SimulationStateTable = Table<Manifest_Simulation::SimulationState, std::default_delete<Manifest_Simulation::SimulationState>>;
-	using TerrainExtractionTable = Table<Manifest_Terrain::TerrainExtraction, Manifest_Terrain::TerrainExtractionDeleter>;
+	using TerrainDataTable = Table<Manifest_Terrain::TerrainData, std::default_delete<Manifest_Terrain::TerrainData>>;
 	using WorldConfigurationTable = Table<Manifest_Core::WorldConfiguration, Manifest_Core::WorldConfigurationDeleter>;
 	using ActionPlanTable = Table<Manifest_Simulation::ActionPlan, std::default_delete<Manifest_Simulation::ActionPlan>>;
 }
