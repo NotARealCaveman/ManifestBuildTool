@@ -36,3 +36,15 @@ namespace Manifest_Utility
 		MFu64 hash{ 0 };
 	};
 }
+
+namespace std
+{
+	template<>
+	struct hash<Manifest_Utility::SymbolHash>
+	{
+		size_t operator()(const Manifest_Utility::SymbolHash& symbol) const noexcept
+		{
+			return symbol.operator unsigned long long();
+		}
+	};
+}
