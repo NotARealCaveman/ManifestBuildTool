@@ -3,4 +3,4 @@ Manifest Build Tool is a multi stage project in which ultimately will end up as 
 11.23.22: Build Tool is able to ex/import binary files directly into a single block of memory  
 12.05.22: Proof of concept for Runtime database  
 01.04.23: Fixed leaks for parsing and database export/import  
-
+06.28.25: Archived as part of larger Engine/BuildTool replacement
